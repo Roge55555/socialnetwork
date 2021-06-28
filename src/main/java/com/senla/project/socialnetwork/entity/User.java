@@ -1,12 +1,14 @@
 package com.senla.project.socialnetwork.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
 @AllArgsConstructor
+@Data
 @Entity
 @Table(name = "user")
 public class User{
@@ -65,134 +67,6 @@ public class User{
 
     public User() {
 
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Date getDate_birth() {
-        return date_birth;
-    }
-
-    public void setDate_birth(Date date_birth) {
-        this.date_birth = date_birth;
-    }
-
-    public String getFirst_name() {
-        return first_name;
-    }
-
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
-    }
-
-    public String getLast_name() {
-        return last_name;
-    }
-
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public Long getRole() {
-        return role;
-    }
-
-    public void setRole(Long role) {
-        this.role = role;
-    }
-
-    public Boolean getIs_active() {
-        return is_active;
-    }
-
-    public void setIs_active(Boolean is_active) {
-        this.is_active = is_active;
-    }
-
-    public Boolean getIs_blocked() {
-        return is_blocked;
-    }
-
-    public void setIs_blocked(Boolean is_blocked) {
-        this.is_blocked = is_blocked;
-    }
-
-    public Date getRegistration_date() {
-        return registration_date;
-    }
-
-    public void setRegistration_date(Date registration_date) {
-        this.registration_date = registration_date;
-    }
-
-    public String getWebsite() {
-        return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
-    public String getAbout_yourself() {
-        return about_yourself;
-    }
-
-    public void setAbout_yourself(String about_yourself) {
-        this.about_yourself = about_yourself;
-    }
-
-    public String getJob_title() {
-        return job_title;
-    }
-
-    public void setJob_title(String job_title) {
-        this.job_title = job_title;
-    }
-
-    public String getWork_phone() {
-        return work_phone;
-    }
-
-    public void setWork_phone(String work_phone) {
-        this.work_phone = work_phone;
     }
 
     @Override

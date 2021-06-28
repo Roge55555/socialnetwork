@@ -3,6 +3,7 @@ package com.senla.project.socialnetwork.controller;
 import com.senla.project.socialnetwork.entity.Community;
 import com.senla.project.socialnetwork.service.CommunityService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class CommunityController {
     }
 
     @GetMapping("/communities")
+    @PreAuthorize("hasAuthority('communities:permission')")
     public List<Community> getAllEmployees(){
         return communityService.findAll();
     }

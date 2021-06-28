@@ -1,12 +1,14 @@
 package com.senla.project.socialnetwork.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
 @AllArgsConstructor
+@Data
 @Entity
 @Table(name = "blocklist")
 public class Blocklist {
@@ -34,54 +36,6 @@ public class Blocklist {
 
     public Blocklist() {
 
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getCommunity_id() {
-        return community_id;
-    }
-
-    public void setCommunity_id(Long community_id) {
-        this.community_id = community_id;
-    }
-
-    public Long getWho_baned() {
-        return who_baned;
-    }
-
-    public void setWho_baned(Long who_baned) {
-        this.who_baned = who_baned;
-    }
-
-    public Long getWhom_baned() {
-        return whom_baned;
-    }
-
-    public void setWhom_baned(Long whom_baned) {
-        this.whom_baned = whom_baned;
-    }
-
-    public Date getBlock_date() {
-        return block_date;
-    }
-
-    public void setBlock_date(Date block_date) {
-        this.block_date = block_date;
-    }
-
-    public String getBlock_cause() {
-        return block_cause;
-    }
-
-    public void setBlock_cause(String block_cause) {
-        this.block_cause = block_cause;
     }
 
     @Override

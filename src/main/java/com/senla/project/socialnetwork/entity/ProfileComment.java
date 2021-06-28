@@ -1,12 +1,14 @@
 package com.senla.project.socialnetwork.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
 @AllArgsConstructor
+@Data
 @Entity
 @Table(name = "profile_comment")
 public class ProfileComment {
@@ -31,46 +33,6 @@ public class ProfileComment {
 
     public ProfileComment() {
 
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getProfile_owner_id() {
-        return profile_owner_id;
-    }
-
-    public void setProfile_owner_id(Long profile_owner_id) {
-        this.profile_owner_id = profile_owner_id;
-    }
-
-    public Long getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(Long user_id) {
-        this.user_id = user_id;
-    }
-
-    public Date getComment_date() {
-        return comment_date;
-    }
-
-    public void setComment_date(Date comment_date) {
-        this.comment_date = comment_date;
-    }
-
-    public String getComment_txt() {
-        return comment_txt;
-    }
-
-    public void setComment_txt(String comment_txt) {
-        this.comment_txt = comment_txt;
     }
 
     @Override

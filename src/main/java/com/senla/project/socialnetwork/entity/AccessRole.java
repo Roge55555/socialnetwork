@@ -1,12 +1,14 @@
 package com.senla.project.socialnetwork.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
 @AllArgsConstructor
+@Data
 @Entity
 @Table(name = "access_role")
 public class AccessRole {
@@ -21,22 +23,6 @@ public class AccessRole {
 
     public AccessRole() {
 
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getRole_name() {
-        return role_name;
-    }
-
-    public void setRole_name(String role_name) {
-        this.role_name = role_name;
     }
 
     @Override

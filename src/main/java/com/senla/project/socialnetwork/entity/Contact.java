@@ -1,12 +1,14 @@
 package com.senla.project.socialnetwork.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
 @AllArgsConstructor
+@Data
 @Entity
 @Table(name = "contact")
 public class Contact {
@@ -34,54 +36,6 @@ public class Contact {
 
     public Contact() {
 
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getCreator_id() {
-        return creator_id;
-    }
-
-    public void setCreator_id(Long creator_id) {
-        this.creator_id = creator_id;
-    }
-
-    public Long getMate_id() {
-        return mate_id;
-    }
-
-    public void setMate_id(Long mate_id) {
-        this.mate_id = mate_id;
-    }
-
-    public Date getDate_connected() {
-        return date_connected;
-    }
-
-    public void setDate_connected(Date date_connected) {
-        this.date_connected = date_connected;
-    }
-
-    public Boolean getContact_level() {
-        return contact_level;
-    }
-
-    public void setContact_level(Boolean contact_level) {
-        this.contact_level = contact_level;
-    }
-
-    public Long getContact_role() {
-        return contact_role;
-    }
-
-    public void setContact_role(Long contact_role) {
-        this.contact_role = contact_role;
     }
 
     @Override

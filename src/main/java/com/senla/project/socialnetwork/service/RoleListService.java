@@ -33,7 +33,7 @@ public class RoleListService {
     public RoleList update(Long id, RoleList roleList) {
 
         return roleListRepository.findById(id).map(rl -> {
-            rl.setRole_name(roleList.getRole_name());
+            rl.setName(roleList.getName());
             return roleListRepository.save(rl);
         })
                 .orElseThrow(() ->

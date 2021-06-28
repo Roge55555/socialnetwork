@@ -1,12 +1,14 @@
 package com.senla.project.socialnetwork.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
 @AllArgsConstructor
+@Data
 @Entity
 @Table(name = "community_message")
 public class CommunityMessage {
@@ -31,46 +33,6 @@ public class CommunityMessage {
 
     public CommunityMessage() {
 
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getCreator_id() {
-        return creator_id;
-    }
-
-    public void setCreator_id(Long creator_id) {
-        this.creator_id = creator_id;
-    }
-
-    public Long getCommunity_id() {
-        return community_id;
-    }
-
-    public void setCommunity_id(Long community_id) {
-        this.community_id = community_id;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public String getTxt() {
-        return txt;
-    }
-
-    public void setTxt(String txt) {
-        this.txt = txt;
     }
 
     @Override

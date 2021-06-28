@@ -3,6 +3,7 @@ package com.senla.project.socialnetwork.controller;
 import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class UserController {
     }
 
     @GetMapping("/users")
+    @PreAuthorize("hasAuthority('standard:permission')")
     public List<User> getAllUsers(){
         return userService.findAll();
     }

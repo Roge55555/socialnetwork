@@ -1,11 +1,13 @@
 package com.senla.project.socialnetwork.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @AllArgsConstructor
+@Data
 @Entity
 @Table(name = "role_list")
 public class RoleList {
@@ -20,22 +22,6 @@ public class RoleList {
 
     public RoleList() {
 
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getRole_name() {
-        return name;
-    }
-
-    public void setRole_name(String role_name) {
-        this.name = role_name;
     }
 
     @Override

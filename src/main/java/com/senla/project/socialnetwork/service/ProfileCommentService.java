@@ -1,6 +1,7 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.ProfileComment;
+import com.senla.project.socialnetwork.exeptions.NoSuchIdException;
 import com.senla.project.socialnetwork.repository.ProfileCommentRepository;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
@@ -35,12 +36,12 @@ public class ProfileCommentService {
         return profileCommentRepository.findById(id).map(pc -> {
             pc.setProfile_owner_id(profileComment.getProfile_owner_id());
             pc.setUser_id(profileComment.getUser_id());
-            pc.setComment_date(profileComment.getComment_date());
+            pc.setDate(profileComment.getDate());
             pc.setComment_txt(profileComment.getComment_txt());
             return profileCommentRepository.save(pc);
         })
                 .orElseThrow(() ->
-                        new IllegalArgumentException()//new NoSuchIdException(id, "update")
+                        new NoSuchIdException(id, "profile comment")
                 );
     }
 

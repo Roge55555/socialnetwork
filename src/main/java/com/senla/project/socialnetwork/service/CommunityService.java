@@ -1,6 +1,7 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.Community;
+import com.senla.project.socialnetwork.exeptions.NoSuchIdException;
 import com.senla.project.socialnetwork.repository.CommunityRepository;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,7 @@ public class CommunityService {
             return communityRepository.save(com);
         })
                 .orElseThrow(() ->
-                        new IllegalArgumentException()//new NoSuchIdException(id, "update")
+                        new NoSuchIdException(id, "community")
                 );
     }
 

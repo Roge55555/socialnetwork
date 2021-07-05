@@ -61,13 +61,21 @@ public class SecurityUser implements UserDetails {
     }
 
     public static UserDetails fromUser(User user){
+        Role role;
+        if (user.getRole() == 1) {
+            role = Role.ADMIN;
+        } else if (user.getRole() == 2) {
+            role = Role.USER;
+        } else {
+            throw new IllegalArgumentException();
+        }
         return new org.springframework.security.core.userdetails.User(
                 user.getLogin(), user.getPassword(),
                 true,
                 true,
                 true,
                 true,
-                Role.USER.getAuthority()
+                Role.ADMIN.getAuthority()
         );
     }
 }

@@ -24,9 +24,9 @@ public class ProfileComment {
     @Column(name = "user_id")
     private Long user_id;
 
-    @Column(name = "comment_date")
+    @Column(name = "date")
     @Temporal(TemporalType.DATE)
-    private Date comment_date;
+    private Date date;
 
     @Column(name = "comment_txt")
     private String comment_txt;
@@ -40,11 +40,11 @@ public class ProfileComment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProfileComment that = (ProfileComment) o;
-        return Objects.equals(id, that.id) && Objects.equals(profile_owner_id, that.profile_owner_id) && Objects.equals(user_id, that.user_id) && Objects.equals(comment_date, that.comment_date) && Objects.equals(comment_txt, that.comment_txt);
+        return Objects.equals(id, that.id) && Objects.equals(profile_owner_id, that.profile_owner_id) && Objects.equals(user_id, that.user_id) && Objects.equals(date, that.date) && Objects.equals(comment_txt, that.comment_txt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, profile_owner_id, user_id, comment_date, comment_txt);
+        return Objects.hash(id, profile_owner_id, user_id, date, comment_txt);
     }
 }

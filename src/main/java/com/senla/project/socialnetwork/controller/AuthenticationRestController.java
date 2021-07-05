@@ -6,6 +6,7 @@ import com.senla.project.socialnetwork.repository.UserRepository;
 import com.senla.project.socialnetwork.security.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -34,6 +35,7 @@ public class AuthenticationRestController {
     }
 
     @PostMapping("/login")
+    @PreAuthorize("hasAuthority('standard:permission')")
     public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequestDTO requestDTO){
         try {
             String login = requestDTO.getLogin();
@@ -50,6 +52,7 @@ public class AuthenticationRestController {
     }
 
     @PostMapping("/logout")
+    @PreAuthorize("hasAuthority('standard:permission')")
     public void logout(HttpServletRequest request, HttpServletResponse response){
         SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
         securityContextLogoutHandler.logout(request, response, null);

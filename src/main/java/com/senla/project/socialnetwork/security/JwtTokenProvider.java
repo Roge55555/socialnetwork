@@ -1,11 +1,13 @@
 package com.senla.project.socialnetwork.security;
 
+import com.senla.project.socialnetwork.exeptions.JwtAuthenticationException;
 import io.jsonwebtoken.*;
 import lombok.Data;
 import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -58,7 +60,7 @@ public class JwtTokenProvider {
             Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return !claimsJws.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e){
-            throw new IllegalArgumentException();//////////----------------
+            throw new JwtAuthenticationException("JWT token invalid/expire", HttpStatus.UNAUTHORIZED);
         }
     }
 

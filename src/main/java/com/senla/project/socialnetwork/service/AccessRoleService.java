@@ -1,6 +1,7 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.AccessRole;
+import com.senla.project.socialnetwork.exeptions.NoSuchIdException;
 import com.senla.project.socialnetwork.repository.AccessRoleRepository;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class AccessRoleService {
             return accessRoleRepository.save(ar);
         })
                 .orElseThrow(() ->
-                        new IllegalArgumentException()//new NoSuchIdException(id, "update")
+                        new NoSuchIdException(id, "access role")
                 );
     }
 

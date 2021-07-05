@@ -1,6 +1,7 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.UserEvent;
+import com.senla.project.socialnetwork.exeptions.NoSuchIdException;
 import com.senla.project.socialnetwork.repository.UserEventRepository;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,7 @@ public class UserEventService {
             return userEventRepository.save(ue);
         })
                 .orElseThrow(() ->
-                        new IllegalArgumentException()//new NoSuchIdException(id, "update")
+                        new NoSuchIdException(id, "user event")
                 );
     }
 

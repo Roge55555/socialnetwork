@@ -1,6 +1,7 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.Blocklist;
+import com.senla.project.socialnetwork.exeptions.NoSuchIdException;
 import com.senla.project.socialnetwork.repository.BlocklistRepository;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,7 @@ public class BlocklistService {
             return blocklistRepository.save(bl);
         })
                 .orElseThrow(() ->
-                        new IllegalArgumentException()//new NoSuchIdException(id, "update")
+                        new NoSuchIdException(id, "blocked user")
                 );
     }
 

@@ -1,5 +1,6 @@
 package com.senla.project.socialnetwork.security;
 
+import com.senla.project.socialnetwork.exeptions.JwtAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,10 +35,10 @@ public class JwtTokenFilter extends GenericFilterBean {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
-        }catch (IllegalArgumentException e){//-------------------------
+        }catch (JwtAuthenticationException e){
             SecurityContextHolder.clearContext();
-            //((HttpServletResponse) response).sendError(e.);
-            //throw new IOException();
+            ((HttpServletResponse) response).sendError(e.getHttpStatus().value());
+            throw new JwtAuthenticationException("JWT token invalid/expire");
         }
         chain.doFilter(request, response);
     }

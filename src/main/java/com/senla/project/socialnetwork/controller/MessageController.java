@@ -3,6 +3,7 @@ package com.senla.project.socialnetwork.controller;
 import com.senla.project.socialnetwork.entity.Message;
 import com.senla.project.socialnetwork.service.MessageService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,30 +18,35 @@ public class MessageController {
     }
 
     @GetMapping("/messages")
+    @PreAuthorize("hasAuthority('standard:permission')")
     public List<Message> getAllEmployees(){
         return messageService.findAll();
     }
 
     @GetMapping("/messages/{id}")
     @ResponseStatus(HttpStatus.FOUND)
+    @PreAuthorize("hasAuthority('standard:permission')")
     public Message getById(@PathVariable("id") Long id) {
         return messageService.findById(id);
     }
 
     @PostMapping("/messages")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('standard:permission')")
     public void addContact(@RequestBody Message message) {
         messageService.add(message);
     }
 
     @PutMapping("/messages/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
+    @PreAuthorize("hasAuthority('standard:permission')")
     public void updateContact(@PathVariable("id") Long id, @RequestBody Message message) {
         messageService.update(id, message);
     }
 
     @DeleteMapping("/messages/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('standard:permission')")
     public void deleteContact(@PathVariable("id") Long id) {
         messageService.delete(id);
     }

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.Objects;
 
@@ -22,9 +24,13 @@ public class UserEvent {
     private Long user_id;
 
     @Column(name = "name")
+    @NotBlank
+    @Size(min = 8)
     private String name;
 
     @Column(name = "description")
+    @NotBlank
+    @Size(min = 13)
     private String description;
 
     @Column(name = "date")

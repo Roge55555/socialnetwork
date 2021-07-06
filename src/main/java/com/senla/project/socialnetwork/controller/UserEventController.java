@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -33,7 +34,7 @@ public class UserEventController {
     @PostMapping("/userEvents")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void addContact(@RequestBody UserEvent userEvent) {
+    public void addContact(@Valid @RequestBody UserEvent userEvent) {
         userEventService.add(userEvent);
     }
 

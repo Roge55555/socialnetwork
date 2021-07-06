@@ -35,7 +35,6 @@ public class AuthenticationRestController {
     }
 
     @PostMapping("/login")
-    @PreAuthorize("hasAuthority('standard:permission')")
     public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequestDTO requestDTO){
         try {
             String login = requestDTO.getLogin();

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.Objects;
 
@@ -22,9 +24,12 @@ public class Community {
     private Long creator_id;
 
     @Column(name = "name")
+    @Size(min = 3)
+    @NotBlank
     private String name;
 
     @Column(name = "description")
+    @Size(min = 10)
     private String description;
 
     @Column(name = "date_created")

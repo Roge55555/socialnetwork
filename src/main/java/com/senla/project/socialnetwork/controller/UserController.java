@@ -6,10 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/")
 public class UserController {
     private final UserService userService;
 
@@ -33,7 +34,7 @@ public class UserController {
     @PostMapping("/users")
     @PreAuthorize("hasAuthority('standard:permission')")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addUser(@RequestBody User user) {
+    public void addUser(@Valid @RequestBody User user) {
         userService.add(user);
     }
 

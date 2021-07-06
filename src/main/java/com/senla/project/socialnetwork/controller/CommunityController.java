@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -33,7 +34,7 @@ public class CommunityController {
     @PostMapping("/communities")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('communities:permission')")
-    public void addContact(@RequestBody Community community) {
+    public void addContact(@Valid @RequestBody Community community) {
         communityService.add(community);
     }
 

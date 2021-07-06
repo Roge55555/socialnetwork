@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.util.Date;
 import java.util.Objects;
 
@@ -19,25 +20,36 @@ public class User{
     private Long id;
 
     @Column(name = "login")
+    @NotBlank
+    @Size(min = 5)
     private String login;
 
     @Column(name = "password")
+    @NotBlank
+    @Size(min = 8)
     private String password;
 
     @Column(name = "date_birth")
     @Temporal(TemporalType.DATE)
+    @Past
     private Date date_birth;
 
     @Column(name = "first_name")
+    @NotBlank
     private String first_name;
 
     @Column(name = "last_name")
+    @NotBlank
     private String last_name;
 
     @Column(name = "email")
+    @NotBlank
+    @Email
     private String email;
 
     @Column(name = "phone")
+    @NotBlank
+    @Size(min = 7, max = 13)
     private String phone;
 
     @Column(name = "role")
@@ -63,6 +75,7 @@ public class User{
     private String job_title;
 
     @Column(name = "work_phone")
+    @Size(min = 6, max = 13)
     private String work_phone;
 
     public User() {

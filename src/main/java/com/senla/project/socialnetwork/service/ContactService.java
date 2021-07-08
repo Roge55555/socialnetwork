@@ -34,11 +34,11 @@ public class ContactService {
     public Contact update(Long id, Contact contact) {
 
         return contactRepository.findById(id).map(cont -> {
-            cont.setCreator_id(contact.getCreator_id());
-            cont.setMate_id(contact.getMate_id());
-            cont.setDate_connected(contact.getDate_connected());
-            cont.setContact_level(contact.getContact_level());
-            cont.setContact_role(contact.getContact_role());
+            cont.setCreator(contact.getCreator());
+            cont.setMate(contact.getMate());
+            cont.setDateConnected(contact.getDateConnected());
+            cont.setContactLevel(contact.getContactLevel());
+            cont.setContactRole(contact.getContactRole());
             return contactRepository.save(cont);
         })
                 .orElseThrow(() ->

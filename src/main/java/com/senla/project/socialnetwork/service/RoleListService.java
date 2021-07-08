@@ -3,19 +3,17 @@ package com.senla.project.socialnetwork.service;
 import com.senla.project.socialnetwork.entity.RoleList;
 import com.senla.project.socialnetwork.exeptions.NoSuchIdException;
 import com.senla.project.socialnetwork.repository.RoleListRepository;
+import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor//TODO:разница ток в проверке на нул - @RequiredArgsConstructor
 public class RoleListService {
 
     private RoleListRepository roleListRepository;
-
-    public RoleListService(RoleListRepository roleListRepository) {
-        this.roleListRepository = roleListRepository;
-    }
 
     public void add(RoleList roleList){
         roleListRepository.save(roleList);

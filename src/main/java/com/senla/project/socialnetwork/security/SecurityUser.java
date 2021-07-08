@@ -3,6 +3,7 @@ package com.senla.project.socialnetwork.security;
 import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.model.Role;
 import lombok.Data;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,9 +14,14 @@ import java.util.List;
 @Data
 public class SecurityUser implements UserDetails {
 
+    @Getter(onMethod_= {@Override})
     private final String username;
+
+    @Getter(onMethod_= {@Override})
     private final String password;
+
     private final List<SimpleGrantedAuthority> authorities;
+
     private final boolean isActive;
 
     public SecurityUser(String username, String password, List<SimpleGrantedAuthority> authorities, boolean isActive) {
@@ -30,15 +36,6 @@ public class SecurityUser implements UserDetails {
         return authorities;
     }
 
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
 
     @Override
     public boolean isAccountNonExpired() {
@@ -62,9 +59,9 @@ public class SecurityUser implements UserDetails {
 
     public static UserDetails fromUser(User user){
         Role role;
-        if (user.getRole() == 1) {
+        if (user.getRole().getName().equals("ADMIN")) {
             role = Role.ADMIN;
-        } else if (user.getRole() == 2) {
+        } else if (user.getRole().getName().equals("USER")) {
             role = Role.USER;
         } else {
             throw new IllegalArgumentException();
@@ -75,7 +72,7 @@ public class SecurityUser implements UserDetails {
                 true,
                 true,
                 true,
-                Role.ADMIN.getAuthority()
+                role.getAuthority()
         );
     }
 }

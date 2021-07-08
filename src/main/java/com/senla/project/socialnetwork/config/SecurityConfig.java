@@ -1,6 +1,7 @@
 package com.senla.project.socialnetwork.config;
 
 import com.senla.project.socialnetwork.security.JwtConfigure;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,15 +14,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtConfigure jwtConfigure;
-
-    public SecurityConfig(JwtConfigure jwtConfigure) {
-        this.jwtConfigure = jwtConfigure;
-    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

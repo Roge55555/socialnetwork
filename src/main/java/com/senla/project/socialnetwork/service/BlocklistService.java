@@ -34,11 +34,11 @@ public class BlocklistService {
     public Blocklist update(Long id, Blocklist blocklist) {
 
         return blocklistRepository.findById(id).map(bl -> {
-            bl.setCommunity_id(blocklist.getCommunity_id());
-            bl.setWho_baned(blocklist.getWho_baned());
-            bl.setWhom_baned(blocklist.getWhom_baned());
-            bl.setBlock_date(blocklist.getBlock_date());
-            bl.setBlock_cause(blocklist.getBlock_cause());
+            bl.setCommunity(blocklist.getCommunity());
+            bl.setWhoBaned(blocklist.getWhoBaned());
+            bl.setWhomBaned(blocklist.getWhomBaned());
+            bl.setBlockDate(blocklist.getBlockDate());
+            bl.setBlockCause(blocklist.getBlockCause());
             return blocklistRepository.save(bl);
         })
                 .orElseThrow(() ->

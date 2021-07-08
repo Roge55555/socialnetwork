@@ -6,9 +6,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public enum Role {
-    USER(Set.of(Permission.USERS_PERMISSION)),  //запихнуть данные из репы ролей?!
+    USER(Set.of(Permission.USERS_PERMISSION)),  //TODO:запихнуть данные из репы ролей?!
     ADMIN(Set.of(Permission.USERS_PERMISSION, Permission.ADMINS_PERMISSION));
-    //мб 3я роль - админ конкретного коммунити
+    //TODO:мб 3я роль - админ конкретного коммунити
 
     private final Set<Permission> permissions;
 

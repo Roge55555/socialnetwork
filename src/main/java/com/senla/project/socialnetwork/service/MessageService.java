@@ -34,10 +34,10 @@ public class MessageService {
     public Message update(Long id, Message message) {
 
         return messageRepository.findById(id).map(mess -> {
-            mess.setSender_id(message.getSender_id());
-            mess.setReceiver_id(message.getReceiver_id());
-            mess.setDate_created(message.getDate_created());
-            mess.setMessage_txt(message.getMessage_txt());
+            mess.setSender(message.getSender());
+            mess.setReceiver(message.getReceiver());
+            mess.setDateCreated(message.getDateCreated());
+            mess.setMessageTxt(message.getMessageTxt());
             return messageRepository.save(mess);
         })
                 .orElseThrow(() ->

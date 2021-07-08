@@ -34,9 +34,9 @@ public class UserOfCommunityService {
     public UserOfCommunity update(Long id, UserOfCommunity userOfCommunity) {
 
         return userOfCommunityRepository.findById(id).map(uoc -> {
-            uoc.setCommunity_id(userOfCommunity.getCommunity_id());
-            uoc.setUser_id(userOfCommunity.getUser_id());
-            uoc.setDate_entered(userOfCommunity.getDate_entered());
+            uoc.setCommunity(userOfCommunity.getCommunity());
+            uoc.setUser(userOfCommunity.getUser());
+            uoc.setDateEntered(userOfCommunity.getDateEntered());
             return userOfCommunityRepository.save(uoc);
         })
                 .orElseThrow(() ->

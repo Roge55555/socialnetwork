@@ -2,12 +2,13 @@ package com.senla.project.socialnetwork.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Objects;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Entity
 @Table(name = "profile_comment")
@@ -18,33 +19,19 @@ public class ProfileComment {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "profile_owner_id")
-    private Long profile_owner_id;
+    @ManyToOne
+    @JoinColumn(name = "profile_owner_id")
+    private User profileOwner;
 
-    @Column(name = "user_id")
-    private Long user_id;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(name = "date")
     @Temporal(TemporalType.DATE)
     private Date date;
 
     @Column(name = "comment_txt")
-    private String comment_txt;
+    private String commentTxt;
 
-    public ProfileComment() {
-
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ProfileComment that = (ProfileComment) o;
-        return Objects.equals(id, that.id) && Objects.equals(profile_owner_id, that.profile_owner_id) && Objects.equals(user_id, that.user_id) && Objects.equals(date, that.date) && Objects.equals(comment_txt, that.comment_txt);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, profile_owner_id, user_id, date, comment_txt);
-    }
 }

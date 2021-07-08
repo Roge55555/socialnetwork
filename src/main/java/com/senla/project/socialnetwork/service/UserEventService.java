@@ -34,7 +34,7 @@ public class UserEventService {
     public UserEvent update(Long id, UserEvent userEvent) {
 
         return userEventRepository.findById(id).map(ue -> {
-            ue.setUser_id(userEvent.getUser_id());
+            ue.setUser(userEvent.getUser());
             ue.setName(userEvent.getName());
             ue.setDescription(userEvent.getDescription());
             ue.setDate(userEvent.getDate());

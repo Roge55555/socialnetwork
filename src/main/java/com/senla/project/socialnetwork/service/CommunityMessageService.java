@@ -34,8 +34,8 @@ public class CommunityMessageService {
     public CommunityMessage update(Long id, CommunityMessage communityMessage) {
 
         return communityMessageRepository.findById(id).map(comm -> {
-            comm.setCreator_id(communityMessage.getCreator_id());
-            comm.setCommunity_id(communityMessage.getCommunity_id());
+            comm.setCreator(communityMessage.getCreator());
+            comm.setCommunity(communityMessage.getCommunity());
             comm.setDate(communityMessage.getDate());
             comm.setTxt(communityMessage.getTxt());
             return communityMessageRepository.save(comm);

@@ -2,17 +2,18 @@ package com.senla.project.socialnetwork.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.Date;
-import java.util.Objects;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Entity
-@Table(name = "user_of_community")
+@Table(name = "user_event")
 public class UserEvent {
 
     @Id
@@ -20,8 +21,9 @@ public class UserEvent {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "user_id")
-    private Long user_id;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(name = "name")
     @NotBlank
@@ -37,20 +39,4 @@ public class UserEvent {
     @Temporal(TemporalType.DATE)
     private Date date;
 
-    public UserEvent() {
-
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserEvent userEvent = (UserEvent) o;
-        return Objects.equals(id, userEvent.id) && Objects.equals(user_id, userEvent.user_id) && Objects.equals(name, userEvent.name) && Objects.equals(description, userEvent.description) && Objects.equals(date, userEvent.date);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, user_id, name, description, date);
-    }
 }

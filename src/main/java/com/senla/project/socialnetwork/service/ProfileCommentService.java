@@ -34,10 +34,10 @@ public class ProfileCommentService {
     public ProfileComment update(Long id, ProfileComment profileComment) {
 
         return profileCommentRepository.findById(id).map(pc -> {
-            pc.setProfile_owner_id(profileComment.getProfile_owner_id());
-            pc.setUser_id(profileComment.getUser_id());
+            pc.setProfileOwner(profileComment.getProfileOwner());
+            pc.setUser(profileComment.getUser());
             pc.setDate(profileComment.getDate());
-            pc.setComment_txt(profileComment.getComment_txt());
+            pc.setCommentTxt(profileComment.getCommentTxt());
             return profileCommentRepository.save(pc);
         })
                 .orElseThrow(() ->

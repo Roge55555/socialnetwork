@@ -36,19 +36,19 @@ public class UserService {
         return userRepository.findById(id).map(usr -> {
             usr.setLogin(user.getLogin());
             usr.setPassword(user.getPassword());
-            usr.setDate_birth(user.getDate_birth());
-            usr.setFirst_name(user.getFirst_name());
-            usr.setLast_name(user.getLast_name());
+            usr.setDateBirth(user.getDateBirth());
+            usr.setFirstName(user.getFirstName());
+            usr.setLastName(user.getLastName());
             usr.setEmail(user.getEmail());
             usr.setPhone(user.getPhone());
             usr.setRole(user.getRole());
-            usr.setIs_active(user.getIs_active());
-            usr.setIs_blocked(user.getIs_blocked());
-            usr.setRegistration_date(user.getRegistration_date());
+            usr.setIsActive(user.getIsActive());
+            usr.setIsBlocked(user.getIsBlocked());
+            usr.setRegistrationDate(user.getRegistrationDate());
             usr.setWebsite(user.getWebsite());
-            usr.setAbout_yourself(user.getAbout_yourself());
-            usr.setJob_title(user.getJob_title());
-            usr.setWork_phone(user.getWork_phone());
+            usr.setAboutYourself(user.getAboutYourself());
+            usr.setJobTitle(user.getJobTitle());
+            usr.setWorkPhone(user.getWorkPhone());
             return userRepository.save(usr);
         })
                 .orElseThrow(() ->

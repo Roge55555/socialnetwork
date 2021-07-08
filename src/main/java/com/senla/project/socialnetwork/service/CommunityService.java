@@ -34,10 +34,10 @@ public class CommunityService {
     public Community update(Long id, Community community) {
 
         return communityRepository.findById(id).map(com -> {
-            com.setCreator_id(community.getCreator_id());
+            com.setCreator(community.getCreator());
             com.setName(community.getName());
             com.setDescription(community.getDescription());
-            com.setDate_created(community.getDate_created());
+            com.setDateCreated(community.getDateCreated());
             return communityRepository.save(com);
         })
                 .orElseThrow(() ->

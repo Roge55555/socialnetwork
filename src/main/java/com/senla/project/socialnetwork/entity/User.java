@@ -2,13 +2,17 @@ package com.senla.project.socialnetwork.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
 import java.util.Date;
-import java.util.Objects;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Entity
 @Table(name = "user")
@@ -32,15 +36,15 @@ public class User{
     @Column(name = "date_birth")
     @Temporal(TemporalType.DATE)
     @Past
-    private Date date_birth;
+    private Date dateBirth;
 
     @Column(name = "first_name")
     @NotBlank
-    private String first_name;
+    private String firstName;
 
     @Column(name = "last_name")
     @NotBlank
-    private String last_name;
+    private String lastName;
 
     @Column(name = "email")
     @NotBlank
@@ -52,46 +56,31 @@ public class User{
     @Size(min = 7, max = 13)
     private String phone;
 
-    @Column(name = "role")
-    private Long role;
+    @ManyToOne
+    @JoinColumn(name = "role")
+    private AccessRole role;
 
     @Column(name = "is_active")
-    private Boolean is_active;
+    private Boolean isActive;
 
     @Column(name = "is_blocked")
-    private Boolean is_blocked;
+    private Boolean isBlocked;
 
     @Column(name = "registration_date")
     @Temporal(TemporalType.DATE)
-    private Date registration_date;
+    private Date registrationDate;
 
     @Column(name = "website")
     private String website;
 
     @Column(name = "about_yourself")
-    private String about_yourself;
+    private String aboutYourself;
 
     @Column(name = "job_title")
-    private String job_title;
+    private String jobTitle;
 
     @Column(name = "work_phone")
     @Size(min = 6, max = 13)
-    private String work_phone;
+    private String workPhone;
 
-    public User() {
-
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(login, user.login) && Objects.equals(password, user.password) && Objects.equals(date_birth, user.date_birth) && Objects.equals(first_name, user.first_name) && Objects.equals(last_name, user.last_name) && Objects.equals(email, user.email) && Objects.equals(phone, user.phone) && Objects.equals(role, user.role) && Objects.equals(is_active, user.is_active) && Objects.equals(is_blocked, user.is_blocked) && Objects.equals(registration_date, user.registration_date) && Objects.equals(website, user.website) && Objects.equals(about_yourself, user.about_yourself) && Objects.equals(job_title, user.job_title) && Objects.equals(work_phone, user.work_phone);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, login, password, date_birth, first_name, last_name, email, phone, role, is_active, is_blocked, registration_date, website, about_yourself, job_title, work_phone);
-    }
 }

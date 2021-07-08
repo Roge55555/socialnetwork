@@ -34,7 +34,7 @@ public class AccessRoleService {
     public AccessRole update(Long id, AccessRole accessRole) {
 
         return accessRoleRepository.findById(id).map(ar -> {
-            ar.setRole_name(accessRole.getRole_name());
+            ar.setName(accessRole.getName());
             return accessRoleRepository.save(ar);
         })
                 .orElseThrow(() ->

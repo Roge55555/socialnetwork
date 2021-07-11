@@ -1,36 +1,35 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.UserEvent;
-import com.senla.project.socialnetwork.exeptions.NoSuchIdException;
+import com.senla.project.socialnetwork.exeptions.NoAccountsException;
+import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.repository.UserEventRepository;
-import lombok.SneakyThrows;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class UserEventService {
 
     private UserEventRepository userEventRepository;
 
-    public UserEventService(UserEventRepository userEventRepository) {
-        this.userEventRepository = userEventRepository;
-    }
-
-    public void add(UserEvent userEvent){
+    public void add(UserEvent userEvent) {
         userEventRepository.save(userEvent);
     }
 
-    public List<UserEvent> findAll(){
+    public List<UserEvent> findAll() {
+        if (userEventRepository.findAll().isEmpty()) {
+            throw new NoAccountsException();
+        }
         return userEventRepository.findAll();
     }
 
-    @SneakyThrows
-    public UserEvent findById(Long id){
-        return userEventRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    public UserEvent findById(Long id) {
+        return userEventRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
-    @SneakyThrows
     public UserEvent update(Long id, UserEvent userEvent) {
 
         return userEventRepository.findById(id).map(ue -> {
@@ -40,12 +39,13 @@ public class UserEventService {
             ue.setDate(userEvent.getDate());
             return userEventRepository.save(ue);
         })
-                .orElseThrow(() ->
-                        new NoSuchIdException(id, "user event")
-                );
+                .orElseThrow(NoSuchElementException::new);
     }
 
     public void delete(Long id) {
+        if (userEventRepository.findById(id).isEmpty()) {
+            throw new NoSuchElementException();
+        }
         userEventRepository.deleteById(id);
     }
 }

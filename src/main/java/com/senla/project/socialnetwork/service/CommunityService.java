@@ -1,36 +1,35 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.Community;
-import com.senla.project.socialnetwork.exeptions.NoSuchIdException;
+import com.senla.project.socialnetwork.exeptions.NoAccountsException;
+import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.repository.CommunityRepository;
-import lombok.SneakyThrows;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class CommunityService {
 
     private CommunityRepository communityRepository;
 
-    public CommunityService(CommunityRepository communityRepository) {
-        this.communityRepository = communityRepository;
-    }
-
-    public void add(Community community){
+    public void add(Community community) {
         communityRepository.save(community);
     }
 
-    public List<Community> findAll(){
+    public List<Community> findAll() {
+        if (communityRepository.findAll().isEmpty()) {
+            throw new NoAccountsException();
+        }
         return communityRepository.findAll();
     }
 
-    @SneakyThrows
-    public Community findById(Long id){
-        return communityRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    public Community findById(Long id) {
+        return communityRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
-    @SneakyThrows
     public Community update(Long id, Community community) {
 
         return communityRepository.findById(id).map(com -> {
@@ -40,12 +39,13 @@ public class CommunityService {
             com.setDateCreated(community.getDateCreated());
             return communityRepository.save(com);
         })
-                .orElseThrow(() ->
-                        new NoSuchIdException(id, "community")
-                );
+                .orElseThrow(NoSuchElementException::new);
     }
 
     public void delete(Long id) {
+        if (communityRepository.findById(id).isEmpty()) {
+            throw new NoSuchElementException();
+        }
         communityRepository.deleteById(id);
     }
 }

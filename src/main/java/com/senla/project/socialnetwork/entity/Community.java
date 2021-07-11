@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.Date;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,7 +35,6 @@ public class Community {
     private String description;
 
     @Column(name = "date_created")
-    @Temporal(TemporalType.DATE)
-    private Date dateCreated;
+    private LocalDate dateCreated;
 
 }

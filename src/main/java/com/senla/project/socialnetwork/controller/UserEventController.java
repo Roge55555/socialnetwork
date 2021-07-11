@@ -2,6 +2,7 @@ package com.senla.project.socialnetwork.controller;
 
 import com.senla.project.socialnetwork.entity.UserEvent;
 import com.senla.project.socialnetwork.service.UserEventService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -10,13 +11,10 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/")
 public class UserEventController {
     private final UserEventService userEventService;
-
-    public UserEventController(UserEventService userEventService) {
-        this.userEventService = userEventService;
-    }
 
     @GetMapping("/userEvents")
     @PreAuthorize("hasAuthority('standard:permission')")

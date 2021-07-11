@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,8 +28,7 @@ public class Message {
     private User receiver;
 
     @Column(name = "date_created")
-    @Temporal(TemporalType.DATE)
-    private Date dateCreated;
+    private LocalDateTime dateCreated;
 
     @Column(name = "message_txt")
     private String messageTxt;

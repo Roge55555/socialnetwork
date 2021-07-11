@@ -2,6 +2,7 @@ package com.senla.project.socialnetwork.controller;
 
 import com.senla.project.socialnetwork.entity.Blocklist;
 import com.senla.project.socialnetwork.service.BlocklistService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -9,13 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/")
 public class BlocklistController {
     private final BlocklistService blocklistService;
-
-    public BlocklistController(BlocklistService blocklistService) {
-        this.blocklistService = blocklistService;
-    }
 
     @GetMapping("/blocklists")
     @PreAuthorize("hasAuthority('communities:permission')")

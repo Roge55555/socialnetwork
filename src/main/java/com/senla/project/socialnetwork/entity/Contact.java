@@ -5,8 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.Set;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,8 +28,7 @@ public class Contact {
     private User mate;
 
     @Column(name = "date_connected")
-    @Temporal(TemporalType.DATE)
-    private Date dateConnected;
+    private LocalDate dateConnected;
 
     @Column(name = "contact_level")
     private Boolean contactLevel;//isAccepted

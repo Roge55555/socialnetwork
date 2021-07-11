@@ -1,36 +1,35 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.ProfileComment;
-import com.senla.project.socialnetwork.exeptions.NoSuchIdException;
+import com.senla.project.socialnetwork.exeptions.NoAccountsException;
+import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.repository.ProfileCommentRepository;
-import lombok.SneakyThrows;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class ProfileCommentService {
 
     private ProfileCommentRepository profileCommentRepository;
 
-    public ProfileCommentService(ProfileCommentRepository profileCommentRepository) {
-        this.profileCommentRepository = profileCommentRepository;
-    }
-
-    public void add(ProfileComment profileComment){
+    public void add(ProfileComment profileComment) {
         profileCommentRepository.save(profileComment);
     }
 
-    public List<ProfileComment> findAll(){
+    public List<ProfileComment> findAll() {
+        if (profileCommentRepository.findAll().isEmpty()) {
+            throw new NoAccountsException();
+        }
         return profileCommentRepository.findAll();
     }
 
-    @SneakyThrows
-    public ProfileComment findById(Long id){
-        return profileCommentRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    public ProfileComment findById(Long id) {
+        return profileCommentRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
-    @SneakyThrows
     public ProfileComment update(Long id, ProfileComment profileComment) {
 
         return profileCommentRepository.findById(id).map(pc -> {
@@ -40,12 +39,13 @@ public class ProfileCommentService {
             pc.setCommentTxt(profileComment.getCommentTxt());
             return profileCommentRepository.save(pc);
         })
-                .orElseThrow(() ->
-                        new NoSuchIdException(id, "profile comment")
-                );
+                .orElseThrow(NoSuchElementException::new);
     }
 
     public void delete(Long id) {
+        if (profileCommentRepository.findById(id).isEmpty()) {
+            throw new NoSuchElementException();
+        }
         profileCommentRepository.deleteById(id);
     }
 }

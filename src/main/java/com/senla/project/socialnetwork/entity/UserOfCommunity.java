@@ -5,7 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,7 +29,6 @@ public class UserOfCommunity {
     private User user;
 
     @Column(name = "date_entered")
-    @Temporal(TemporalType.DATE)
-    private Date dateEntered;
+    private LocalDate dateEntered;
 
 }

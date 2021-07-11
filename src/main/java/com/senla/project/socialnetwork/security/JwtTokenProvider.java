@@ -17,6 +17,9 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Date;
 
@@ -46,13 +49,12 @@ public class JwtTokenProvider {
     public String createToken(String login, String password){
         Claims claims = Jwts.claims().setSubject(login);
         claims.put("password", password);
-        Date now = new Date();
-        Date valid = new Date(now.getTime() + validityInMilliseconds * 1000);
+        LocalDateTime now = LocalDateTime.now();
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(valid)
+                .setIssuedAt(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()))
+                .setExpiration(Date.from(now.plusMinutes(validityInMilliseconds).atZone(ZoneId.systemDefault()).toInstant()))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }

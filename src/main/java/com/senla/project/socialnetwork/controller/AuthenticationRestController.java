@@ -4,6 +4,7 @@ import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.model.AuthenticationRequestDTO;
 import com.senla.project.socialnetwork.repository.UserRepository;
 import com.senla.project.socialnetwork.security.JwtTokenProvider;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,18 +22,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/auth")
 public class AuthenticationRestController {
 
     private final AuthenticationManager authenticationManager;
     private UserRepository userRepository;
     JwtTokenProvider tokenProvider;
-
-    public AuthenticationRestController(AuthenticationManager authenticationManager, UserRepository userRepository, JwtTokenProvider tokenProvider) {
-        this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
-        this.tokenProvider = tokenProvider;
-    }
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequestDTO requestDTO){

@@ -1,36 +1,35 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.CommunityMessage;
-import com.senla.project.socialnetwork.exeptions.NoSuchIdException;
+import com.senla.project.socialnetwork.exeptions.NoAccountsException;
+import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.repository.CommunityMessageRepository;
-import lombok.SneakyThrows;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class CommunityMessageService {
 
     private CommunityMessageRepository communityMessageRepository;
 
-    public CommunityMessageService(CommunityMessageRepository communityMessageRepository) {
-        this.communityMessageRepository = communityMessageRepository;
-    }
-
-    public void add(CommunityMessage communityMessage){
+    public void add(CommunityMessage communityMessage) {
         communityMessageRepository.save(communityMessage);
     }
 
-    public List<CommunityMessage> findAll(){
+    public List<CommunityMessage> findAll() {
+        if (communityMessageRepository.findAll().isEmpty()) {
+            throw new NoAccountsException();
+        }
         return communityMessageRepository.findAll();
     }
 
-    @SneakyThrows
-    public CommunityMessage findById(Long id){
-        return communityMessageRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    public CommunityMessage findById(Long id) {
+        return communityMessageRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
-    @SneakyThrows
     public CommunityMessage update(Long id, CommunityMessage communityMessage) {
 
         return communityMessageRepository.findById(id).map(comm -> {
@@ -40,12 +39,13 @@ public class CommunityMessageService {
             comm.setTxt(communityMessage.getTxt());
             return communityMessageRepository.save(comm);
         })
-                .orElseThrow(() ->
-                        new NoSuchIdException(id, "community message")
-                );
+                .orElseThrow(NoSuchElementException::new);
     }
 
     public void delete(Long id) {
+        if (communityMessageRepository.findById(id).isEmpty()) {
+            throw new NoSuchElementException();
+        }
         communityMessageRepository.deleteById(id);
     }
 }

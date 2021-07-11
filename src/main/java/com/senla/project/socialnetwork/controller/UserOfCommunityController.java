@@ -2,6 +2,7 @@ package com.senla.project.socialnetwork.controller;
 
 import com.senla.project.socialnetwork.entity.UserOfCommunity;
 import com.senla.project.socialnetwork.service.UserOfCommunityService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -9,13 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/")
 public class UserOfCommunityController {
     private final UserOfCommunityService userOfCommunityService;
-
-    public UserOfCommunityController(UserOfCommunityService userOfCommunityService) {
-        this.userOfCommunityService = userOfCommunityService;
-    }
 
     @GetMapping("/userOfCommunities")
     @PreAuthorize("hasAuthority('standard:permission')")

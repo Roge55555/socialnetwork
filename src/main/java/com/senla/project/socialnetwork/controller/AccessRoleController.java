@@ -2,6 +2,7 @@ package com.senla.project.socialnetwork.controller;
 
 import com.senla.project.socialnetwork.entity.AccessRole;
 import com.senla.project.socialnetwork.service.AccessRoleService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -9,13 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/")
 public class AccessRoleController {
     private final AccessRoleService accessRoleService;
-
-    public AccessRoleController(AccessRoleService accessRoleService) {
-        this.accessRoleService = accessRoleService;
-    }
 
 //    @GetMapping("/accessRoles")
 //    public List<AccessRole> getAllEmployees(){

@@ -2,6 +2,7 @@ package com.senla.project.socialnetwork.security;
 
 import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.model.Role;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,6 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
 public class SecurityUser implements UserDetails {
 
     @Getter(onMethod_= {@Override})
@@ -23,13 +25,6 @@ public class SecurityUser implements UserDetails {
     private final List<SimpleGrantedAuthority> authorities;
 
     private final boolean isActive;
-
-    public SecurityUser(String username, String password, List<SimpleGrantedAuthority> authorities, boolean isActive) {
-        this.username = username;
-        this.password = password;
-        this.authorities = authorities;
-        this.isActive = isActive;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -58,21 +53,14 @@ public class SecurityUser implements UserDetails {
     }
 
     public static UserDetails fromUser(User user){
-        Role role;
-        if (user.getRole().getName().equals("ADMIN")) {
-            role = Role.ADMIN;
-        } else if (user.getRole().getName().equals("USER")) {
-            role = Role.USER;
-        } else {
-            throw new IllegalArgumentException();
-        }
+
         return new org.springframework.security.core.userdetails.User(
                 user.getLogin(), user.getPassword(),
                 true,
                 true,
                 true,
                 true,
-                role.getAuthority()
+                user.getRole().getName().getAuthority()
         );
     }
 }

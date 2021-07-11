@@ -1,6 +1,7 @@
 package com.senla.project.socialnetwork.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,11 +10,13 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
-import java.util.Date;
+import java.time.LocalDate;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 @Entity
 @Table(name = "user")
 public class User{
@@ -23,20 +26,19 @@ public class User{
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "login")
+    @Column(name = "login", unique = true)
     @NotBlank
-    @Size(min = 5)
+    @Size(min = 4)
     private String login;
 
     @Column(name = "password")
     @NotBlank
-    @Size(min = 8)
+    @Size(min = 5)
     private String password;
 
     @Column(name = "date_birth")
-    @Temporal(TemporalType.DATE)
     @Past
-    private Date dateBirth;
+    private LocalDate dateBirth;
 
     @Column(name = "first_name")
     @NotBlank
@@ -46,12 +48,12 @@ public class User{
     @NotBlank
     private String lastName;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     @NotBlank
     @Email
     private String email;
 
-    @Column(name = "phone")
+    @Column(name = "phone", unique = true)
     @NotBlank
     @Size(min = 7, max = 13)
     private String phone;
@@ -67,8 +69,7 @@ public class User{
     private Boolean isBlocked;
 
     @Column(name = "registration_date")
-    @Temporal(TemporalType.DATE)
-    private Date registrationDate;
+    private LocalDate registrationDate;
 
     @Column(name = "website")
     private String website;

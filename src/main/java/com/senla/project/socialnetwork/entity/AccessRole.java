@@ -1,5 +1,6 @@
 package com.senla.project.socialnetwork.entity;
 
+import com.senla.project.socialnetwork.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ public class AccessRole {
     private Long id;
 
     @Column(name = "role_name")
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private Role name;
 
 }

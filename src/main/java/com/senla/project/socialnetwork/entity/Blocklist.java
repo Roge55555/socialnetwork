@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,8 +32,7 @@ public class Blocklist {
     private User whomBaned;
 
     @Column(name = "block_date")
-    @Temporal(TemporalType.DATE)
-    private Date blockDate;
+    private LocalDate blockDate;
 
     @Column(name = "block_cause")
     private String blockCause;

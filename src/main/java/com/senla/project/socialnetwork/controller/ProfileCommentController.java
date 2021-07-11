@@ -2,6 +2,7 @@ package com.senla.project.socialnetwork.controller;
 
 import com.senla.project.socialnetwork.entity.ProfileComment;
 import com.senla.project.socialnetwork.service.ProfileCommentService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -9,13 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/")
 public class ProfileCommentController {
     private final ProfileCommentService profileCommentService;
-
-    public ProfileCommentController(ProfileCommentService profileCommentService) {
-        this.profileCommentService = profileCommentService;
-    }
 
     @GetMapping("/profileComments")
     @PreAuthorize("hasAuthority('standard:permission')")

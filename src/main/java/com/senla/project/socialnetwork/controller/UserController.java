@@ -1,9 +1,15 @@
 package com.senla.project.socialnetwork.controller;
 
+import com.senla.project.socialnetwork.controller.dto.UserUpdateDTO;
+import com.senla.project.socialnetwork.controller.dto.UserAddDTO;
 import com.senla.project.socialnetwork.entity.User;
+import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
+import com.senla.project.socialnetwork.exeptions.NotOldPasswordException;
+import com.senla.project.socialnetwork.model.ChangePassword;
 import com.senla.project.socialnetwork.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -20,7 +26,7 @@ public class UserController {
 
     @GetMapping("/users")
     @PreAuthorize("hasAuthority('standard:permission')")
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers() {
         return userService.findAll();
     }
 
@@ -31,17 +37,55 @@ public class UserController {
         return userService.findById(id);
     }
 
-    @PostMapping("/users")
+    @GetMapping("/user/{login}")
     @PreAuthorize("hasAuthority('standard:permission')")
+    @ResponseStatus(HttpStatus.FOUND)
+    public User getByLogin(@PathVariable("login") String login) {
+        return userService.findByLogin(login);
+    }
+
+//    @GetMapping("/user")
+//    @PreAuthorize("hasAuthority('standard:permission')")
+//    @ResponseStatus(HttpStatus.FOUND)
+//    public User getByLogin(@RequestParam("login") String login) {
+//        return userService.findByLogin(login);
+//    }
+
+    @PostMapping("/registration")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addUser(@Valid @RequestBody User user) {
-        userService.add(user);
+    public Long addUser(@Valid @RequestBody UserAddDTO userAddDTO) {
+        User user = User.builder()
+                .login(userAddDTO.getLogin())
+                .password(new BCryptPasswordEncoder(12).encode(userAddDTO.getPassword()))
+                .dateBirth(userAddDTO.getDateBirth())
+                .firstName(userAddDTO.getFirstName())
+                .lastName(userAddDTO.getLastName())
+                .email(userAddDTO.getEmail())
+                .phone(userAddDTO.getPhone())
+                .website(userAddDTO.getWebsite())
+                .aboutYourself(userAddDTO.getAboutYourself())
+                .jobTitle(userAddDTO.getJobTitle())
+                .workPhone(userAddDTO.getWorkPhone())
+                .build();
+        return userService.add(user);
     }
 
     @PutMapping("/users/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void updateUser(@PathVariable("id") Long id, @RequestBody User user) {
+    public void updateUser(@PathVariable("id") Long id, @Valid @RequestBody UserUpdateDTO userUpdateDTO) throws NoSuchElementException {
+        User user = User.builder()
+                .login(userUpdateDTO.getLogin())
+                .dateBirth(userUpdateDTO.getDateBirth())
+                .firstName(userUpdateDTO.getFirstName())
+                .lastName(userUpdateDTO.getLastName())
+                .email(userUpdateDTO.getEmail())
+                .phone(userUpdateDTO.getPhone())
+                .website(userUpdateDTO.getWebsite())
+                .aboutYourself(userUpdateDTO.getAboutYourself())
+                .jobTitle(userUpdateDTO.getJobTitle())
+                .workPhone(userUpdateDTO.getWorkPhone())
+                .build();
         userService.update(id, user);
     }
 
@@ -52,4 +96,10 @@ public class UserController {
         userService.delete(id);
     }
 
+    @PatchMapping("/users/{id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PreAuthorize("hasAuthority('standard:permission')")
+    public void changeUserPassword(@PathVariable("id") Long id, @RequestBody ChangePassword password) throws NoSuchElementException, NotOldPasswordException {
+        userService.changePassword(id, password);
+    }
 }

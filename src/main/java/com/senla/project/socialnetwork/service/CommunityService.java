@@ -4,6 +4,7 @@ import com.senla.project.socialnetwork.entity.Community;
 import com.senla.project.socialnetwork.exeptions.NoAccountsException;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.repository.CommunityRepository;
+import com.senla.project.socialnetwork.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,16 +14,17 @@ import java.util.List;
 @AllArgsConstructor
 public class CommunityService {
 
-    private CommunityRepository communityRepository;
+    private final CommunityRepository communityRepository;
 
-    public void add(Community community) {
-        communityRepository.save(community);
+    private final UserRepository userRepository;
+
+    public Community add(Community community) {
+        if(userRepository.findById(community.getCreator().getId()).isEmpty())
+            throw new NoSuchElementException();
+        return communityRepository.save(community);
     }
 
     public List<Community> findAll() {
-        if (communityRepository.findAll().isEmpty()) {
-            throw new NoAccountsException();
-        }
         return communityRepository.findAll();
     }
 
@@ -31,6 +33,10 @@ public class CommunityService {
     }
 
     public Community update(Long id, Community community) {
+
+        if(userRepository.findById(community.getCreator().getId()).isEmpty())
+            throw new NoSuchElementException();
+
 
         return communityRepository.findById(id).map(com -> {
             com.setCreator(community.getCreator());

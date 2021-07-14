@@ -31,8 +31,8 @@ public class MessageController {
     @PostMapping("/messages")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void addContact(@RequestBody Message message) {
-        messageService.add(message);
+    public Message addContact(@RequestBody Message message) {
+        return messageService.add(message);
     }
 
     @PutMapping("/messages/{id}")

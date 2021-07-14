@@ -1,9 +1,12 @@
 package com.senla.project.socialnetwork.service;
 
+import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.entity.UserOfCommunity;
 import com.senla.project.socialnetwork.exeptions.NoAccountsException;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
+import com.senla.project.socialnetwork.repository.CommunityRepository;
 import com.senla.project.socialnetwork.repository.UserOfCommunityRepository;
+import com.senla.project.socialnetwork.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,16 +16,20 @@ import java.util.List;
 @AllArgsConstructor
 public class UserOfCommunityService {
 
-    private UserOfCommunityRepository userOfCommunityRepository;
+    private final UserOfCommunityRepository userOfCommunityRepository;
 
-    public void add(UserOfCommunity userOfCommunity) {
-        userOfCommunityRepository.save(userOfCommunity);
+    private final UserRepository userRepository;
+
+    private final CommunityRepository communityRepository;
+
+    public UserOfCommunity add(UserOfCommunity userOfCommunity) {
+        if(userRepository.findById(userOfCommunity.getUser().getId()).isEmpty() ||
+        communityRepository.findById(userOfCommunity.getCommunity().getId()).isEmpty())
+            throw new NoSuchElementException();
+        return userOfCommunityRepository.save(userOfCommunity);
     }
 
     public List<UserOfCommunity> findAll() {
-        if (userOfCommunityRepository.findAll().isEmpty()) {
-            throw new NoAccountsException();
-        }
         return userOfCommunityRepository.findAll();
     }
 
@@ -31,6 +38,10 @@ public class UserOfCommunityService {
     }
 
     public UserOfCommunity update(Long id, UserOfCommunity userOfCommunity) {
+
+        if(userRepository.findById(userOfCommunity.getUser().getId()).isEmpty() ||
+                communityRepository.findById(userOfCommunity.getCommunity().getId()).isEmpty())
+            throw new NoSuchElementException();
 
         return userOfCommunityRepository.findById(id).map(uoc -> {
             uoc.setCommunity(userOfCommunity.getCommunity());

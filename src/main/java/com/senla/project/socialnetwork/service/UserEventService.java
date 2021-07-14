@@ -4,6 +4,7 @@ import com.senla.project.socialnetwork.entity.UserEvent;
 import com.senla.project.socialnetwork.exeptions.NoAccountsException;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.repository.UserEventRepository;
+import com.senla.project.socialnetwork.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,16 +14,17 @@ import java.util.List;
 @AllArgsConstructor
 public class UserEventService {
 
-    private UserEventRepository userEventRepository;
+    private final UserEventRepository userEventRepository;
 
-    public void add(UserEvent userEvent) {
-        userEventRepository.save(userEvent);
+    private final UserRepository userRepository;
+
+    public UserEvent add(UserEvent userEvent) {
+        if(userRepository.findById(userEvent.getUser().getId()).isEmpty())
+            throw new NoSuchElementException();
+        return userEventRepository.save(userEvent);
     }
 
     public List<UserEvent> findAll() {
-        if (userEventRepository.findAll().isEmpty()) {
-            throw new NoAccountsException();
-        }
         return userEventRepository.findAll();
     }
 

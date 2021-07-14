@@ -18,7 +18,7 @@ public class UserEventController {
 
     @GetMapping("/userEvents")
     @PreAuthorize("hasAuthority('standard:permission')")
-    public List<UserEvent> getAllEmployees(){
+    public List<UserEvent> getAllEvents(){
         return userEventService.findAll();
     }
 
@@ -32,21 +32,21 @@ public class UserEventController {
     @PostMapping("/userEvents")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void addContact(@Valid @RequestBody UserEvent userEvent) {
-        userEventService.add(userEvent);
+    public UserEvent addEvent(@Valid @RequestBody UserEvent userEvent) {
+        return userEventService.add(userEvent);
     }
 
     @PutMapping("/userEvents/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void updateContact(@PathVariable("id") Long id, @RequestBody UserEvent userEvent) {
+    public void updateEvent(@PathVariable("id") Long id, @RequestBody UserEvent userEvent) {
         userEventService.update(id, userEvent);
     }
 
     @DeleteMapping("/userEvents/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void deleteContact(@PathVariable("id") Long id) {
+    public void deleteEvent(@PathVariable("id") Long id) {
         userEventService.delete(id);
     }
 }

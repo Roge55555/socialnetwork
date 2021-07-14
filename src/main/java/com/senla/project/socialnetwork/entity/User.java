@@ -1,9 +1,8 @@
 package com.senla.project.socialnetwork.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -11,6 +10,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 @AllArgsConstructor
@@ -34,6 +37,7 @@ public class User{
     @Column(name = "password")
     @NotBlank
     @Size(min = 5)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Column(name = "date_birth")
@@ -83,5 +87,15 @@ public class User{
     @Column(name = "work_phone")
     @Size(min = 6, max = 13)
     private String workPhone;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "whoBaned", cascade = CascadeType.REMOVE)
+    @EqualsAndHashCode.Exclude
+    private List<Blocklist> whoBanedSet;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "whomBaned", cascade = CascadeType.REMOVE)
+    @EqualsAndHashCode.Exclude
+    private List<Blocklist> whomBanedSet;
 
 }

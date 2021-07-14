@@ -4,6 +4,8 @@ import com.senla.project.socialnetwork.entity.Contact;
 import com.senla.project.socialnetwork.exeptions.NoAccountsException;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.repository.ContactRepository;
+import com.senla.project.socialnetwork.repository.RoleListRepository;
+import com.senla.project.socialnetwork.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,16 +15,21 @@ import java.util.List;
 @AllArgsConstructor
 public class ContactService {
 
-    private ContactRepository contactRepository;
+    private final ContactRepository contactRepository;
 
-    public void add(Contact contact) {
-        contactRepository.save(contact);
+    private final RoleListRepository roleListRepository;
+
+    private final UserRepository userRepository;
+
+    public Contact add(Contact contact) {
+        if(userRepository.findById(contact.getCreator().getId()).isEmpty() ||
+                userRepository.findById(contact.getMate().getId()).isEmpty() ||
+                roleListRepository.findById(contact.getContactRole().getId()).isEmpty())
+            throw new NoSuchElementException();
+        return contactRepository.save(contact);
     }
 
     public List<Contact> findAll() {
-        if (contactRepository.findAll().isEmpty()) {
-            throw new NoAccountsException();
-        }
         return contactRepository.findAll();
     }
 
@@ -31,6 +38,11 @@ public class ContactService {
     }
 
     public Contact update(Long id, Contact contact) {
+
+        if(userRepository.findById(contact.getCreator().getId()).isEmpty() ||
+                userRepository.findById(contact.getMate().getId()).isEmpty() ||
+                roleListRepository.findById(contact.getContactRole().getId()).isEmpty())
+            throw new NoSuchElementException();
 
         return contactRepository.findById(id).map(cont -> {
             cont.setCreator(contact.getCreator());

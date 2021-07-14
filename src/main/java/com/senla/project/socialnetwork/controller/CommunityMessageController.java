@@ -31,8 +31,8 @@ public class CommunityMessageController {
     @PostMapping("/communityMessages")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void addContact(@RequestBody CommunityMessage communityMessage) {
-        communityMessageService.add(communityMessage);
+    public CommunityMessage addContact(@RequestBody CommunityMessage communityMessage) {
+        return communityMessageService.add(communityMessage);
     }
 
     @PutMapping("/communityMessages/{id}")

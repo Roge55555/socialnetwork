@@ -31,8 +31,8 @@ public class ContactController {
     @PostMapping("/contacts")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void addContact(@RequestBody Contact contact) {
-        contactService.add(contact);
+    public Contact addContact(@RequestBody Contact contact) {
+        return contactService.add(contact);
     }
 
     @PutMapping("/contacts/{id}")

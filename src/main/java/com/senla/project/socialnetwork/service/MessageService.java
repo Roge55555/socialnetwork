@@ -4,6 +4,7 @@ import com.senla.project.socialnetwork.entity.Message;
 import com.senla.project.socialnetwork.exeptions.NoAccountsException;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.repository.MessageRepository;
+import com.senla.project.socialnetwork.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,16 +14,18 @@ import java.util.List;
 @AllArgsConstructor
 public class MessageService {
 
-    private MessageRepository messageRepository;
+    private final MessageRepository messageRepository;
 
-    public void add(Message message) {
-        messageRepository.save(message);
+    private final UserRepository userRepository;
+
+    public Message add(Message message) {
+        if(userRepository.findById(message.getSender().getId()).isEmpty() ||
+                userRepository.findById(message.getReceiver().getId()).isEmpty())
+            throw new NoSuchElementException();
+        return messageRepository.save(message);
     }
 
     public List<Message> findAll() {
-        if (messageRepository.findAll().isEmpty()) {
-            throw new NoAccountsException();
-        }
         return messageRepository.findAll();
     }
 
@@ -31,6 +34,10 @@ public class MessageService {
     }
 
     public Message update(Long id, Message message) {
+
+        if(userRepository.findById(message.getSender().getId()).isEmpty() ||
+                userRepository.findById(message.getReceiver().getId()).isEmpty())
+            throw new NoSuchElementException();
 
         return messageRepository.findById(id).map(mess -> {
             mess.setSender(message.getSender());

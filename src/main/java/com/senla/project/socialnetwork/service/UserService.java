@@ -22,7 +22,10 @@ public class UserService {
 
     private final AccessRoleService accessRoleService;
 
-    public Long add(User user) {
+    public User add(User user) {
+
+        user.setPassword(new BCryptPasswordEncoder(12).encode(user.getPassword()));
+
         user.setRole(accessRoleService.findByName(Role.USER));
         user.setIsActive(true);
         user.setIsBlocked(false);
@@ -33,7 +36,8 @@ public class UserService {
                 userRepository.findByPhone(user.getPhone()).isPresent())
             throw new LoginEmailPhoneAlreadyTakenException();
 
-        return userRepository.save(user).getId();
+
+        return userRepository.save(user);
     }
 
     public List<User> findAll() {
@@ -51,12 +55,12 @@ public class UserService {
 
     public User update(Long id, User user) throws NoSuchElementException {
 
-        if ((userRepository.findByLogin(user.getLogin()).isPresent() && !userRepository.findByLogin(user.getLogin()).get().getId().equals(id)) ||
-                (userRepository.findByEmail(user.getEmail()).isPresent() && !userRepository.findByEmail(user.getEmail()).get().getId().equals(id)) ||
-                (userRepository.findByPhone(user.getPhone()).isPresent() && !userRepository.findByPhone(user.getPhone()).get().getId().equals(id)))
+        if ((userRepository.findByLogin(user.getLogin()).isPresent() && userRepository.findById(id).isPresent() && !userRepository.findByLogin(user.getLogin()).get().getId().equals(id)) ||
+                (userRepository.findByEmail(user.getEmail()).isPresent() && userRepository.findById(id).isPresent() && !userRepository.findByEmail(user.getEmail()).get().getId().equals(id)) ||
+                (userRepository.findByPhone(user.getPhone()).isPresent() && userRepository.findById(id).isPresent() && !userRepository.findByPhone(user.getPhone()).get().getId().equals(id)))
             throw new LoginEmailPhoneAlreadyTakenException();
 
-        return userRepository.save(userRepository.findById(id).map(usr -> //TODO проверять существует ли логин
+        return userRepository.save(userRepository.findById(id).map(usr ->
                 User.builder()
                         .id(id)
                         .login(user.getLogin())
@@ -86,7 +90,7 @@ public class UserService {
     }
 
     public User changePassword(Long id, ChangePassword password) throws NoSuchElementException, NotOldPasswordException {
-        if (!userRepository.findById(id).isEmpty()) {
+        if (userRepository.findById(id).isEmpty()) {
             throw new NoSuchElementException();
         } else if (new BCryptPasswordEncoder(12).matches(password.getOldPassword(), userRepository.findById(id).get().getPassword())) {
             return userRepository.findById(id).map(usr -> {

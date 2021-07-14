@@ -13,16 +13,13 @@ import java.util.List;
 @AllArgsConstructor//TODO:разница ток в проверке на нул - @RequiredArgsConstructor
 public class RoleListService {
 
-    private RoleListRepository roleListRepository;
+    private final RoleListRepository roleListRepository;
 
-    public void add(RoleList roleList) {
-        roleListRepository.save(roleList);
+    public RoleList add(RoleList roleList) {
+        return roleListRepository.save(roleList);
     }
 
     public List<RoleList> findAll() {
-        if (roleListRepository.findAll().isEmpty()) {
-            throw new NoAccountsException();
-        }
         return roleListRepository.findAll();
     }
 

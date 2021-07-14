@@ -31,8 +31,8 @@ public class ProfileCommentController {
     @PostMapping("/profileComments")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void addContact(@RequestBody ProfileComment profileComment) {
-        profileCommentService.add(profileComment);
+    public ProfileComment addContact(@RequestBody ProfileComment profileComment) {
+        return profileCommentService.add(profileComment);
     }
 
     @PutMapping("/profileComments/{id}")

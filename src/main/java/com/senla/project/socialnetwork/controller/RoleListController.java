@@ -17,7 +17,7 @@ public class RoleListController {
 
     @GetMapping("/roleLists")
     @PreAuthorize("hasAuthority('standard:permission')")
-    public List<RoleList> getAllEmployees(){
+    public List<RoleList> getAllRoleLists(){
         return roleListService.findAll();
     }
 
@@ -31,21 +31,21 @@ public class RoleListController {
     @PostMapping("/roleLists")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void addContact(@RequestBody RoleList roleList) {
-        roleListService.add(roleList);
+    public RoleList addRoleList(@RequestBody RoleList roleList) {
+        return roleListService.add(roleList);
     }
 
     @PutMapping("/roleLists/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('communities:permission')")
-    public void updateContact(@PathVariable("id") Long id, @RequestBody RoleList roleList) {
+    public void updateRoleList(@PathVariable("id") Long id, @RequestBody RoleList roleList) {
         roleListService.update(id, roleList);
     }
 
     @DeleteMapping("/roleLists/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('communities:permission')")
-    public void deleteContact(@PathVariable("id") Long id) {
+    public void deleteRoleList(@PathVariable("id") Long id) {
         roleListService.delete(id);
     }
 }

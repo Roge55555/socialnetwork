@@ -14,41 +14,37 @@ import java.util.List;
 @AllArgsConstructor
 public class AccessRoleService {
 
-    private AccessRoleRepository accessRoleRepository;
+    private final AccessRoleRepository accessRoleRepository;
 
-    public void add(AccessRole accessRole) {
-        accessRoleRepository.save(accessRole);
-    }
-
-    public List<AccessRole> findAll() {
-        if (accessRoleRepository.findAll().isEmpty()) {
-            throw new NoAccountsException();
-        }
-        return accessRoleRepository.findAll();
-    }
+//    public void add(AccessRole accessRole) {
+//        accessRoleRepository.save(accessRole);
+//    }
+//
+//    public List<AccessRole> findAll() {
+//        return accessRoleRepository.findAll();
+//    }
 
     public AccessRole findById(Long id) {
         return accessRoleRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
     public AccessRole findByName(Role name) {
-        //TODO: change NoSuchIdException -> NoSuchElementException
         return accessRoleRepository.findByName(name).orElseThrow(NoSuchElementException::new);
     }
 
-    public AccessRole update(Long id, AccessRole accessRole) {
-
-        return accessRoleRepository.findById(id).map(ar -> {
-            ar.setName(accessRole.getName());
-            return accessRoleRepository.save(ar);
-        })
-                .orElseThrow(NoSuchElementException::new);
-    }
-
-    public void delete(Long id) {
-        if (accessRoleRepository.findById(id).isEmpty()) {
-            throw new NoSuchElementException();
-        }
-        accessRoleRepository.deleteById(id);
-    }
+//    public AccessRole update(Long id, AccessRole accessRole) {
+//
+//        return accessRoleRepository.findById(id).map(ar -> {
+//            ar.setName(accessRole.getName());
+//            return accessRoleRepository.save(ar);
+//        })
+//                .orElseThrow(NoSuchElementException::new);
+//    }
+//
+//    public void delete(Long id) {
+//        if (accessRoleRepository.findById(id).isEmpty()) {
+//            throw new NoSuchElementException();
+//        }
+//        accessRoleRepository.deleteById(id);
+//    }
 }

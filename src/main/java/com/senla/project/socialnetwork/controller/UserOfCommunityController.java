@@ -17,7 +17,7 @@ public class UserOfCommunityController {
 
     @GetMapping("/userOfCommunities")
     @PreAuthorize("hasAuthority('standard:permission')")
-    public List<UserOfCommunity> getAllEmployees(){
+    public List<UserOfCommunity> getAllUserOfCommunities(){
         return userOfCommunityService.findAll();
     }
 
@@ -31,8 +31,8 @@ public class UserOfCommunityController {
     @PostMapping("/userOfCommunities")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('communities:permission')")
-    public void addContact(@RequestBody UserOfCommunity userOfCommunity) {
-        userOfCommunityService.add(userOfCommunity);
+    public UserOfCommunity addUserOfCommunity(@RequestBody UserOfCommunity userOfCommunity) {
+        return userOfCommunityService.add(userOfCommunity);
     }
 
 //    @PutMapping("/userOfCommunities/{id}")
@@ -44,7 +44,7 @@ public class UserOfCommunityController {
     @DeleteMapping("/userOfCommunities/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('communities:permission')")
-    public void deleteContact(@PathVariable("id") Long id) {
+    public void deleteUserOfCommunity(@PathVariable("id") Long id) {
         userOfCommunityService.delete(id);
     }
 }

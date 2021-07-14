@@ -4,6 +4,7 @@ import com.senla.project.socialnetwork.entity.ProfileComment;
 import com.senla.project.socialnetwork.exeptions.NoAccountsException;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.repository.ProfileCommentRepository;
+import com.senla.project.socialnetwork.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,16 +14,18 @@ import java.util.List;
 @AllArgsConstructor
 public class ProfileCommentService {
 
-    private ProfileCommentRepository profileCommentRepository;
+    private final ProfileCommentRepository profileCommentRepository;
 
-    public void add(ProfileComment profileComment) {
-        profileCommentRepository.save(profileComment);
+    private final UserRepository userRepository;
+
+    public ProfileComment add(ProfileComment profileComment) {
+        if(userRepository.findById(profileComment.getUser().getId()).isEmpty() ||
+                userRepository.findById(profileComment.getProfileOwner().getId()).isEmpty())
+            throw new NoSuchElementException();
+        return profileCommentRepository.save(profileComment);
     }
 
     public List<ProfileComment> findAll() {
-        if (profileCommentRepository.findAll().isEmpty()) {
-            throw new NoAccountsException();
-        }
         return profileCommentRepository.findAll();
     }
 
@@ -31,6 +34,10 @@ public class ProfileCommentService {
     }
 
     public ProfileComment update(Long id, ProfileComment profileComment) {
+
+        if(userRepository.findById(profileComment.getUser().getId()).isEmpty() ||
+                userRepository.findById(profileComment.getProfileOwner().getId()).isEmpty())
+            throw new NoSuchElementException();
 
         return profileCommentRepository.findById(id).map(pc -> {
             pc.setProfileOwner(profileComment.getProfileOwner());

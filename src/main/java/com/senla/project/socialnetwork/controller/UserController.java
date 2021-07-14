@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
@@ -37,10 +38,10 @@ public class UserController {
         return userService.findById(id);
     }
 
-    @GetMapping("/user/{login}")
+    @GetMapping("/users/getByLogin/{}")
     @PreAuthorize("hasAuthority('standard:permission')")
     @ResponseStatus(HttpStatus.FOUND)
-    public User getByLogin(@PathVariable("login") String login) {
+    public User getByLogin(@PathParam("login") String login) {
         return userService.findByLogin(login);
     }
 
@@ -53,10 +54,10 @@ public class UserController {
 
     @PostMapping("/registration")
     @ResponseStatus(HttpStatus.CREATED)
-    public Long addUser(@Valid @RequestBody UserAddDTO userAddDTO) {
+    public User addUser(@Valid @RequestBody UserAddDTO userAddDTO) {
         User user = User.builder()
                 .login(userAddDTO.getLogin())
-                .password(new BCryptPasswordEncoder(12).encode(userAddDTO.getPassword()))
+                .password(userAddDTO.getPassword())
                 .dateBirth(userAddDTO.getDateBirth())
                 .firstName(userAddDTO.getFirstName())
                 .lastName(userAddDTO.getLastName())
@@ -99,7 +100,7 @@ public class UserController {
     @PatchMapping("/users/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void changeUserPassword(@PathVariable("id") Long id, @RequestBody ChangePassword password) throws NoSuchElementException, NotOldPasswordException {
+    public void changeUserPassword(@PathVariable("id") Long id, @Valid @RequestBody ChangePassword password) throws NoSuchElementException, NotOldPasswordException {
         userService.changePassword(id, password);
     }
 }

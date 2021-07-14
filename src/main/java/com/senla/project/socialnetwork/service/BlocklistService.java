@@ -4,6 +4,8 @@ import com.senla.project.socialnetwork.entity.Blocklist;
 import com.senla.project.socialnetwork.exeptions.NoAccountsException;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.repository.BlocklistRepository;
+import com.senla.project.socialnetwork.repository.CommunityRepository;
+import com.senla.project.socialnetwork.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,16 +15,21 @@ import java.util.List;
 @AllArgsConstructor
 public class BlocklistService {
 
-    private BlocklistRepository blocklistRepository;
+    private final BlocklistRepository blocklistRepository;
 
-    public void add(Blocklist blocklist) {
-        blocklistRepository.save(blocklist);
+    private final UserRepository userRepository;
+
+    private final CommunityRepository communityRepository;
+
+    public Blocklist add(Blocklist blocklist) {
+        if(userRepository.findById(blocklist.getWhoBaned().getId()).isEmpty() ||
+                userRepository.findById(blocklist.getWhomBaned().getId()).isEmpty()||
+                communityRepository.findById(blocklist.getCommunity().getId()).isEmpty())
+            throw new NoSuchElementException();
+        return blocklistRepository.save(blocklist);
     }
 
     public List<Blocklist> findAll() {
-        if (blocklistRepository.findAll().isEmpty()) {
-            throw new NoAccountsException();
-        }
         return blocklistRepository.findAll();
     }
 
@@ -31,6 +38,11 @@ public class BlocklistService {
     }
 
     public Blocklist update(Long id, Blocklist blocklist) {
+
+        if(userRepository.findById(blocklist.getWhoBaned().getId()).isEmpty() ||
+                userRepository.findById(blocklist.getWhomBaned().getId()).isEmpty()||
+                communityRepository.findById(blocklist.getCommunity().getId()).isEmpty())
+            throw new NoSuchElementException();
 
         return blocklistRepository.findById(id).map(bl -> {
             bl.setCommunity(blocklist.getCommunity());

@@ -31,8 +31,8 @@ public class BlocklistController {
     @PostMapping("/blocklists")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('communities:permission')")
-    public void addContact(@RequestBody Blocklist blocklist) {
-        blocklistService.add(blocklist);
+    public Blocklist addContact(@RequestBody Blocklist blocklist) {
+        return blocklistService.add(blocklist);
     }
 
     @PutMapping("/blocklists/{id}")

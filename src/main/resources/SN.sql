@@ -82,7 +82,7 @@ insert into user_event values (1, 3, 'birthday', 'admin`s birthday', '2022-05-26
 CREATE TABLE role_list
 (
     id bigint PRIMARY KEY AUTO_INCREMENT,
-    `name` VARCHAR(50) NOT NULL
+    `name` VARCHAR(50) NOT NULL UNIQUE
 );
 insert into role_list values (1, 'Friend');
 insert into role_list values (2, 'Best Friend');

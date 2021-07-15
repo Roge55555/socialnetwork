@@ -1,13 +1,16 @@
 package com.senla.project.socialnetwork.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -36,5 +39,20 @@ public class Community {
 
     @Column(name = "date_created")
     private LocalDate dateCreated;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "community", cascade = CascadeType.REMOVE)
+    @EqualsAndHashCode.Exclude
+    private List<CommunityMessage> communityMessageCommunitySet;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "community", cascade = CascadeType.REMOVE)
+    @EqualsAndHashCode.Exclude
+    private List<UserOfCommunity> userOfCommunityCommunitySet;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "community", cascade = CascadeType.REMOVE)
+    @EqualsAndHashCode.Exclude
+    private List<Blocklist> blocklistCommunitySet;
 
 }

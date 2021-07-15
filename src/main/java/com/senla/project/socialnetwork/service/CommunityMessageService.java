@@ -22,7 +22,7 @@ public class CommunityMessageService {
     private final CommunityRepository communityRepository;
 
     public CommunityMessage add(CommunityMessage communityMessage) {
-        if(userRepository.findById(communityMessage.getCreator().getId()).isEmpty() ||
+        if (userRepository.findById(communityMessage.getCreator().getId()).isEmpty() ||
                 communityRepository.findById(communityMessage.getCommunity().getId()).isEmpty())
             throw new NoSuchElementException();
         return communityMessageRepository.save(communityMessage);
@@ -38,7 +38,7 @@ public class CommunityMessageService {
 
     public CommunityMessage update(Long id, CommunityMessage communityMessage) {
 
-        if(userRepository.findById(communityMessage.getCreator().getId()).isEmpty() ||
+        if (userRepository.findById(communityMessage.getCreator().getId()).isEmpty() ||
                 communityRepository.findById(communityMessage.getCommunity().getId()).isEmpty())
             throw new NoSuchElementException();
 

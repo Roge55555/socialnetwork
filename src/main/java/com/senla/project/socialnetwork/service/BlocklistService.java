@@ -3,6 +3,7 @@ package com.senla.project.socialnetwork.service;
 import com.senla.project.socialnetwork.entity.Blocklist;
 import com.senla.project.socialnetwork.exeptions.NoAccountsException;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
+import com.senla.project.socialnetwork.exeptions.TryingRequestToYourselfException;
 import com.senla.project.socialnetwork.repository.BlocklistRepository;
 import com.senla.project.socialnetwork.repository.CommunityRepository;
 import com.senla.project.socialnetwork.repository.UserRepository;
@@ -22,10 +23,13 @@ public class BlocklistService {
     private final CommunityRepository communityRepository;
 
     public Blocklist add(Blocklist blocklist) {
-        if(userRepository.findById(blocklist.getWhoBaned().getId()).isEmpty() ||
-                userRepository.findById(blocklist.getWhomBaned().getId()).isEmpty()||
-                communityRepository.findById(blocklist.getCommunity().getId()).isEmpty())
+        if (userRepository.findById(blocklist.getWhoBaned().getId()).isEmpty() ||
+                userRepository.findById(blocklist.getWhomBaned().getId()).isEmpty() ||
+                communityRepository.findById(blocklist.getCommunity().getId()).isEmpty()) {
             throw new NoSuchElementException();
+        } else if (blocklist.getWhoBaned().getId().equals(blocklist.getWhomBaned().getId())) {
+            throw new TryingRequestToYourselfException();
+        }
         return blocklistRepository.save(blocklist);
     }
 
@@ -39,10 +43,13 @@ public class BlocklistService {
 
     public Blocklist update(Long id, Blocklist blocklist) {
 
-        if(userRepository.findById(blocklist.getWhoBaned().getId()).isEmpty() ||
-                userRepository.findById(blocklist.getWhomBaned().getId()).isEmpty()||
-                communityRepository.findById(blocklist.getCommunity().getId()).isEmpty())
+        if (userRepository.findById(blocklist.getWhoBaned().getId()).isEmpty() ||
+                userRepository.findById(blocklist.getWhomBaned().getId()).isEmpty() ||
+                communityRepository.findById(blocklist.getCommunity().getId()).isEmpty()) {
             throw new NoSuchElementException();
+        } else if (blocklist.getWhoBaned().getId().equals(blocklist.getWhomBaned().getId())) {
+            throw new TryingRequestToYourselfException();
+        }
 
         return blocklistRepository.findById(id).map(bl -> {
             bl.setCommunity(blocklist.getCommunity());

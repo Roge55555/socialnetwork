@@ -50,4 +50,4 @@ insert into community_message (id, creator, community_id, `date`, txt) values (1
 insert into community_message (id, creator, community_id, `date`, txt) values (2, 2, 1, '2021-06-25 17:59:27', 'same, dude');
 insert into community_message (id, creator, community_id, `date`, txt) values (3, 2, 1, '2021-06-25 17:59:51', 'talk with yourself leads to mental problems');
 
-insert into blocklist (id, community_id, who_baned, whom_baned, block_date, block_cause) values (1, 1, 3, 1, '2021-07-01', 'text U.A.N.G.I!!!!!');
+insert into blocklist (id, community_id, who_baned, whom_baned, block_date, block_cause) values (1, 1, 3, 1, '2021-07-01', 'text Y.A.N.G.I!!!!!');

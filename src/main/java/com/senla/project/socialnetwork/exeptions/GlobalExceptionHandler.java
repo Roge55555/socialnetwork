@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.sql.SQLIntegrityConstraintViolationException;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 //    @Value(value = "${data.exception.message1}")
@@ -21,6 +23,10 @@ public class GlobalExceptionHandler {
     private String message3 = "Account list is empty.";
     //    @Value(value = "${data.exception.message3}")
     private String message4 = "This login/email/phone is already in use, try another.";
+    //    @Value(value = "${data.exception.message3}")
+    private String message5 = "Such element already exist.";
+    //    @Value(value = "${data.exception.message3}")
+    private String message6 = "You can`t do it to yourself.";
 
 //    @Value(value = "${data.exception.message3}")
 //    private String message3 = "Exception";
@@ -48,8 +54,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity(message4, HttpStatus.CONFLICT);
     }
 
-//    @ExceptionHandler(value = Exception.class)
-//    public ResponseEntity<Object> databaseConnectionFailsException(Exception exception) {
-//        return new ResponseEntity<Object>(message3, HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
+    @ExceptionHandler(value = SQLIntegrityConstraintViolationException.class)//TODO разобраться с применением исключения вне моего случая
+    public ResponseEntity LoginAlreadyTakenException(SQLIntegrityConstraintViolationException sqlIntegrityConstraintViolationException) {
+        return new ResponseEntity(message5, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(value = TryingRequestToYourselfException.class)
+    public ResponseEntity LoginAlreadyTakenException(TryingRequestToYourselfException tryingRequestToYourselfException) {
+        return new ResponseEntity(message6, HttpStatus.CONFLICT);
+    }
 }

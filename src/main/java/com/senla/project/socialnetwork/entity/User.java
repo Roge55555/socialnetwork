@@ -98,4 +98,54 @@ public class User{
     @EqualsAndHashCode.Exclude
     private List<Blocklist> whomBanedSet;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.REMOVE)
+    @EqualsAndHashCode.Exclude
+    private List<Contact> contactCreatorSet;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "mate", cascade = CascadeType.REMOVE)
+    @EqualsAndHashCode.Exclude
+    private List<Contact> contactMateSet;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "profileOwner", cascade = CascadeType.REMOVE)
+    @EqualsAndHashCode.Exclude
+    private List<ProfileComment> profileOwnerSet;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @EqualsAndHashCode.Exclude
+    private List<ProfileComment> userProfileCommentSet;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @EqualsAndHashCode.Exclude
+    private List<UserEvent> userEventSet;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.REMOVE)
+    @EqualsAndHashCode.Exclude
+    private List<Community> communityCreatorSet;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.REMOVE)
+    @EqualsAndHashCode.Exclude
+    private List<CommunityMessage> communityMessageCreatorSet;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @EqualsAndHashCode.Exclude
+    private List<UserOfCommunity> userOfCommunityUserSet;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.REMOVE)
+    @EqualsAndHashCode.Exclude
+    private List<Message> messageSenderSet;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.REMOVE)
+    @EqualsAndHashCode.Exclude
+    private List<Message> messageReceiverSet;
+
 }

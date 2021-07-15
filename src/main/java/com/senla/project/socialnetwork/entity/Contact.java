@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "contact")
+@Table(name = "contact",uniqueConstraints = @UniqueConstraint(columnNames = {"creator_id", "mate_id"}))
 public class Contact {
 
     @Id

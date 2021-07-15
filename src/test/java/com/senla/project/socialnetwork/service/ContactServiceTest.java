@@ -1,27 +1,23 @@
 package com.senla.project.socialnetwork.service;
 
+import com.senla.project.socialnetwork.entity.Blocklist;
 import com.senla.project.socialnetwork.entity.Contact;
-import com.senla.project.socialnetwork.entity.Message;
 import com.senla.project.socialnetwork.entity.RoleList;
 import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
+import com.senla.project.socialnetwork.exeptions.TryingRequestToYourselfException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@ExtendWith(MockitoExtension.class)
 @Sql(scripts = "classpath:data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = "classpath:clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 class ContactServiceTest {
@@ -49,27 +45,42 @@ class ContactServiceTest {
     }
 
     @Test
-    void addTryingToUseNotExistingValues() {
+    void addTryingToUseNotExistingCreator() {
         Contact contactCreator = contactService.findById(2L);
         User user = userService.findById(3L);
         user.setId(5L);
         contactCreator.setCreator(user);
         assertThatThrownBy(() -> contactService.add(contactCreator))
                 .isInstanceOf(NoSuchElementException.class);
+    }
 
+    @Test
+    void addTryingToUseNotExistingMate() {
         Contact contactMate = contactService.findById(2L);
-        user = userService.findById(3L);
+        User user = userService.findById(3L);
         user.setId(9L);
         contactMate.setMate(user);
         assertThatThrownBy(() -> contactService.add(contactMate))
                 .isInstanceOf(NoSuchElementException.class);
+    }
 
+    @Test
+    void addTryingToUseNotExistingRole() {
         Contact contactRole = contactService.findById(2L);
         RoleList roleList= roleListService.findById(5L);
         roleList.setId(7L);
         contactRole.setContactRole(roleList);
         assertThatThrownBy(() -> contactService.add(contactRole))
                 .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    void addTryingToContactYourself() {
+        Contact contactYourself = contactService.findById(2L);
+        contactYourself.setCreator(userService.findById(2L));
+        contactYourself.setMate(userService.findById(2L));
+        assertThatThrownBy(() -> contactService.add(contactYourself))
+                .isInstanceOf(TryingRequestToYourselfException.class);
     }
 
     @Test
@@ -112,27 +123,42 @@ class ContactServiceTest {
     }
 
     @Test
-    void updateTryingToUseNotExistingValues() {
+    void updateTryingToUseNotExistingCreator() {
         Contact contactCreator = contactService.findById(2L);
         User user = userService.findById(3L);
         user.setId(5L);
         contactCreator.setCreator(user);
         assertThatThrownBy(() -> contactService.update(2L, contactCreator))
                 .isInstanceOf(NoSuchElementException.class);
+    }
 
+    @Test
+    void updateTryingToUseNotExistingMate() {
         Contact contactMate = contactService.findById(2L);
-        user = userService.findById(3L);
+        User user = userService.findById(3L);
         user.setId(9L);
         contactMate.setMate(user);
         assertThatThrownBy(() -> contactService.update(2L, contactMate))
                 .isInstanceOf(NoSuchElementException.class);
+    }
 
+    @Test
+    void updateTryingToUseNotExistingRole() {
         Contact contactRole = contactService.findById(2L);
         RoleList roleList= roleListService.findById(5L);
         roleList.setId(7L);
         contactRole.setContactRole(roleList);
         assertThatThrownBy(() -> contactService.update(2L, contactRole))
                 .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    void updateTryingToContactYourself() {
+        Contact contactYourself = contactService.findById(2L);
+        contactYourself.setCreator(userService.findById(2L));
+        contactYourself.setMate(userService.findById(2L));
+        assertThatThrownBy(() -> contactService.update(2L, contactYourself))
+                .isInstanceOf(TryingRequestToYourselfException.class);
     }
 
     @Test

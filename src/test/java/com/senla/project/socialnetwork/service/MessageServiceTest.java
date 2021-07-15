@@ -1,13 +1,10 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.Message;
-import com.senla.project.socialnetwork.entity.ProfileComment;
 import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
@@ -16,10 +13,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@ExtendWith(MockitoExtension.class)
 @Sql(scripts = "classpath:data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = "classpath:clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 class MessageServiceTest {
@@ -43,16 +38,19 @@ class MessageServiceTest {
     }
 
     @Test
-    void addTryingToUseNotExistingUsers() {
+    void addTryingToUseNotExistingSender() {
         Message messageSender = messageService.findById(4L);
         User user = userService.findById(1L);
         user.setId(6L);
         messageSender.setSender(user);
         assertThatThrownBy(() -> messageService.add(messageSender))
                 .isInstanceOf(NoSuchElementException.class);
+    }
 
+    @Test
+    void addTryingToUseNotExistingReceiver() {
         Message messageReceiver = messageService.findById(5L);
-        user = userService.findById(3L);
+        User user = userService.findById(3L);
         user.setId(8L);
         messageReceiver.setReceiver(user);
         assertThatThrownBy(() -> messageService.add(messageReceiver))
@@ -97,16 +95,19 @@ class MessageServiceTest {
     }
 
     @Test
-    void updateTryingToUseNotExistingUsers() {
+    void updateTryingToUseNotExistingSender() {
         Message messageSender = messageService.findById(4L);
         User user = userService.findById(1L);
         user.setId(6L);
         messageSender.setSender(user);
         assertThatThrownBy(() -> messageService.update(4L, messageSender))
                 .isInstanceOf(NoSuchElementException.class);
+    }
 
+    @Test
+    void updateTryingToUseNotExistingReceiver() {
         Message messageReceiver = messageService.findById(5L);
-        user = userService.findById(3L);
+        User user = userService.findById(3L);
         user.setId(8L);
         messageReceiver.setReceiver(user);
         assertThatThrownBy(() -> messageService.update(5L, messageReceiver))

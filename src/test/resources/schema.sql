@@ -62,7 +62,8 @@ CREATE TABLE IF NOT EXISTS contact
     contact_role bigint,
     foreign key (creator_id) references `user` (id),
     foreign key (mate_id) references `user` (id),
-    foreign key (contact_role) references role_list (id)
+    foreign key (contact_role) references role_list (id),
+    UNIQUE(creator_id, mate_id)
 );
 
 CREATE TABLE IF NOT EXISTS message
@@ -93,7 +94,8 @@ CREATE TABLE IF NOT EXISTS user_of_community
     user_id bigint,
     date_entered date NOT NULL,
     foreign key (community_id) references community (id),
-    foreign key (user_id) references `user` (id)
+    foreign key (user_id) references `user` (id),
+    UNIQUE(community_id, user_id)
 );
 
 CREATE TABLE IF NOT EXISTS community_message
@@ -117,5 +119,6 @@ CREATE TABLE IF NOT EXISTS blocklist
     block_cause VARCHAR(255) NOT NULL,
     foreign key (community_id) references community (id),
     foreign key (who_baned) references `user` (id),
-    foreign key (whom_baned) references `user` (id)
+    foreign key (whom_baned) references `user` (id),
+    UNIQUE(community_id, who_baned, whom_baned)
 );

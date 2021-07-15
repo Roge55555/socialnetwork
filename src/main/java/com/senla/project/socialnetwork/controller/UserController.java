@@ -38,10 +38,10 @@ public class UserController {
         return userService.findById(id);
     }
 
-    @GetMapping("/users/getByLogin/{}")
+    @GetMapping("/users/find/{login}")
     @PreAuthorize("hasAuthority('standard:permission')")
     @ResponseStatus(HttpStatus.FOUND)
-    public User getByLogin(@PathParam("login") String login) {
+    public User getByLogin(@PathVariable("login") String login) {
         return userService.findByLogin(login);
     }
 

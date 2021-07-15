@@ -3,6 +3,7 @@ package com.senla.project.socialnetwork.service;
 import com.senla.project.socialnetwork.entity.Contact;
 import com.senla.project.socialnetwork.exeptions.NoAccountsException;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
+import com.senla.project.socialnetwork.exeptions.TryingRequestToYourselfException;
 import com.senla.project.socialnetwork.repository.ContactRepository;
 import com.senla.project.socialnetwork.repository.RoleListRepository;
 import com.senla.project.socialnetwork.repository.UserRepository;
@@ -22,10 +23,13 @@ public class ContactService {
     private final UserRepository userRepository;
 
     public Contact add(Contact contact) {
-        if(userRepository.findById(contact.getCreator().getId()).isEmpty() ||
+        if (userRepository.findById(contact.getCreator().getId()).isEmpty() ||
                 userRepository.findById(contact.getMate().getId()).isEmpty() ||
-                roleListRepository.findById(contact.getContactRole().getId()).isEmpty())
+                roleListRepository.findById(contact.getContactRole().getId()).isEmpty()) {
             throw new NoSuchElementException();
+        } else if (contact.getCreator().getId().equals(contact.getMate().getId())) {
+            throw new TryingRequestToYourselfException();
+        }
         return contactRepository.save(contact);
     }
 
@@ -39,10 +43,13 @@ public class ContactService {
 
     public Contact update(Long id, Contact contact) {
 
-        if(userRepository.findById(contact.getCreator().getId()).isEmpty() ||
+        if (userRepository.findById(contact.getCreator().getId()).isEmpty() ||
                 userRepository.findById(contact.getMate().getId()).isEmpty() ||
-                roleListRepository.findById(contact.getContactRole().getId()).isEmpty())
+                roleListRepository.findById(contact.getContactRole().getId()).isEmpty()) {
             throw new NoSuchElementException();
+        } else if (contact.getCreator().getId().equals(contact.getMate().getId())) {
+            throw new TryingRequestToYourselfException();
+        }
 
         return contactRepository.findById(id).map(cont -> {
             cont.setCreator(contact.getCreator());

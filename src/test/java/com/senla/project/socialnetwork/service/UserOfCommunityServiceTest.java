@@ -5,10 +5,7 @@ import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.entity.UserOfCommunity;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
@@ -19,7 +16,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
-@ExtendWith(MockitoExtension.class)
 @Sql(scripts = "classpath:data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = "classpath:clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 class UserOfCommunityServiceTest {
@@ -46,14 +42,17 @@ class UserOfCommunityServiceTest {
     }
 
     @Test
-    void addTryingToUseNotExistingValues() {
+    void addTryingToUseNotExistingUser() {
         UserOfCommunity subscriberUser = userOfCommunityService.findById(2L);
         User user = userService.findById(3L);
         user.setId(5L);
         subscriberUser.setUser(user);
         assertThatThrownBy(() -> userOfCommunityService.add(subscriberUser))
                 .isInstanceOf(NoSuchElementException.class);
+    }
 
+    @Test
+    void addTryingToUseNotExistingCommunity() {
         UserOfCommunity subscriberCommunity = userOfCommunityService.findById(2L);
         Community community = communityService.findById(1L);
         community.setId(4L);
@@ -100,14 +99,17 @@ class UserOfCommunityServiceTest {
     }
 
     @Test
-    void updateTryingToUseNotExistingValues() {
+    void updateTryingToUseNotExistingUser() {
         UserOfCommunity subscriberUser = userOfCommunityService.findById(1L);
         User user = userService.findById(3L);
         user.setId(5L);
         subscriberUser.setUser(user);
         assertThatThrownBy(() -> userOfCommunityService.update(1L, subscriberUser))
                 .isInstanceOf(NoSuchElementException.class);
+    }
 
+        @Test
+        void updateTryingToUseNotExistingCommunity() {
         UserOfCommunity subscriberCommunity = userOfCommunityService.findById(1L);
         Community community = communityService.findById(2L);
         community.setId(4L);
@@ -128,5 +130,4 @@ class UserOfCommunityServiceTest {
         assertThatThrownBy(() -> userOfCommunityService.delete(3L))
                 .isInstanceOf(NoSuchElementException.class);
     }
-
 }

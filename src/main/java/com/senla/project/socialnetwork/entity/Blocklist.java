@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "blocklist")
+@Table(name = "blocklist",uniqueConstraints = @UniqueConstraint(columnNames = {"community_id", "who_baned", "whom_baned"}) )
 public class Blocklist {
 
     @Id

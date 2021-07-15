@@ -1,27 +1,20 @@
 package com.senla.project.socialnetwork.service;
 
-import com.senla.project.socialnetwork.entity.Community;
 import com.senla.project.socialnetwork.entity.ProfileComment;
 import com.senla.project.socialnetwork.entity.User;
-import com.senla.project.socialnetwork.entity.UserOfCommunity;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@ExtendWith(MockitoExtension.class)
 @Sql(scripts = "classpath:data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = "classpath:clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 class ProfileCommentServiceTest {
@@ -45,16 +38,19 @@ class ProfileCommentServiceTest {
     }
 
     @Test
-    void addTryingToUseNotExistingUsers() {
+    void addTryingToUseNotExistingUser() {
         ProfileComment commentUser = profileCommentService.findById(2L);
         User user = userService.findById(3L);
         user.setId(5L);
         commentUser.setUser(user);
         assertThatThrownBy(() -> profileCommentService.add(commentUser))
                 .isInstanceOf(NoSuchElementException.class);
+    }
 
+    @Test
+    void addTryingToUseNotExistingOwner() {
         ProfileComment commentOwner = profileCommentService.findById(1L);
-        user = userService.findById(3L);
+        User user = userService.findById(3L);
         user.setId(4L);
         commentOwner.setProfileOwner(user);
         assertThatThrownBy(() -> profileCommentService.add(commentOwner))
@@ -106,9 +102,12 @@ class ProfileCommentServiceTest {
         commentUser.setUser(user);
         assertThatThrownBy(() -> profileCommentService.update(1L, commentUser))
                 .isInstanceOf(NoSuchElementException.class);
+    }
 
+    @Test
+    void updateTryingToUseNotExistingOwner() {
         ProfileComment commentOwner = profileCommentService.findById(1L);
-        user = userService.findById(3L);
+        User user = userService.findById(3L);
         user.setId(4L);
         commentOwner.setProfileOwner(user);
         assertThatThrownBy(() -> profileCommentService.update(2L, commentOwner))

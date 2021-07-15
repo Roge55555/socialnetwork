@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "user_of_community")
+@Table(name = "user_of_community",uniqueConstraints = @UniqueConstraint(columnNames = {"community_id", "user_id"}) )
 public class UserOfCommunity {
 
     @Id

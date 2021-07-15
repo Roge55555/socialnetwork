@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
 @SpringBootTest
-@ExtendWith(MockitoExtension.class)//????????????
 @Sql(scripts = "classpath:data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = "classpath:clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 class UserServiceTest {
@@ -179,5 +178,4 @@ class UserServiceTest {
         assertThatThrownBy(() -> userService.changePassword(3L, new ChangePassword("notRightPassword", "rlfdlfd")))
                 .isInstanceOf(NotOldPasswordException.class);
     }
-
 }

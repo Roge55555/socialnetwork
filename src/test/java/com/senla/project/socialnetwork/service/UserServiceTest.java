@@ -6,10 +6,8 @@ import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.exeptions.NotOldPasswordException;
 import com.senla.project.socialnetwork.model.ChangePassword;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -53,6 +51,7 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Successful add user")
     void successAdd() {
         User user = getUser();
 
@@ -61,17 +60,26 @@ class UserServiceTest {
     }
 
     @Test
-    void addTryingToRepeatUniqueValues() {
+    @DisplayName("Exception when we trying to add user with occupied login")
+    void addTryingToRepeatLogin() {
         User userLogin = getUser();
         userLogin.setLogin("rogE");
         assertThatThrownBy(() -> userService.add(userLogin))
                 .isInstanceOf(LoginEmailPhoneAlreadyTakenException.class);
+    }
 
+    @Test
+    @DisplayName("Exception when we trying to add user with occupied email")
+    void addTryingToRepeatEmail() {
         User userEmail = getUser();
         userEmail.setEmail("sportzman@gmail.com");
         assertThatThrownBy(() -> userService.add(userEmail))
                 .isInstanceOf(LoginEmailPhoneAlreadyTakenException.class);
+    }
 
+    @Test
+    @DisplayName("Exception when we trying to add user with occupied phone number")
+    void addTryingToRepeatPhone() {
         User userPhone = getUser();
         userPhone.setPhone("+375333236700");
         assertThatThrownBy(() -> userService.add(userPhone))
@@ -79,30 +87,42 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Successful showing all users")
     void findAll() {
         final List<User> users = userService.findAll();
         Assertions.assertEquals(3, users.size());
     }
 
     @Test
+    @DisplayName("Successful finding user by his id")
     void findByIdSuccess() {
         final List<User> users = userService.findAll();
         Assertions.assertEquals(users.get(0), userService.findById(1L));
     }
 
     @Test
+    @DisplayName("Exception when we trying to find not existing user by id")
     void findByIdException() {
         assertThatThrownBy(() -> userService.findById(5L))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
+    @DisplayName("Successful finding user by his login")
     void findByLogin() {
         final List<User> users = userService.findAll();
         Assertions.assertEquals(users.get(1), userService.findByLogin("CtrogE"));
     }
 
     @Test
+    @DisplayName("Exception when we trying to find not existing user by login")
+    void findByLoginException() {
+        assertThatThrownBy(() -> userService.findByLogin("Misha"))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("Successful updating user by his id")
     void updateSuccess() {
         User userLogin = userService.findById(2L);
         userLogin.setEmail("gfreg@mail.ru");
@@ -113,6 +133,7 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to update not existing user")
     void updateNoSuchElement() {
         User userLogin = userService.findById(2L);
         userLogin.setEmail("gfreg@mail.ru");
@@ -122,6 +143,7 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to update user login to occupied value")
     void updateTryingToRepeatUniqueLogin() {
         User userLogin = userService.findById(2L);
         userLogin.setLogin("rogE");
@@ -130,6 +152,7 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to update user email to occupied value")
     void updateTryingToRepeatUniqueEmail() {
         User userEmail = userService.findById(1L);
         userEmail.setEmail("sportzman@gmail.com");
@@ -138,6 +161,7 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to update user phone to occupied value")
     void updateTryingToRepeatUniquePhone() {
         User userPhone = userService.findById(1L);
         userPhone.setPhone("+375293486999");
@@ -146,27 +170,30 @@ class UserServiceTest {
     }
 
     @Test
-    @Disabled
-    void deleteAccess() {
+    @DisplayName("Successful deleting user")
+    void deleteSuccess() {
         userService.delete(3L);
         assertThatThrownBy(() -> userService.findById(3L))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
+    @DisplayName("Exception when we trying to delete not existing user")
     void deleteNoSuchId() {
         assertThatThrownBy(() -> userService.delete(13L))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
-    void changePasswordAccess() {
+    @DisplayName("Successful changing user password")
+    void changePasswordSuccess() {
         String newPassword = "22222";
         userService.changePassword(3L, new ChangePassword("54862", newPassword));
         Assertions.assertTrue(new BCryptPasswordEncoder(12).matches(newPassword, userService.findById(3L).getPassword()));
     }
 
     @Test
+    @DisplayName("Exception when we trying to change password for not existing user")
     void changePasswordNoSuchUser() {
 
         assertThatThrownBy(() -> userService.changePassword(7L, new ChangePassword("54862", "rlfdlfd")))
@@ -174,6 +201,7 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we input not right password")
     void changePasswordNotRightOldPassword() {
         assertThatThrownBy(() -> userService.changePassword(3L, new ChangePassword("notRightPassword", "rlfdlfd")))
                 .isInstanceOf(NotOldPasswordException.class);

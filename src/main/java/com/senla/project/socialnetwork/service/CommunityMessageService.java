@@ -25,6 +25,7 @@ public class CommunityMessageService {
         if (userRepository.findById(communityMessage.getCreator().getId()).isEmpty() ||
                 communityRepository.findById(communityMessage.getCommunity().getId()).isEmpty())
             throw new NoSuchElementException();
+        communityMessage.setId(null);
         return communityMessageRepository.save(communityMessage);
     }
 

@@ -17,7 +17,7 @@ public class BlocklistController {
 
     @GetMapping("/blocklists")
     @PreAuthorize("hasAuthority('communities:permission')")
-    public List<Blocklist> getAllEmployees(){
+    public List<Blocklist> getAllBlocklists(){
         return blocklistService.findAll();
     }
 
@@ -31,21 +31,21 @@ public class BlocklistController {
     @PostMapping("/blocklists")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('communities:permission')")
-    public Blocklist addContact(@RequestBody Blocklist blocklist) {
+    public Blocklist addBlocklist(@RequestBody Blocklist blocklist) {
         return blocklistService.add(blocklist);
     }
 
     @PutMapping("/blocklists/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('communities:permission')")
-    public void updateContact(@PathVariable("id") Long id, @RequestBody Blocklist accessRole) {
+    public void updateBlocklist(@PathVariable("id") Long id, @RequestBody Blocklist accessRole) {
         blocklistService.update(id, accessRole);
     }
 
     @DeleteMapping("/blocklists/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('communities:permission')")
-    public void deleteContact(@PathVariable("id") Long id) {
+    public void deleteBlocklist(@PathVariable("id") Long id) {
         blocklistService.delete(id);
     }
 }

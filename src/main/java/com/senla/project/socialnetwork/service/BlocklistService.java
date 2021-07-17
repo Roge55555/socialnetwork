@@ -30,6 +30,7 @@ public class BlocklistService {
         } else if (blocklist.getWhoBaned().getId().equals(blocklist.getWhomBaned().getId())) {
             throw new TryingRequestToYourselfException();
         }
+        blocklist.setId(null);
         return blocklistRepository.save(blocklist);
     }
 

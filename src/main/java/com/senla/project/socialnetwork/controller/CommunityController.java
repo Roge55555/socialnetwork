@@ -18,7 +18,7 @@ public class CommunityController {
 
     @GetMapping("/communities")
     @PreAuthorize("hasAuthority('standard:permission')")
-    public List<Community> getAllEmployees(){
+    public List<Community> getAllCommunities(){
         return communityService.findAll();
     }
 
@@ -32,21 +32,21 @@ public class CommunityController {
     @PostMapping("/communities")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('communities:permission')")
-    public Community addContact(@Valid @RequestBody Community community) {
+    public Community addCommunity(@Valid @RequestBody Community community) {
         return communityService.add(community);
     }
 
     @PutMapping("/communities/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('communities:permission')")
-    public void updateContact(@PathVariable("id") Long id, @RequestBody Community community) {
+    public void updateCommunity(@PathVariable("id") Long id, @RequestBody Community community) {
         communityService.update(id, community);
     }
 
     @DeleteMapping("/communities/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('communities:permission')")
-    public void deleteContact(@PathVariable("id") Long id) {
+    public void deleteCommunity(@PathVariable("id") Long id) {
         communityService.delete(id);
     }
 }

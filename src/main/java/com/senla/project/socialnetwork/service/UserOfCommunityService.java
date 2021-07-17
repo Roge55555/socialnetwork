@@ -26,6 +26,7 @@ public class UserOfCommunityService {
         if(userRepository.findById(userOfCommunity.getUser().getId()).isEmpty() ||
         communityRepository.findById(userOfCommunity.getCommunity().getId()).isEmpty())
             throw new NoSuchElementException();
+        userOfCommunity.setId(null);
         return userOfCommunityRepository.save(userOfCommunity);
     }
 

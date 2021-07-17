@@ -35,12 +35,6 @@ public class UserOfCommunityController {
         return userOfCommunityService.add(userOfCommunity);
     }
 
-//    @PutMapping("/userOfCommunities/{id}")
-//    @ResponseStatus(HttpStatus.ACCEPTED)
-//    public void updateContact(@PathVariable("id") Long id, @RequestBody UserOfCommunity userOfCommunity) {
-//        userOfCommunityService.update(id, userOfCommunity);
-//    }
-
     @DeleteMapping("/userOfCommunities/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('communities:permission')")

@@ -22,6 +22,7 @@ public class ProfileCommentService {
         if(userRepository.findById(profileComment.getUser().getId()).isEmpty() ||
                 userRepository.findById(profileComment.getProfileOwner().getId()).isEmpty())
             throw new NoSuchElementException();
+        profileComment.setId(null);
         return profileCommentRepository.save(profileComment);
     }
 

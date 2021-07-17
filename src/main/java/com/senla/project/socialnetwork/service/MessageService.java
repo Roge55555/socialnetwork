@@ -22,6 +22,7 @@ public class MessageService {
         if(userRepository.findById(message.getSender().getId()).isEmpty() ||
                 userRepository.findById(message.getReceiver().getId()).isEmpty())
             throw new NoSuchElementException();
+        message.setId(null);
         return messageRepository.save(message);
     }
 

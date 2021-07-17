@@ -7,13 +7,14 @@ import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.exeptions.NotOldPasswordException;
 import com.senla.project.socialnetwork.model.ChangePassword;
 import com.senla.project.socialnetwork.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
@@ -44,13 +45,6 @@ public class UserController {
     public User getByLogin(@PathVariable("login") String login) {
         return userService.findByLogin(login);
     }
-
-//    @GetMapping("/user")
-//    @PreAuthorize("hasAuthority('standard:permission')")
-//    @ResponseStatus(HttpStatus.FOUND)
-//    public User getByLogin(@RequestParam("login") String login) {
-//        return userService.findByLogin(login);
-//    }
 
     @PostMapping("/registration")
     @ResponseStatus(HttpStatus.CREATED)

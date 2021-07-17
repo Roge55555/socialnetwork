@@ -17,7 +17,7 @@ public class MessageController {
 
     @GetMapping("/messages")
     @PreAuthorize("hasAuthority('standard:permission')")
-    public List<Message> getAllEmployees(){
+    public List<Message> getAllMessage(){
         return messageService.findAll();
     }
 
@@ -31,21 +31,21 @@ public class MessageController {
     @PostMapping("/messages")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public Message addContact(@RequestBody Message message) {
+    public Message addMessage(@RequestBody Message message) {
         return messageService.add(message);
     }
 
     @PutMapping("/messages/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void updateContact(@PathVariable("id") Long id, @RequestBody Message message) {
+    public void updateMessage(@PathVariable("id") Long id, @RequestBody Message message) {
         messageService.update(id, message);
     }
 
     @DeleteMapping("/messages/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void deleteContact(@PathVariable("id") Long id) {
+    public void deleteMessage(@PathVariable("id") Long id) {
         messageService.delete(id);
     }
 }

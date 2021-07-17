@@ -21,6 +21,7 @@ public class UserEventService {
     public UserEvent add(UserEvent userEvent) {
         if(userRepository.findById(userEvent.getUser().getId()).isEmpty())
             throw new NoSuchElementException();
+        userEvent.setId(null);
         return userEventRepository.save(userEvent);
     }
 

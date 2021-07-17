@@ -17,7 +17,7 @@ public class ContactController {
 
     @GetMapping("/contacts")
     @PreAuthorize("hasAuthority('standard:permission')")
-    public List<Contact> getAllEmployees(){
+    public List<Contact> getAllContacts(){
         return contactService.findAll();
     }
 

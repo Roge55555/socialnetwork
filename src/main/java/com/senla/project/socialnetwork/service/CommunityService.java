@@ -21,6 +21,7 @@ public class CommunityService {
     public Community add(Community community) {
         if(userRepository.findById(community.getCreator().getId()).isEmpty())
             throw new NoSuchElementException();
+        community.setId(null);
         return communityRepository.save(community);
     }
 

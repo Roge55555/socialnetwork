@@ -30,6 +30,7 @@ public class ContactService {
         } else if (contact.getCreator().getId().equals(contact.getMate().getId())) {
             throw new TryingRequestToYourselfException();
         }
+        contact.setId(null);
         return contactRepository.save(contact);
     }
 

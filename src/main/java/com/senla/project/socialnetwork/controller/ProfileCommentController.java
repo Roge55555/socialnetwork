@@ -17,7 +17,7 @@ public class ProfileCommentController {
 
     @GetMapping("/profileComments")
     @PreAuthorize("hasAuthority('standard:permission')")
-    public List<ProfileComment> getAllEmployees(){
+    public List<ProfileComment> getAllProfileComments(){
         return profileCommentService.findAll();
     }
 
@@ -31,21 +31,21 @@ public class ProfileCommentController {
     @PostMapping("/profileComments")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public ProfileComment addContact(@RequestBody ProfileComment profileComment) {
+    public ProfileComment addProfileComment(@RequestBody ProfileComment profileComment) {
         return profileCommentService.add(profileComment);
     }
 
     @PutMapping("/profileComments/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void updateContact(@PathVariable("id") Long id, @RequestBody ProfileComment profileComment) {
+    public void updateProfileComment(@PathVariable("id") Long id, @RequestBody ProfileComment profileComment) {
         profileCommentService.update(id, profileComment);
     }
 
     @DeleteMapping("/profileComments/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void deleteContact(@PathVariable("id") Long id) {
+    public void deleteProfileComment(@PathVariable("id") Long id) {
         profileCommentService.delete(id);
     }
 }

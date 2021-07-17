@@ -17,7 +17,7 @@ public class CommunityMessageController {
 
     @GetMapping("/communityMessages")
     @PreAuthorize("hasAuthority('standard:permission')")
-    public List<CommunityMessage> getAllEmployees(){
+    public List<CommunityMessage> getAllCommunityMessages(){
         return communityMessageService.findAll();
     }
 
@@ -31,21 +31,21 @@ public class CommunityMessageController {
     @PostMapping("/communityMessages")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public CommunityMessage addContact(@RequestBody CommunityMessage communityMessage) {
+    public CommunityMessage addCommunityMessage(@RequestBody CommunityMessage communityMessage) {
         return communityMessageService.add(communityMessage);
     }
 
     @PutMapping("/communityMessages/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void updateContact(@PathVariable("id") Long id, @RequestBody CommunityMessage communityMessage) {
+    public void updateCommunityMessage(@PathVariable("id") Long id, @RequestBody CommunityMessage communityMessage) {
         communityMessageService.update(id, communityMessage);
     }
 
     @DeleteMapping("/communityMessages/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void deleteContact(@PathVariable("id") Long id) {
+    public void deleteCommunityMessage(@PathVariable("id") Long id) {
         communityMessageService.delete(id);
     }
 }

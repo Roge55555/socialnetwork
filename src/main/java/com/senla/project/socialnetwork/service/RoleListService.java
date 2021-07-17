@@ -16,6 +16,7 @@ public class RoleListService {
     private final RoleListRepository roleListRepository;
 
     public RoleList add(RoleList roleList) {
+        roleList.setId(null);
         return roleListRepository.save(roleList);
     }
 

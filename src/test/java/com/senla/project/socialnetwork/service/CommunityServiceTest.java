@@ -4,6 +4,7 @@ import com.senla.project.socialnetwork.entity.Community;
 import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,6 +27,7 @@ class CommunityServiceTest {
     CommunityService communityService;
 
     @Test
+    @DisplayName("Successful add community")
     void successAdd() {
         Community community = new Community();
         community.setCreator(userService.findById(2L));
@@ -38,6 +40,7 @@ class CommunityServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to add community with not existing creator")
     void addTryingToUseNotExistingUser() {
         Community community = new Community();
         User user = userService.findById(2L);
@@ -53,24 +56,28 @@ class CommunityServiceTest {
     }
 
     @Test
+    @DisplayName("Successful showing all communities")
     void findAll() {
         final List<Community> communities = communityService.findAll();
         Assertions.assertEquals(2, communities.size());
     }
 
     @Test
+    @DisplayName("Successful finding community by id")
     void findByIdSuccess() {
         final List<Community> communities = communityService.findAll();
         Assertions.assertEquals(communities.get(1), communityService.findById(2L));
     }
 
     @Test
+    @DisplayName("Exception when we trying to find not existing community by id")
     void findByIdException() {
         assertThatThrownBy(() -> communityService.findById(7L))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
+    @DisplayName("Successful updating community by his id")
     void updateSuccess() {
         Community community = communityService.findById(1L);
         community.setCreator(userService.findById(2L));
@@ -80,6 +87,7 @@ class CommunityServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to update not existing community")
     void updateNoSuchCommunity() {
         Community community = communityService.findById(1L);
         User user = userService.findById(3L);
@@ -89,6 +97,7 @@ class CommunityServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to update community creator to not existing")
     void updateTryingToUseNotExistingUser() {
         Community community = communityService.findById(1L);
         User user = userService.findById(3L);
@@ -99,13 +108,15 @@ class CommunityServiceTest {
     }
 
     @Test
+    @DisplayName("Successful deleting community")
     void deleteSuccess() {
-        communityService.delete(2L);
-        assertThatThrownBy(() -> communityService.findById(2L))
+        communityService.delete(1L);
+        assertThatThrownBy(() -> communityService.findById(1L))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
+    @DisplayName("Exception when we trying to delete not existing community")
     void deleteNoSuchId() {
         assertThatThrownBy(() -> communityService.delete(6L))
                 .isInstanceOf(NoSuchElementException.class);

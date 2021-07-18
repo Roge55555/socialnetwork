@@ -1,9 +1,11 @@
 package com.senla.project.socialnetwork.service;
 
+import com.senla.project.socialnetwork.entity.CommunityMessage;
 import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.entity.UserEvent;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,6 +28,7 @@ class UserEventServiceTest {
     UserEventService userEventService;
 
     @Test
+    @DisplayName("Successful add event")
     void successAdd() {
         UserEvent userEvent = new UserEvent();
         userEvent.setUser(userService.findById(2L));
@@ -38,6 +41,7 @@ class UserEventServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to add event with not existing user")
     void addTryingToUseNotExistingUser() {
         UserEvent userEvent = new UserEvent();
         User user = userService.findById(2L);
@@ -50,24 +54,28 @@ class UserEventServiceTest {
     }
 
     @Test
+    @DisplayName("Successful showing all events")
     void findAll() {
         final List<UserEvent> userEvents = userEventService.findAll();
         Assertions.assertEquals(1, userEvents.size());
     }
 
     @Test
+    @DisplayName("Successful finding event by id")
     void findByIdSuccess() {
         final List<UserEvent> userEvents = userEventService.findAll();
         Assertions.assertEquals(userEvents.get(0), userEventService.findById(1L));
     }
 
     @Test
+    @DisplayName("Exception when we trying to find not existing event by id")
     void findByIdException() {
         assertThatThrownBy(() -> userEventService.findById(7L))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
+    @DisplayName("Successful updating event by id")
     void updateSuccess() {
         UserEvent subscriber = userEventService.findById(1L);
         subscriber.setUser(userService.findById(2L));
@@ -77,6 +85,16 @@ class UserEventServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to update not existing event")
+    void updateNoSuchElement() {
+        UserEvent userEvent = userEventService.findById(1L);
+        userEvent.setUser(userService.findById(3L));
+        assertThatThrownBy(() -> userEventService.update(18L, userEvent))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("Exception when we trying to update user of event to a not existing")
     void updateNoSuchUser() {
         UserEvent subscriber = userEventService.findById(1L);
         subscriber.setUser(userService.findById(1L));
@@ -85,6 +103,7 @@ class UserEventServiceTest {
     }
 
     @Test
+    @DisplayName("Successful deleting event")
     void deleteSuccess() {
         userEventService.delete(1L);
         assertThatThrownBy(() -> userEventService.findById(1L))
@@ -92,6 +111,7 @@ class UserEventServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to delete not existing event")
     void deleteNoSuchId() {
         assertThatThrownBy(() -> userEventService.delete(3L))
                 .isInstanceOf(NoSuchElementException.class);

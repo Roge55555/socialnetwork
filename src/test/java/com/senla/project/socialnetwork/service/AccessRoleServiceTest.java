@@ -4,6 +4,7 @@ import com.senla.project.socialnetwork.entity.AccessRole;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.model.Role;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +21,7 @@ class AccessRoleServiceTest {
     AccessRoleService accessRoleService;
 
     @Test
+    @DisplayName("Successful finding access role by his id")
     void findByIdSuccess() {
         AccessRole role = new AccessRole();
         role.setId(2L);
@@ -28,12 +30,14 @@ class AccessRoleServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to find not existing access role")
     void findByIdException() {
         assertThatThrownBy(() -> accessRoleService.findById(3L))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
+    @DisplayName("Successful finding access role by his name")
     void findByRoleSuccess() {
         Assertions.assertEquals(accessRoleService.findById(1L), accessRoleService.findByName(Role.ADMIN));
     }

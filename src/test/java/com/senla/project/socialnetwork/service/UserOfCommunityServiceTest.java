@@ -5,6 +5,7 @@ import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.entity.UserOfCommunity;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,6 +32,7 @@ class UserOfCommunityServiceTest {
 
 
     @Test
+    @DisplayName("Successful add subscription")
     void successAdd() {
         UserOfCommunity userOfCommunity = new UserOfCommunity();
         userOfCommunity.setCommunity(communityService.findById(2L));
@@ -42,6 +44,7 @@ class UserOfCommunityServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to subscription with not existing user")
     void addTryingToUseNotExistingUser() {
         UserOfCommunity subscriberUser = userOfCommunityService.findById(2L);
         User user = userService.findById(3L);
@@ -52,6 +55,7 @@ class UserOfCommunityServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to add subscription with not existing community")
     void addTryingToUseNotExistingCommunity() {
         UserOfCommunity subscriberCommunity = userOfCommunityService.findById(2L);
         Community community = communityService.findById(1L);
@@ -62,24 +66,28 @@ class UserOfCommunityServiceTest {
     }
 
     @Test
+    @DisplayName("Successful showing all subscriptions")
     void findAll() {
         final List<UserOfCommunity> userOfCommunities = userOfCommunityService.findAll();
         Assertions.assertEquals(2, userOfCommunities.size());
     }
 
     @Test
+    @DisplayName("Successful finding subscription by id")
     void findByIdSuccess() {
         final List<UserOfCommunity> userOfCommunities = userOfCommunityService.findAll();
         Assertions.assertEquals(userOfCommunities.get(0), userOfCommunityService.findById(1L));
     }
 
     @Test
+    @DisplayName("Exception when we trying to find not existing subscription by id")
     void findByIdException() {
         assertThatThrownBy(() -> userOfCommunityService.findById(7L))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
+    @DisplayName("Successful updating subscription by his id")
     void updateSuccess() {
         UserOfCommunity subscriber = userOfCommunityService.findById(2L);
         subscriber.setUser(userService.findById(3L));
@@ -90,6 +98,7 @@ class UserOfCommunityServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to update not existing subscription")
     void updateNoSuchElement() {
         UserOfCommunity subscriber = userOfCommunityService.findById(2L);
         subscriber.setUser(userService.findById(3L));
@@ -99,6 +108,7 @@ class UserOfCommunityServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to update subscriber to a not existing")
     void updateTryingToUseNotExistingUser() {
         UserOfCommunity subscriberUser = userOfCommunityService.findById(1L);
         User user = userService.findById(3L);
@@ -108,8 +118,9 @@ class UserOfCommunityServiceTest {
                 .isInstanceOf(NoSuchElementException.class);
     }
 
-        @Test
-        void updateTryingToUseNotExistingCommunity() {
+    @Test
+    @DisplayName("Exception when we trying to update community of subscription to a not existing")
+    void updateTryingToUseNotExistingCommunity() {
         UserOfCommunity subscriberCommunity = userOfCommunityService.findById(1L);
         Community community = communityService.findById(2L);
         community.setId(4L);
@@ -119,6 +130,7 @@ class UserOfCommunityServiceTest {
     }
 
     @Test
+    @DisplayName("Successful deleting subscription")
     void deleteSuccess() {
         userOfCommunityService.delete(2L);
         assertThatThrownBy(() -> userOfCommunityService.findById(2L))
@@ -126,6 +138,7 @@ class UserOfCommunityServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to delete not existing subscription")
     void deleteNoSuchId() {
         assertThatThrownBy(() -> userOfCommunityService.delete(3L))
                 .isInstanceOf(NoSuchElementException.class);

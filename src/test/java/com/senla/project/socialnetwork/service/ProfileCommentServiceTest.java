@@ -4,6 +4,7 @@ import com.senla.project.socialnetwork.entity.ProfileComment;
 import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,6 +27,7 @@ class ProfileCommentServiceTest {
     ProfileCommentService profileCommentService;
 
     @Test
+    @DisplayName("Successful add сomment")
     void successAdd() {
         ProfileComment profileComment = new ProfileComment();
         profileComment.setProfileOwner(userService.findById(2L));
@@ -38,6 +40,7 @@ class ProfileCommentServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to add сomment from not existing sender")
     void addTryingToUseNotExistingUser() {
         ProfileComment commentUser = profileCommentService.findById(2L);
         User user = userService.findById(3L);
@@ -48,6 +51,7 @@ class ProfileCommentServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to add сomment to not existing profile")
     void addTryingToUseNotExistingOwner() {
         ProfileComment commentOwner = profileCommentService.findById(1L);
         User user = userService.findById(3L);
@@ -58,24 +62,28 @@ class ProfileCommentServiceTest {
     }
 
     @Test
+    @DisplayName("Successful showing all comments")
     void findAll() {
         final List<ProfileComment> profileComments = profileCommentService.findAll();
         Assertions.assertEquals(2, profileComments.size());
     }
 
     @Test
+    @DisplayName("Successful finding comment by id")
     void findByIdSuccess() {
         final List<ProfileComment> profileComments = profileCommentService.findAll();
         Assertions.assertEquals(profileComments.get(1), profileCommentService.findById(2L));
     }
 
     @Test
+    @DisplayName("Exception when we trying to find not existing comment by id")
     void findByIdException() {
         assertThatThrownBy(() -> profileCommentService.findById(4L))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
+    @DisplayName("Successful updating comment by id")
     void updateSuccess() {
         ProfileComment comment = profileCommentService.findById(1L);
         comment.setUser(userService.findById(3L));
@@ -86,6 +94,7 @@ class ProfileCommentServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to update not existing comment")
     void updateNoSuchElement() {
         ProfileComment comment = profileCommentService.findById(2L);
         comment.setUser(userService.findById(3L));
@@ -95,6 +104,7 @@ class ProfileCommentServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to update sender of comment to a not existing")
     void updateTryingToUseNotExistingUsers() {
         ProfileComment commentUser = profileCommentService.findById(2L);
         User user = userService.findById(3L);
@@ -105,6 +115,7 @@ class ProfileCommentServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to update profile owner of comment to a not existing")
     void updateTryingToUseNotExistingOwner() {
         ProfileComment commentOwner = profileCommentService.findById(1L);
         User user = userService.findById(3L);
@@ -115,6 +126,7 @@ class ProfileCommentServiceTest {
     }
 
     @Test
+    @DisplayName("Successful deleting comment")
     void deleteSuccess() {
         profileCommentService.delete(2L);
         assertThatThrownBy(() -> profileCommentService.findById(2L))
@@ -122,6 +134,7 @@ class ProfileCommentServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to delete not existing comment")
     void deleteNoSuchId() {
         assertThatThrownBy(() -> profileCommentService.delete(3L))
                 .isInstanceOf(NoSuchElementException.class);

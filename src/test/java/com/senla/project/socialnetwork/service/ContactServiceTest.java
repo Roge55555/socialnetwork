@@ -7,6 +7,7 @@ import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.exeptions.TryingRequestToYourselfException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,6 +33,7 @@ class ContactServiceTest {
     RoleListService roleListService;
 
     @Test
+    @DisplayName("Successful add contact")
     void successAdd() {
         Contact contact = new Contact();
         contact.setCreator(userService.findById(2L));
@@ -45,6 +47,7 @@ class ContactServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to add contact with not existing creator")
     void addTryingToUseNotExistingCreator() {
         Contact contactCreator = contactService.findById(2L);
         User user = userService.findById(3L);
@@ -55,6 +58,7 @@ class ContactServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to add contact with not existing mate")
     void addTryingToUseNotExistingMate() {
         Contact contactMate = contactService.findById(2L);
         User user = userService.findById(3L);
@@ -65,6 +69,7 @@ class ContactServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to add contact with not existing role")
     void addTryingToUseNotExistingRole() {
         Contact contactRole = contactService.findById(2L);
         RoleList roleList= roleListService.findById(5L);
@@ -75,6 +80,7 @@ class ContactServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to contact to yourself")
     void addTryingToContactYourself() {
         Contact contactYourself = contactService.findById(2L);
         contactYourself.setCreator(userService.findById(2L));
@@ -84,24 +90,28 @@ class ContactServiceTest {
     }
 
     @Test
+    @DisplayName("Successful showing all contacts")
     void findAll() {
         final List<Contact> contacts = contactService.findAll();
         Assertions.assertEquals(2, contacts.size());
     }
 
     @Test
+    @DisplayName("Successful finding contact by id")
     void findByIdSuccess() {
         final List<Contact> contacts = contactService.findAll();
         Assertions.assertEquals(contacts.get(1), contactService.findById(2L));
     }
 
     @Test
+    @DisplayName("Exception when we trying to find not existing contact by id")
     void findByIdException() {
         assertThatThrownBy(() -> contactService.findById(4L))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
+    @DisplayName("Successful updating contact by his id")
     void updateSuccess() {
         Contact contact = contactService.findById(2L);
         contact.setCreator(userService.findById(1L));
@@ -113,6 +123,7 @@ class ContactServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to update not existing contact")
     void updateNoSuchElement() {
         Contact contact = contactService.findById(2L);
         contact.setCreator(userService.findById(1L));
@@ -123,6 +134,7 @@ class ContactServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to update creator in contact to not existing")
     void updateTryingToUseNotExistingCreator() {
         Contact contactCreator = contactService.findById(2L);
         User user = userService.findById(3L);
@@ -133,6 +145,7 @@ class ContactServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to update mate in contact to not existing")
     void updateTryingToUseNotExistingMate() {
         Contact contactMate = contactService.findById(2L);
         User user = userService.findById(3L);
@@ -143,6 +156,7 @@ class ContactServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to update role in contact to not existing")
     void updateTryingToUseNotExistingRole() {
         Contact contactRole = contactService.findById(2L);
         RoleList roleList= roleListService.findById(5L);
@@ -153,6 +167,7 @@ class ContactServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to update contact to make it to yourself")
     void updateTryingToContactYourself() {
         Contact contactYourself = contactService.findById(2L);
         contactYourself.setCreator(userService.findById(2L));
@@ -162,6 +177,7 @@ class ContactServiceTest {
     }
 
     @Test
+    @DisplayName("Successful deleting contact")
     void deleteSuccess() {
         contactService.delete(2L);
         assertThatThrownBy(() -> contactService.findById(2L))
@@ -169,6 +185,7 @@ class ContactServiceTest {
     }
 
     @Test
+    @DisplayName("Exception when we trying to delete not existing contact")
     void deleteNoSuchId() {
         assertThatThrownBy(() -> contactService.delete(3L))
                 .isInstanceOf(NoSuchElementException.class);

@@ -32,6 +32,12 @@ public class UserController {
         return userService.findAll();
     }
 
+    @GetMapping("/usersPage")
+    @PreAuthorize("hasAuthority('standard:permission')")
+    public Page<User> getAllUsers(Pageable pageable) {
+        return userService.findAll(pageable);
+    }
+
     @GetMapping("/users/{id}")
     @PreAuthorize("hasAuthority('standard:permission')")
     @ResponseStatus(HttpStatus.FOUND)

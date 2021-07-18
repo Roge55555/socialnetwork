@@ -8,6 +8,8 @@ import com.senla.project.socialnetwork.model.ChangePassword;
 import com.senla.project.socialnetwork.model.Role;
 import com.senla.project.socialnetwork.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +46,9 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public Page<User> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
 
     public User findById(Long id) {
         return userRepository.findById(id).orElseThrow(NoSuchElementException::new);

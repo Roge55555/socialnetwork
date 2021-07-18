@@ -6,6 +6,8 @@ import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.repository.CommunityRepository;
 import com.senla.project.socialnetwork.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,6 +29,10 @@ public class CommunityService {
 
     public List<Community> findAll() {
         return communityRepository.findAll();
+    }
+
+    public Page<Community> findAll(Pageable pageable) {
+        return communityRepository.findAll(pageable);
     }
 
     public Community findById(Long id) {

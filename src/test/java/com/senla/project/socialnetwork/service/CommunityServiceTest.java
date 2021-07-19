@@ -4,10 +4,13 @@ import com.senla.project.socialnetwork.entity.Community;
 import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
@@ -60,6 +63,13 @@ class CommunityServiceTest {
     void findAll() {
         final List<Community> communities = communityService.findAll();
         Assertions.assertEquals(2, communities.size());
+    }
+
+    @Test
+    @DisplayName("Successful showing all communities in pages")
+    void findAllWithPageable() {
+        final Page<Community> communities = communityService.findAll(Pageable.ofSize(10));
+        Assertions.assertEquals(2, communities.toList().size());
     }
 
     @Test

@@ -60,12 +60,12 @@ public class ContactService {
             cont.setContactRole(contact.getContactRole());
             return contactRepository.save(cont);
         })
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException(id));
     }
 
     public void delete(Long id) {
         if (contactRepository.findById(id).isEmpty()) {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException(id);
         }
         contactRepository.deleteById(id);
     }

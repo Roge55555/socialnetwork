@@ -51,7 +51,7 @@ public class UserService {
     }
 
     public User findById(Long id) {
-        return userRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        return userRepository.findById(id).orElseThrow(() -> new NoSuchElementException(id));
     }
 
     public User findByLogin(String login) {
@@ -89,14 +89,14 @@ public class UserService {
 
     public void delete(Long id) {
         if (userRepository.findById(id).isEmpty()) {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException(id);
         }
         userRepository.deleteById(id);
     }
 
     public User changePassword(Long id, ChangePassword password) throws NoSuchElementException, NotOldPasswordException {
         if (userRepository.findById(id).isEmpty()) {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException(id);
         } else if (new BCryptPasswordEncoder(12).matches(password.getOldPassword(), userRepository.findById(id).get().getPassword())) {
             return userRepository.findById(id).map(usr -> {
                 usr.setPassword(new BCryptPasswordEncoder(12).encode(password.getNewPassword()));

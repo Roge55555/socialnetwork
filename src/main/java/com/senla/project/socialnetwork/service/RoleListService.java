@@ -34,12 +34,12 @@ public class RoleListService {
             rl.setName(roleList.getName());
             return roleListRepository.save(rl);
         })
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException(id));
     }
 
     public void delete(Long id) {
         if (roleListRepository.findById(id).isEmpty()) {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException(id);
         }
         roleListRepository.deleteById(id);
     }

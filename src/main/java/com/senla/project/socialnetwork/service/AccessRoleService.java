@@ -25,11 +25,11 @@ public class AccessRoleService {
 //    }
 
     public AccessRole findById(Long id) {
-        return accessRoleRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        return accessRoleRepository.findById(id).orElseThrow(() -> new NoSuchElementException(id));
     }
 
     public AccessRole findByName(Role name) {
-        return accessRoleRepository.findByName(name).orElseThrow(NoSuchElementException::new);
+        return accessRoleRepository.findByName(name).orElseThrow(() -> new NoSuchElementException(name.name()));
     }
 
 //    public AccessRole update(Long id, AccessRole accessRole) {
@@ -43,7 +43,7 @@ public class AccessRoleService {
 //
 //    public void delete(Long id) {
 //        if (accessRoleRepository.findById(id).isEmpty()) {
-//            throw new NoSuchElementException();
+//            throw new NoSuchElementException(id);
 //        }
 //        accessRoleRepository.deleteById(id);
 //    }

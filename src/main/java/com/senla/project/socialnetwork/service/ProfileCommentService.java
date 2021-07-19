@@ -47,12 +47,12 @@ public class ProfileCommentService {
             pc.setCommentTxt(profileComment.getCommentTxt());
             return profileCommentRepository.save(pc);
         })
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException(id));
     }
 
     public void delete(Long id) {
         if (profileCommentRepository.findById(id).isEmpty()) {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException(id);
         }
         profileCommentRepository.deleteById(id);
     }

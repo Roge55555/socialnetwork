@@ -55,7 +55,7 @@ public class UserOfCommunityService {
 
     public void delete(Long id) {
         if (userOfCommunityRepository.findById(id).isEmpty()) {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException(id);
         }
         userOfCommunityRepository.deleteById(id);
     }

@@ -60,12 +60,12 @@ public class BlocklistService {
             bl.setBlockCause(blocklist.getBlockCause());
             return blocklistRepository.save(bl);
         })
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException(id));
     }
 
     public void delete(Long id) {
         if (blocklistRepository.findById(id).isEmpty()) {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException(id);
         }
         blocklistRepository.deleteById(id);
     }

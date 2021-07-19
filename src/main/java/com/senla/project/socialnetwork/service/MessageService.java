@@ -47,12 +47,12 @@ public class MessageService {
             mess.setMessageTxt(message.getMessageTxt());
             return messageRepository.save(mess);
         })
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException(id));
     }
 
     public void delete(Long id) {
         if (messageRepository.findById(id).isEmpty()) {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException(id);
         }
         messageRepository.deleteById(id);
     }

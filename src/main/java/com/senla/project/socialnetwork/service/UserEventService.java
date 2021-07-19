@@ -20,7 +20,7 @@ public class UserEventService {
 
     public UserEvent add(UserEvent userEvent) {
         if(userRepository.findById(userEvent.getUser().getId()).isEmpty())
-            throw new NoSuchElementException();
+            throw new NoSuchElementException(userEvent.getUser().getId());
         userEvent.setId(null);
         return userEventRepository.save(userEvent);
     }
@@ -42,12 +42,12 @@ public class UserEventService {
             ue.setDate(userEvent.getDate());
             return userEventRepository.save(ue);
         })
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException(id));
     }
 
     public void delete(Long id) {
         if (userEventRepository.findById(id).isEmpty()) {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException(id);
         }
         userEventRepository.deleteById(id);
     }

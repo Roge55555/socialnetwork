@@ -50,12 +50,12 @@ public class CommunityMessageService {
             comm.setTxt(communityMessage.getTxt());
             return communityMessageRepository.save(comm);
         })
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException(id));
     }
 
     public void delete(Long id) {
         if (communityMessageRepository.findById(id).isEmpty()) {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException(id);
         }
         communityMessageRepository.deleteById(id);
     }

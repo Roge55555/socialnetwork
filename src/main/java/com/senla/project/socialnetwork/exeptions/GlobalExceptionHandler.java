@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = NoSuchElementException.class)
     public ResponseEntity noSuchIdException(NoSuchElementException noSuchElementException) {
-        if(noSuchElementException.getLogin().isEmpty())
+        if(noSuchElementException.getLogin() == null)
             return new ResponseEntity(message2 + noSuchElementException.getId(), HttpStatus.BAD_REQUEST);
         else
             return new ResponseEntity(message22 + noSuchElementException.getLogin(), HttpStatus.BAD_REQUEST);

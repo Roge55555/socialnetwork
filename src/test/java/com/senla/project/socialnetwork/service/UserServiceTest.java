@@ -6,10 +6,13 @@ import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.exeptions.NotOldPasswordException;
 import com.senla.project.socialnetwork.model.ChangePassword;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -91,6 +94,13 @@ class UserServiceTest {
     void findAll() {
         final List<User> users = userService.findAll();
         Assertions.assertEquals(3, users.size());
+    }
+
+    @Test
+    @DisplayName("Successful showing all users in pages")
+    void findAllWithPageable() {
+        final Page<User> users = userService.findAll(Pageable.ofSize(10));
+        Assertions.assertEquals(3, users.toList().size());
     }
 
     @Test

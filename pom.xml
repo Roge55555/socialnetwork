@@ -90,6 +90,11 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -98,6 +103,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+					<finalName>socialnetwork0.5</finalName>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
@@ -106,19 +112,6 @@
 					</excludes>
 				</configuration>
 			</plugin>
-<!--			<plugin>-->
-<!--				<artifactId>maven-war-plugin</artifactId>-->
-<!--				<configuration>-->
-<!--					<attachClasses>true</attachClasses>-->
-<!--					<webXml>target/web.xml</webXml>-->
-<!--					<webResources>-->
-<!--						<resource>-->
-<!--							<directory>src/main</directory>-->
-<!--							<filtering>true</filtering>-->
-<!--						</resource>-->
-<!--					</webResources>-->
-<!--				</configuration>-->
-<!--			</plugin>-->
 		</plugins>
 	</build>
 

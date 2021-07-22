@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+							http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="02" author="rogE">
+        <comment>Inserting data</comment>
+        <insert tableName="access_role">
+            <column name="id" valueNumeric="1"/>
+            <column name="role_name" value="ADMIN"/>
+        </insert>
+        <insert tableName="access_role">
+            <column name="id" valueNumeric="2"/>
+            <column name="role_name" value="USER"/>
+        </insert>
+
+        <insert tableName="user">
+            <column name="id" valueNumeric="1"/>
+            <column name="login" value="rogE"/>
+            <column name="password" value="$2y$12$.ZAsJHbg3ZUcGe/oPF/STey9e2UGDzjQ3rFpCc7jt1TAShufFjBHC"/>
+            <column name="date_birth" valueDate="1998-05-26"/>
+            <column name="first_name" value="Egor"/>
+            <column name="last_name" value="Perehodko"/>
+            <column name="email" value="roge55555@gmail.com"/>
+            <column name="phone" value="+375293039973"/>
+            <column name="role" valueNumeric="1"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="is_blocked" valueBoolean="false"/>
+            <column name="registration_date" valueDate="2021-06-24"/>
+            <column name="website" value="null"/>
+            <column name="about_yourself" value="nothing special"/>
+            <column name="job_title" value="sysadmin"/>
+            <column name="work_phone" value="+375293039973"/>
+        </insert>
+        <insert tableName="user">
+            <column name="id" valueNumeric="2"/>
+            <column name="login" value="CtrogE"/>
+            <column name="password" value="$2y$12$cWWU.g2PIX8rrqxb4Jybr.N5.57dnwbiCU5CFIbQspce6yT/25brC"/>
+            <column name="date_birth" valueDate="1998-05-13"/>
+            <column name="first_name" value="Roge"/>
+            <column name="last_name" value="Ctrannik"/>
+            <column name="email" value="ctrannik555@gmail.com"/>
+            <column name="phone" value="+375333236700"/>
+            <column name="role" valueNumeric="1"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="is_blocked" valueBoolean="false"/>
+            <column name="registration_date" valueDate="2021-06-24"/>
+            <column name="website" value="vk.com"/>
+            <column name="about_yourself" value="null"/>
+            <column name="job_title" value="null"/>
+            <column name="work_phone" value="+375333236700"/>
+        </insert>
+        <insert tableName="user">
+            <column name="id" valueNumeric="3"/>
+            <column name="login" value="Roma666"/>
+            <column name="password" value="$2y$12$nA5jedTlkTE03eovTVVWxeQ0YLB1195XI6Hg/dlcu0bsth/mAHA5C"/>
+            <column name="date_birth" valueDate="1999-03-18"/>
+            <column name="first_name" value="Romann"/>
+            <column name="last_name" value="Ranshov"/>
+            <column name="email" value="sportzman@gmail.com"/>
+            <column name="phone" value="+375293486999"/>
+            <column name="role" valueNumeric="2"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="is_blocked" valueBoolean="false"/>
+            <column name="registration_date" valueDate="2021-06-28"/>
+            <column name="website" value="linkedin.com/rmn18"/>
+            <column name="about_yourself" value="msmc"/>
+            <column name="job_title" value="IP"/>
+            <column name="work_phone" value="+375335485698"/>
+        </insert>
+
+        <insert tableName="profile_comment">
+            <column name="id" valueNumeric="1"/>
+            <column name="profile_owner_id" valueNumeric="1"/>
+            <column name="user_id" valueNumeric="2"/>
+            <column name="date" valueDate="2021-07-05 11:23:50"/>
+            <column name="comment_txt" value="first comment"/>
+        </insert>
+        <insert tableName="profile_comment">
+            <column name="id" valueNumeric="2"/>
+            <column name="profile_owner_id" valueNumeric="2"/>
+            <column name="user_id" valueNumeric="3"/>
+            <column name="date" valueDate="2021-07-05 20:34:47"/>
+            <column name="comment_txt" value="second comment"/>
+        </insert>
+
+        <insert tableName="user_event">
+            <column name="id" valueNumeric="1"/>
+            <column name="user_id" valueNumeric="3"/>
+            <column name="name" value="birthday"/>
+            <column name="description" value="admin`s birthday"/>
+            <column name="date" valueDate="2022-05-26"/>
+        </insert>
+
+        <insert tableName="role_list">
+            <column name="id" valueNumeric="1"/>
+            <column name="name" value="Friend"/>
+        </insert>
+        <insert tableName="role_list">
+            <column name="id" valueNumeric="2"/>
+            <column name="name" value="Best Friend"/>
+        </insert>
+        <insert tableName="role_list">
+            <column name="id" valueNumeric="3"/>
+            <column name="name" value="Workmate"/>
+        </insert>
+        <insert tableName="role_list">
+            <column name="id" valueNumeric="4"/>
+            <column name="name" value="Director"/>
+        </insert>
+        <insert tableName="role_list">
+            <column name="id" valueNumeric="5"/>
+            <column name="name" value="Me ^_^"/>
+        </insert>
+
+        <insert tableName="contact">
+            <column name="id" valueNumeric="1"/>
+            <column name="creator_id" valueNumeric="2"/>
+            <column name="mate_id" valueNumeric="1"/>
+            <column name="date_connected" valueDate="2021-06-25"/>
+            <column name="contact_level" valueBoolean="true"/>
+            <column name="contact_role" valueNumeric="5"/>
+        </insert>
+        <insert tableName="contact">
+            <column name="id" valueNumeric="2"/>
+            <column name="creator_id" valueNumeric="3"/>
+            <column name="mate_id" valueNumeric="1"/>
+            <column name="date_connected" valueDate="2021-07-17"/>
+            <column name="contact_level" valueBoolean="false"/>
+            <column name="contact_role" valueNumeric="3"/>
+        </insert>
+
+        <insert tableName="message">
+            <column name="id" valueNumeric="1"/>
+            <column name="sender_id" valueNumeric="1"/>
+            <column name="receiver_id" valueNumeric="2"/>
+            <column name="date_created" valueDate="2021-06-25 17:45:31"/>
+            <column name="message_txt" value="hai"/>
+        </insert>
+        <insert tableName="message">
+            <column name="id" valueNumeric="2"/>
+            <column name="sender_id" valueNumeric="2"/>
+            <column name="receiver_id" valueNumeric="1"/>
+            <column name="date_created" valueDate="2021-06-25 17:47:27"/>
+            <column name="message_txt" value="hello"/>
+        </insert>
+        <insert tableName="message">
+            <column name="id" valueNumeric="3"/>
+            <column name="sender_id" valueNumeric="2"/>
+            <column name="receiver_id" valueNumeric="1"/>
+            <column name="date_created" valueDate="2021-06-25 17:47:51"/>
+            <column name="message_txt" value="how are you?"/>
+        </insert>
+        <insert tableName="message">
+            <column name="id" valueNumeric="4"/>
+            <column name="sender_id" valueNumeric="1"/>
+            <column name="receiver_id" valueNumeric="2"/>
+            <column name="date_created" valueDate="2021-06-25 17:48:27"/>
+            <column name="message_txt" value="shaking like hell on interview..."/>
+        </insert>
+        <insert tableName="message">
+            <column name="id" valueNumeric="5"/>
+            <column name="sender_id" valueNumeric="2"/>
+            <column name="receiver_id" valueNumeric="1"/>
+            <column name="date_created" valueDate="2021-06-25 17:47:33"/>
+            <column name="message_txt" value="=/"/>
+        </insert>
+
+        <insert tableName="community">
+            <column name="id" valueNumeric="1"/>
+            <column name="creator_id" valueNumeric="1"/>
+            <column name="name" value="admin`s home"/>
+            <column name="description" value="description....."/>
+            <column name="date_created" valueDate="2021-06-25"/>
+        </insert>
+        <insert tableName="community">
+            <column name="id" valueNumeric="2"/>
+            <column name="creator_id" valueNumeric="2"/>
+            <column name="name" value="free community"/>
+            <column name="description" value="description....."/>
+            <column name="date_created" valueDate="2021-07-10"/>
+        </insert>
+
+        <insert tableName="user_of_community">
+            <column name="id" valueNumeric="1"/>
+            <column name="community_id" valueNumeric="1"/>
+            <column name="user_id" valueNumeric="1"/>
+            <column name="date_entered" valueDate="2021-06-25"/>
+        </insert>
+        <insert tableName="user_of_community">
+            <column name="id" valueNumeric="2"/>
+            <column name="community_id" valueNumeric="1"/>
+            <column name="user_id" valueNumeric="2"/>
+            <column name="date_entered" valueDate="2021-06-25"/>
+        </insert>
+
+        <insert tableName="community_message">
+            <column name="id" valueNumeric="1"/>
+            <column name="creator" valueNumeric="1"/>
+            <column name="community_id" valueNumeric="1"/>
+            <column name="date" valueDate="2021-06-25 17:58:31"/>
+            <column name="txt" value="don`t know what to write..."/>
+        </insert>
+        <insert tableName="community_message">
+            <column name="id" valueNumeric="2"/>
+            <column name="creator" valueNumeric="2"/>
+            <column name="community_id" valueNumeric="1"/>
+            <column name="date" valueDate="2021-06-25 17:59:27"/>
+            <column name="txt" value="same, dude"/>
+        </insert>
+        <insert tableName="community_message">
+            <column name="id" valueNumeric="3"/>
+            <column name="creator" valueNumeric="2"/>
+            <column name="community_id" valueNumeric="1"/>
+            <column name="date" valueDate="2021-06-25 17:59:51"/>
+            <column name="txt" value="talk with yourself leads to mental problems"/>
+        </insert>
+
+        <insert tableName="blocklist">
+            <column name="id" valueNumeric="1"/>
+            <column name="community_id" valueNumeric="1"/>
+            <column name="who_baned" valueNumeric="3"/>
+            <column name="whom_baned" valueNumeric="1"/>
+            <column name="block_date" valueDate="2021-07-01"/>
+            <column name="block_cause" value="text Y.A.N.G.I!!!!!"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+							http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="01" author="rogE">
+
+        <createTable tableName="access_role">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="role_name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="user">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="login" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_birth" type="date"/>
+            <column name="first_name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="phone" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="role" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_role_user_ar" references="access_role(id)"/>
+            </column>
+            <column name="is_active" type="boolean"/>
+            <column name="is_blocked" type="boolean"/>
+            <column name="registration_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="website" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="about_yourself" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="job_title" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="work_phone" type="varchar(20)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="profile_comment">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="profile_owner_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_owner_comment_user" references="user(id)"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_user_comment_user" references="user(id)"/>
+            </column>
+            <column name="date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comment_txt" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="user_event">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_user_event_user" references="user(id)"/>
+            </column>
+            <column name="name" type="varchar(70)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date" type="date">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="role_list">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="contact">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="creator_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_creator_contact_user" references="user(id)"/>
+            </column>
+            <column name="mate_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_mate_contact_user" references="user(id)"/>
+            </column>
+            <column name="date_connected" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contact_level" type="boolean"/>
+            <column name="contact_role" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_cr_contact_rl" references="role_list(id)"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="message">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="sender_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_sender_message_user" references="user(id)"/>
+            </column>
+            <column name="receiver_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_receiver_message_user" references="user(id)"/>
+            </column>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message_txt" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="community">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="creator_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_creator_community_user" references="user(id)"/>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="date_created" type="date">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="user_of_community">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="community_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_community_uoc_community" references="community(id)"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_user_uoc_user" references="user(id)"/>
+            </column>
+            <column name="date_entered" type="date">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="community_message">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="creator" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_user_cm_user" references="user(id)"/>
+            </column>
+            <column name="community_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_community_cm_community" references="community(id)"/>
+            </column>
+            <column name="date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="txt" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="blocklist">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="community_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_community_blocklist_community"
+                             references="community(id)"/>
+            </column>
+            <column name="who_baned" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_wb_blocklist_user" references="user(id)"/>
+            </column>
+            <column name="whom_baned" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_wmb_blocklist_user" references="user(id)"/>
+            </column>
+            <column name="block_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="block_cause" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

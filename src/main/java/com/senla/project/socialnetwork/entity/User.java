@@ -2,18 +2,29 @@ package com.senla.project.socialnetwork.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 @AllArgsConstructor
@@ -22,7 +33,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "user")
-public class User{
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -91,61 +102,73 @@ public class User{
     @JsonIgnore
     @OneToMany(mappedBy = "whoBaned", cascade = CascadeType.REMOVE)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<Blocklist> whoBanedSet;
 
     @JsonIgnore
     @OneToMany(mappedBy = "whomBaned", cascade = CascadeType.REMOVE)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<Blocklist> whomBanedSet;
 
     @JsonIgnore
     @OneToMany(mappedBy = "creator", cascade = CascadeType.REMOVE)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<Contact> contactCreatorSet;
 
     @JsonIgnore
     @OneToMany(mappedBy = "mate", cascade = CascadeType.REMOVE)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<Contact> contactMateSet;
 
     @JsonIgnore
     @OneToMany(mappedBy = "profileOwner", cascade = CascadeType.REMOVE)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<ProfileComment> profileOwnerSet;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<ProfileComment> userProfileCommentSet;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<UserEvent> userEventSet;
 
     @JsonIgnore
     @OneToMany(mappedBy = "creator", cascade = CascadeType.REMOVE)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<Community> communityCreatorSet;
 
     @JsonIgnore
     @OneToMany(mappedBy = "creator", cascade = CascadeType.REMOVE)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<CommunityMessage> communityMessageCreatorSet;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<UserOfCommunity> userOfCommunityUserSet;
 
     @JsonIgnore
     @OneToMany(mappedBy = "sender", cascade = CascadeType.REMOVE)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<Message> messageSenderSet;
 
     @JsonIgnore
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.REMOVE)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<Message> messageReceiverSet;
 
 }

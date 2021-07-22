@@ -9,27 +9,27 @@ import java.sql.SQLIntegrityConstraintViolationException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-//    @Value(value = "${data.exception.message1}")
+    //TODO    @Value(value = "${data.exception.message1}")
+    //TODO    @Value(value = "${data.exception.message1:Error old password}")
+    //private String message1;
+    //TODO change names message* -> ...
     private String message1 = "Error old password.";
-//    @Value(value = "${data.exception.message2}")
+    //TODO    @Value(value = "${data.exception.message2}")
     private String message2 = "No such id - ";
-    //    @Value(value = "${data.exception.message22}")
-    private String message22 = "No such login - ";
-    //    @Value(value = "${data.exception.message222}")
+    //TODO    @Value(value = "${data.exception.message22}")
+    private String message22 = "No such ";
+    //TODO    @Value(value = "${data.exception.message222}")
     private String message222 = "No such email - ";
-    //    @Value(value = "${data.exception.message2222}")
+    //TODO    @Value(value = "${data.exception.message2222}")
     private String message2222 = "No such phone - ";
-//    @Value(value = "${data.exception.message3}")
+    //TODO    @Value(value = "${data.exception.message3}")
     private String message3 = "Account list is empty.";
-    //    @Value(value = "${data.exception.message3}")
+    //TODO    @Value(value = "${data.exception.message3}")
     private String message4 = "This login/email/phone is already in use, try another.";
-    //    @Value(value = "${data.exception.message3}")
+    //TODO    @Value(value = "${data.exception.message3}")
     private String message5 = "Such element already exist.";
-    //    @Value(value = "${data.exception.message3}")
+    //TODO    @Value(value = "${data.exception.message3}")
     private String message6 = "You can`t do it to yourself.";
-
-//    @Value(value = "${data.exception.message3}")
-//    private String message3 = "Exception";
 
     @ExceptionHandler(value = NotOldPasswordException.class)
     public ResponseEntity NotOldPasswordException(NotOldPasswordException notOldPasswordException) {
@@ -38,10 +38,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = NoSuchElementException.class)
     public ResponseEntity noSuchIdException(NoSuchElementException noSuchElementException) {
-        if(noSuchElementException.getLogin() == null)
+        if (noSuchElementException.getLogin() == null) {
             return new ResponseEntity(message2 + noSuchElementException.getId(), HttpStatus.BAD_REQUEST);
-        else
-            return new ResponseEntity(message22 + noSuchElementException.getLogin(), HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity(message22 + noSuchElementException.getLogin(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = NoAccountsException.class)
@@ -54,7 +55,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity(message4, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(value = SQLIntegrityConstraintViolationException.class)//TODO разобраться с применением исключения вне моего случая
+    @ExceptionHandler(value = SQLIntegrityConstraintViolationException.class)
+//TODO разобраться с применением исключения вне моего случая
     public ResponseEntity LoginAlreadyTakenException(SQLIntegrityConstraintViolationException sqlIntegrityConstraintViolationException) {
         return new ResponseEntity(message5, HttpStatus.CONFLICT);
     }

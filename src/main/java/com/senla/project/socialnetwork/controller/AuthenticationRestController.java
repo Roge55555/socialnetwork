@@ -5,6 +5,8 @@ import com.senla.project.socialnetwork.model.AuthenticationRequestDTO;
 import com.senla.project.socialnetwork.repository.UserRepository;
 import com.senla.project.socialnetwork.security.JwtTokenProvider;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,9 +15,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
@@ -30,25 +34,33 @@ public class AuthenticationRestController {
     private UserRepository userRepository;
     JwtTokenProvider tokenProvider;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationRestController.class);
+
     @PostMapping("/login")
-    public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequestDTO requestDTO){
+    public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequestDTO requestDTO) {
+        LOGGER.debug("Entering login endpoint");
         try {
-            String login = requestDTO.getLogin();
+            String login = requestDTO.getLogin(); //TODO почему не используется?!
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDTO.getLogin(), requestDTO.getPassword()));
-            User user = userRepository.findByLogin(requestDTO.getLogin()).orElseThrow(() -> new UsernameNotFoundException("No such user"));
+            User user = userRepository.findByLogin(requestDTO.getLogin()).orElseThrow(() -> {
+                LOGGER.error("No account with such login - " + requestDTO.getLogin());
+                return new UsernameNotFoundException("No such user");
+            });
             String token = tokenProvider.createToken(user.getLogin(), user.getPassword());
             Map<Object, Object> response = new HashMap<>();
             response.put("login", requestDTO.getLogin());
             response.put("token", token);
+            LOGGER.info("Logged in success - " + requestDTO.getLogin() + ".");
             return ResponseEntity.ok(response);
-        }catch (AuthenticationException e) {
+        } catch (AuthenticationException e) {
+            LOGGER.error("Invalid login/password!");
             return new ResponseEntity<>("Invalid login/password!", HttpStatus.FORBIDDEN);
         }
     }
 
-    @PostMapping("/logout")
+    @PostMapping("/logout") //TODO подумать про логи и подумать про аннулирование токена...
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void logout(HttpServletRequest request, HttpServletResponse response){
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
         SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
         securityContextLogoutHandler.logout(request, response, null);
     }

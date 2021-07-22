@@ -1,6 +1,5 @@
 package com.senla.project.socialnetwork.service;
 
-import com.senla.project.socialnetwork.entity.CommunityMessage;
 import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.entity.UserEvent;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;

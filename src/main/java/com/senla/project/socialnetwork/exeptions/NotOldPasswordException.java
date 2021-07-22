@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @AllArgsConstructor
 @NoArgsConstructor
 @ResponseStatus(code = HttpStatus.NOT_FOUND)
-public class NotOldPasswordException extends RuntimeException{
+public class NotOldPasswordException extends RuntimeException {
     private String message;
 }

@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @AllArgsConstructor
 @NoArgsConstructor
 @ResponseStatus(code = HttpStatus.CONFLICT)
-public class TryingRequestToYourselfException extends RuntimeException{
+public class TryingRequestToYourselfException extends RuntimeException {
     private String message;
 }

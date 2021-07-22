@@ -1,7 +1,6 @@
 package com.senla.project.socialnetwork.security;
 
 import com.senla.project.socialnetwork.entity.User;
-import com.senla.project.socialnetwork.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -16,10 +15,10 @@ import java.util.List;
 @AllArgsConstructor
 public class SecurityUser implements UserDetails {
 
-    @Getter(onMethod_= {@Override})
+    @Getter(onMethod_ = {@Override})
     private final String username;
 
-    @Getter(onMethod_= {@Override})
+    @Getter(onMethod_ = {@Override})
     private final String password;
 
     private final List<SimpleGrantedAuthority> authorities;
@@ -52,7 +51,7 @@ public class SecurityUser implements UserDetails {
         return isActive;
     }
 
-    public static UserDetails fromUser(User user){
+    public static UserDetails fromUser(User user) {
 
         return new org.springframework.security.core.userdetails.User(
                 user.getLogin(), user.getPassword(),

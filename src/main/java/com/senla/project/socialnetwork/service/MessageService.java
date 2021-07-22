@@ -1,11 +1,12 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.Message;
-import com.senla.project.socialnetwork.exeptions.NoAccountsException;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.repository.MessageRepository;
 import com.senla.project.socialnetwork.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,42 +19,73 @@ public class MessageService {
 
     private final UserRepository userRepository;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageService.class);
+
     public Message add(Message message) {
-        if(userRepository.findById(message.getSender().getId()).isEmpty() ||
-                userRepository.findById(message.getReceiver().getId()).isEmpty())
+        LOGGER.info("Trying to add message.");
+
+        if (userRepository.findById(message.getSender().getId()).isEmpty() ||
+                userRepository.findById(message.getReceiver().getId()).isEmpty()) {
+            LOGGER.error("Sender/Receiver do(es)n`t exist");
             throw new NoSuchElementException();
+        }
         message.setId(null);
-        return messageRepository.save(message);
+        final Message save = messageRepository.save(message);
+        LOGGER.info("Message added.");
+        return save;
     }
 
     public List<Message> findAll() {
+        LOGGER.info("Trying to show all messages.");
+        if (userRepository.findAll().isEmpty()) {
+            LOGGER.warn("Message`s list is empty!");
+        } else {
+            LOGGER.info("Message(s) found.");
+        }
         return messageRepository.findAll();
     }
 
     public Message findById(Long id) {
-        return messageRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        LOGGER.info("Trying to find message by id");
+        final Message message = messageRepository.findById(id).orElseThrow(() -> {
+            LOGGER.error("No element with such id - {}.", id);
+            return new NoSuchElementException(id);
+        });
+        LOGGER.info("Message found using id {}", message.getId());
+        return message;
     }
 
     public Message update(Long id, Message message) {
+        LOGGER.info("Trying to update message with id - {}.", id);
+        if (userRepository.findById(message.getSender().getId()).isEmpty() ||
+                userRepository.findById(message.getReceiver().getId()).isEmpty()) {
+            LOGGER.error("Sender/Receiver do(es)n`t exist");
+            throw new NoSuchElementException(id);
+        }
 
-        if(userRepository.findById(message.getSender().getId()).isEmpty() ||
-                userRepository.findById(message.getReceiver().getId()).isEmpty())
-            throw new NoSuchElementException();
 
         return messageRepository.findById(id).map(mess -> {
             mess.setSender(message.getSender());
             mess.setReceiver(message.getReceiver());
             mess.setDateCreated(message.getDateCreated());
             mess.setMessageTxt(message.getMessageTxt());
-            return messageRepository.save(mess);
+            final Message save = messageRepository.save(mess);
+            LOGGER.info("Message with id {} updated.", id);
+            return save;
         })
-                .orElseThrow(() -> new NoSuchElementException(id));
+                .orElseThrow(() -> {
+                    LOGGER.error("No element with such id - {}.", id);
+                    return new NoSuchElementException(id);
+                });
     }
 
     public void delete(Long id) {
+        LOGGER.info("Trying to delete message with id - {}.", id);
         if (messageRepository.findById(id).isEmpty()) {
+            LOGGER.error("No message with id - {}.", id);
             throw new NoSuchElementException(id);
         }
         messageRepository.deleteById(id);
+        LOGGER.info("Message with id - {} was deleted.", id);
     }
 }

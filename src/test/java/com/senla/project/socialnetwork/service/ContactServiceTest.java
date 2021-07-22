@@ -1,6 +1,5 @@
 package com.senla.project.socialnetwork.service;
 
-import com.senla.project.socialnetwork.entity.Blocklist;
 import com.senla.project.socialnetwork.entity.Contact;
 import com.senla.project.socialnetwork.entity.RoleList;
 import com.senla.project.socialnetwork.entity.User;
@@ -72,7 +71,7 @@ class ContactServiceTest {
     @DisplayName("Exception when we trying to add contact with not existing role")
     void addTryingToUseNotExistingRole() {
         Contact contactRole = contactService.findById(2L);
-        RoleList roleList= roleListService.findById(5L);
+        RoleList roleList = roleListService.findById(5L);
         roleList.setId(7L);
         contactRole.setContactRole(roleList);
         assertThatThrownBy(() -> contactService.add(contactRole))
@@ -159,7 +158,7 @@ class ContactServiceTest {
     @DisplayName("Exception when we trying to update role in contact to not existing")
     void updateTryingToUseNotExistingRole() {
         Contact contactRole = contactService.findById(2L);
-        RoleList roleList= roleListService.findById(5L);
+        RoleList roleList = roleListService.findById(5L);
         roleList.setId(7L);
         contactRole.setContactRole(roleList);
         assertThatThrownBy(() -> contactService.update(2L, contactRole))

@@ -8,6 +8,8 @@ import com.senla.project.socialnetwork.model.ChangePassword;
 import com.senla.project.socialnetwork.model.Role;
 import com.senla.project.socialnetwork.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,7 +26,10 @@ public class UserService {
 
     private final AccessRoleService accessRoleService;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+
     public User add(User user) {
+        LOGGER.info("Trying to add user.");
 
         user.setPassword(new BCryptPasswordEncoder(12).encode(user.getPassword()));
 
@@ -35,37 +40,64 @@ public class UserService {
 
         if (userRepository.findByLogin(user.getLogin()).isPresent() ||
                 userRepository.findByEmail(user.getEmail()).isPresent() ||
-                userRepository.findByPhone(user.getPhone()).isPresent())
+                userRepository.findByPhone(user.getPhone()).isPresent()) {
+            LOGGER.error("Login/Email/Phone already occupied");
             throw new LoginEmailPhoneAlreadyTakenException();
-
-
-        return userRepository.save(user);
+        }
+        final User save = userRepository.save(user);
+        LOGGER.info("User added.");
+        return save;
     }
 
     public List<User> findAll() {
+        LOGGER.info("Trying to show all users.");
+        if (userRepository.findAll().isEmpty()) {
+            LOGGER.warn("User`s list is empty!");
+        } else {
+            LOGGER.info("User(s) found.");
+        }
         return userRepository.findAll();
     }
 
     public Page<User> findAll(Pageable pageable) {
+        LOGGER.info("Trying to show all users in pages.");
+        if (userRepository.findAll().isEmpty())
+            LOGGER.warn("User`s list is empty!");
+        else
+            LOGGER.info("User(s) found.");
         return userRepository.findAll(pageable);
     }
 
     public User findById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new NoSuchElementException(id));
+        LOGGER.info("Trying to find user by id");
+        final User user = userRepository.findById(id).orElseThrow(() -> {
+            LOGGER.error("No element with such id - {}.", id);
+            return new NoSuchElementException(id);
+        });
+        LOGGER.info("User found using id {}", user.getId());
+        return user;
     }
 
     public User findByLogin(String login) {
-        return userRepository.findByLogin(login).orElseThrow(() -> new NoSuchElementException(login));
+        LOGGER.info("Trying to find user by login");
+        final User user = userRepository.findByLogin(login).orElseThrow(() -> {
+            LOGGER.error("No element with such login - {}.", login);
+            return new NoSuchElementException("login - " + login + ".");
+        });
+        LOGGER.info("User with login {} found.", user.getLogin());
+        return user;
     }
 
-    public User update(Long id, User user) throws NoSuchElementException {
 
+    public User update(Long id, User user) {
+        LOGGER.info("Trying to update user with id - {}.", id);
         if ((userRepository.findByLogin(user.getLogin()).isPresent() && userRepository.findById(id).isPresent() && !userRepository.findByLogin(user.getLogin()).get().getId().equals(id)) ||
                 (userRepository.findByEmail(user.getEmail()).isPresent() && userRepository.findById(id).isPresent() && !userRepository.findByEmail(user.getEmail()).get().getId().equals(id)) ||
-                (userRepository.findByPhone(user.getPhone()).isPresent() && userRepository.findById(id).isPresent() && !userRepository.findByPhone(user.getPhone()).get().getId().equals(id)))
+                (userRepository.findByPhone(user.getPhone()).isPresent() && userRepository.findById(id).isPresent() && !userRepository.findByPhone(user.getPhone()).get().getId().equals(id))) {
+            LOGGER.error("Login/Email/Phone already occupied" + id);
             throw new LoginEmailPhoneAlreadyTakenException();
-
-        return userRepository.save(userRepository.findById(id).map(usr ->
+        }
+        final User save = userRepository.save(userRepository.findById(id).map(usr ->
                 User.builder()
                         .id(id)
                         .login(user.getLogin())
@@ -84,26 +116,38 @@ public class UserService {
                         .jobTitle(user.getJobTitle())
                         .workPhone(user.getWorkPhone())
                         .build())
-                .orElseThrow(NoSuchElementException::new));
+                .orElseThrow(() -> {
+                    LOGGER.error("No element with such id - {}.", id);
+                    return new NoSuchElementException(id);
+                }));
+        LOGGER.info("User with id {} updated.", id);
+        return save;
     }
 
     public void delete(Long id) {
+        LOGGER.info("Trying to delete user with id - {}.", id);
         if (userRepository.findById(id).isEmpty()) {
+            LOGGER.error("No user with id - {}.", id);
             throw new NoSuchElementException(id);
         }
         userRepository.deleteById(id);
+        LOGGER.info("User with id - {} was deleted.", id);
     }
 
-    public User changePassword(Long id, ChangePassword password) throws NoSuchElementException, NotOldPasswordException {
+    public User changePassword(Long id, ChangePassword password) {
+        LOGGER.info("Trying to change password for User with id - {}.", id);
         if (userRepository.findById(id).isEmpty()) {
+            LOGGER.error("No user with id - {}", id);
             throw new NoSuchElementException(id);
         } else if (new BCryptPasswordEncoder(12).matches(password.getOldPassword(), userRepository.findById(id).get().getPassword())) {
             return userRepository.findById(id).map(usr -> {
                 usr.setPassword(new BCryptPasswordEncoder(12).encode(password.getNewPassword()));
-
-                return userRepository.save(usr);
+                final User save = userRepository.save(usr);
+                LOGGER.info("Password was changed.");
+                return save;
             }).orElseThrow();
         }
+        LOGGER.error("Not right old user password");
         throw new NotOldPasswordException();
     }
 

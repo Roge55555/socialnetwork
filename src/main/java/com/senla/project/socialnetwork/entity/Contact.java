@@ -4,14 +4,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "contact",uniqueConstraints = @UniqueConstraint(columnNames = {"creator_id", "mate_id"}))
+@Table(name = "contact", uniqueConstraints = @UniqueConstraint(columnNames = {"creator_id", "mate_id"}))
 public class Contact {
 
     @Id
@@ -31,7 +39,7 @@ public class Contact {
     private LocalDate dateConnected;
 
     @Column(name = "contact_level")
-    private Boolean contactLevel;//isAccepted
+    private Boolean contactLevel; //TODO isAccepted
 
     @ManyToOne
     @JoinColumn(name = "contact_role")

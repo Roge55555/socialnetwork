@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=socialnetworkdb
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=user
+    ports:
+      - 3307:3306
+
+  app:
+    image: openjdk:11.0.10
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/socialnetworkdb?createDatabaseIfNotExist=true
+    depends_on:
+      - db
+    volumes:
+      - .\target\socialnetwork0.5.war:/socialnetwork/target/socialnetwork0.5.war
+    entrypoint: [ "java", "-jar", "/socialnetwork/target/socialnetwork0.5.war" ]

@@ -31,7 +31,9 @@ import java.util.Map;
 public class AuthenticationRestController {
 
     private final AuthenticationManager authenticationManager;
-    private UserRepository userRepository;
+
+    private final UserRepository userRepository;
+
     JwtTokenProvider tokenProvider;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationRestController.class);
@@ -40,7 +42,6 @@ public class AuthenticationRestController {
     public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequestDTO requestDTO) {
         LOGGER.debug("Entering login endpoint");
         try {
-            String login = requestDTO.getLogin(); //TODO почему не используется?!
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDTO.getLogin(), requestDTO.getPassword()));
             User user = userRepository.findByLogin(requestDTO.getLogin()).orElseThrow(() -> {
                 LOGGER.error("No account with such login - " + requestDTO.getLogin());

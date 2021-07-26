@@ -1,7 +1,7 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.User;
-import com.senla.project.socialnetwork.exeptions.LoginEmailPhoneAlreadyTakenException;
+import com.senla.project.socialnetwork.exeptions.DataAlreadyTakenException;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.exeptions.NotOldPasswordException;
 import com.senla.project.socialnetwork.model.ChangePassword;
@@ -67,7 +67,7 @@ class UserServiceTest {
         User userLogin = getUser();
         userLogin.setLogin("rogE");
         assertThatThrownBy(() -> userService.add(userLogin))
-                .isInstanceOf(LoginEmailPhoneAlreadyTakenException.class);
+                .isInstanceOf(DataAlreadyTakenException.class);
     }
 
     @Test
@@ -76,7 +76,7 @@ class UserServiceTest {
         User userEmail = getUser();
         userEmail.setEmail("sportzman@gmail.com");
         assertThatThrownBy(() -> userService.add(userEmail))
-                .isInstanceOf(LoginEmailPhoneAlreadyTakenException.class);
+                .isInstanceOf(DataAlreadyTakenException.class);
     }
 
     @Test
@@ -85,7 +85,7 @@ class UserServiceTest {
         User userPhone = getUser();
         userPhone.setPhone("+375333236700");
         assertThatThrownBy(() -> userService.add(userPhone))
-                .isInstanceOf(LoginEmailPhoneAlreadyTakenException.class);
+                .isInstanceOf(DataAlreadyTakenException.class);
     }
 
     @Test
@@ -157,7 +157,7 @@ class UserServiceTest {
         User userLogin = userService.findById(2L);
         userLogin.setLogin("rogE");
         assertThatThrownBy(() -> userService.update(2L, userLogin))
-                .isInstanceOf(LoginEmailPhoneAlreadyTakenException.class);
+                .isInstanceOf(DataAlreadyTakenException.class);
     }
 
     @Test
@@ -166,7 +166,7 @@ class UserServiceTest {
         User userEmail = userService.findById(1L);
         userEmail.setEmail("sportzman@gmail.com");
         assertThatThrownBy(() -> userService.update(1L, userEmail))
-                .isInstanceOf(LoginEmailPhoneAlreadyTakenException.class);
+                .isInstanceOf(DataAlreadyTakenException.class);
     }
 
     @Test
@@ -175,7 +175,7 @@ class UserServiceTest {
         User userPhone = userService.findById(1L);
         userPhone.setPhone("+375293486999");
         assertThatThrownBy(() -> userService.update(1L, userPhone))
-                .isInstanceOf(LoginEmailPhoneAlreadyTakenException.class);
+                .isInstanceOf(DataAlreadyTakenException.class);
     }
 
     @Test

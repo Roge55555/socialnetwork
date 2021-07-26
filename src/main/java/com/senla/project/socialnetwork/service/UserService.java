@@ -1,7 +1,7 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.User;
-import com.senla.project.socialnetwork.exeptions.LoginEmailPhoneAlreadyTakenException;
+import com.senla.project.socialnetwork.exeptions.DataAlreadyTakenException;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.exeptions.NotOldPasswordException;
 import com.senla.project.socialnetwork.model.ChangePassword;
@@ -42,7 +42,7 @@ public class UserService {
                 userRepository.findByEmail(user.getEmail()).isPresent() ||
                 userRepository.findByPhone(user.getPhone()).isPresent()) {
             LOGGER.error("Login/Email/Phone already occupied");
-            throw new LoginEmailPhoneAlreadyTakenException();
+            throw new DataAlreadyTakenException();
         }
         final User save = userRepository.save(user);
         LOGGER.info("User added.");
@@ -95,7 +95,7 @@ public class UserService {
                 (userRepository.findByEmail(user.getEmail()).isPresent() && userRepository.findById(id).isPresent() && !userRepository.findByEmail(user.getEmail()).get().getId().equals(id)) ||
                 (userRepository.findByPhone(user.getPhone()).isPresent() && userRepository.findById(id).isPresent() && !userRepository.findByPhone(user.getPhone()).get().getId().equals(id))) {
             LOGGER.error("Login/Email/Phone already occupied" + id);
-            throw new LoginEmailPhoneAlreadyTakenException();
+            throw new DataAlreadyTakenException();
         }
         final User save = userRepository.save(userRepository.findById(id).map(usr ->
                 User.builder()
@@ -134,21 +134,23 @@ public class UserService {
         LOGGER.info("User with id - {} was deleted.", id);
     }
 
-    public User changePassword(Long id, ChangePassword password) {
+    public void changePassword(Long id, ChangePassword password) {
         LOGGER.info("Trying to change password for User with id - {}.", id);
         if (userRepository.findById(id).isEmpty()) {
             LOGGER.error("No user with id - {}", id);
             throw new NoSuchElementException(id);
         } else if (new BCryptPasswordEncoder(12).matches(password.getOldPassword(), userRepository.findById(id).get().getPassword())) {
-            return userRepository.findById(id).map(usr -> {
+            userRepository.findById(id).map(usr -> {
                 usr.setPassword(new BCryptPasswordEncoder(12).encode(password.getNewPassword()));
                 final User save = userRepository.save(usr);
                 LOGGER.info("Password was changed.");
                 return save;
             }).orElseThrow();
         }
-        LOGGER.error("Not right old user password");
-        throw new NotOldPasswordException();
+        else {
+            LOGGER.error("Not right old user password");
+            throw new NotOldPasswordException();
+        }
     }
 
 }

@@ -1,13 +1,11 @@
 package com.senla.project.socialnetwork.exeptions;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @AllArgsConstructor
-@NoArgsConstructor
-@ResponseStatus(code = HttpStatus.NOT_FOUND)
-public class NoAccountsException extends RuntimeException {
-    private String message;
+
+@ResponseStatus(code = HttpStatus.CONFLICT)
+public class DataAlreadyTakenException extends RuntimeException {
 }

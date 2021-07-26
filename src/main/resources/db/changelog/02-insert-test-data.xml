@@ -26,7 +26,7 @@
             <column name="email" value="roge55555@gmail.com"/>
             <column name="phone" value="+375293039973"/>
             <column name="role" valueNumeric="1"/>
-            <column name="is_active" valueBoolean="true"/>
+            <column name="is_active" valueBoolean="false"/>
             <column name="is_blocked" valueBoolean="false"/>
             <column name="registration_date" valueDate="2021-06-24"/>
             <column name="website" value="null"/>
@@ -44,7 +44,7 @@
             <column name="email" value="ctrannik555@gmail.com"/>
             <column name="phone" value="+375333236700"/>
             <column name="role" valueNumeric="1"/>
-            <column name="is_active" valueBoolean="true"/>
+            <column name="is_active" valueBoolean="false"/>
             <column name="is_blocked" valueBoolean="false"/>
             <column name="registration_date" valueDate="2021-06-24"/>
             <column name="website" value="vk.com"/>
@@ -62,7 +62,7 @@
             <column name="email" value="sportzman@gmail.com"/>
             <column name="phone" value="+375293486999"/>
             <column name="role" valueNumeric="2"/>
-            <column name="is_active" valueBoolean="true"/>
+            <column name="is_active" valueBoolean="false"/>
             <column name="is_blocked" valueBoolean="false"/>
             <column name="registration_date" valueDate="2021-06-28"/>
             <column name="website" value="linkedin.com/rmn18"/>

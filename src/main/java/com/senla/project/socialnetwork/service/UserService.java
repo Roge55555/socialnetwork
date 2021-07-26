@@ -34,7 +34,7 @@ public class UserService {
         user.setPassword(new BCryptPasswordEncoder(12).encode(user.getPassword()));
 
         user.setRole(accessRoleService.findByName(Role.USER));
-        user.setIsActive(true);
+        user.setIsActive(false);
         user.setIsBlocked(false);
         user.setRegistrationDate(LocalDate.now());
 

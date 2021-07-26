@@ -6,19 +6,19 @@ values (1, 'ADMIN'),
 insert into `user` (id, login, `password`, date_birth, first_name, last_name, email, phone, `role`, is_active,
                     is_blocked, registration_date, website, about_yourself, job_title, work_phone)
 values (1, 'rogE', '$2y$12$.ZAsJHbg3ZUcGe/oPF/STey9e2UGDzjQ3rFpCc7jt1TAShufFjBHC', '1998-05-26', 'Egor', 'Perehodko',
-        'roge55555@gmail.com', '+375293039973', 1, true, false, '2021-06-24', null, 'nothing special', 'sysadmin', '+375293039973');
+        'roge55555@gmail.com', '+375293039973', 1, false, false, '2021-06-24', null, 'nothing special', 'sysadmin', '+375293039973');
 
 -- password: 131313
 insert into `user` (id, login, `password`, date_birth, first_name, last_name, email, phone, `role`, is_active,
                     is_blocked, registration_date, website, about_yourself, job_title, work_phone)
 values (2, 'CtrogE', '$2y$12$cWWU.g2PIX8rrqxb4Jybr.N5.57dnwbiCU5CFIbQspce6yT/25brC', '1998-05-13', 'Roge', 'Ctrannik',
-        'ctrannik555@gmail.com', '+375333236700', 1, true, false, '2021-06-24', 'vk.com',null, null, '+375333236700');
+        'ctrannik555@gmail.com', '+375333236700', 1, false, false, '2021-06-24', 'vk.com',null, null, '+375333236700');
 
 -- password: 54862
 insert into `user` (id, login, `password`, date_birth, first_name, last_name, email, phone, `role`, is_active,
                     is_blocked, registration_date, website, about_yourself, job_title, work_phone)
 values (3, 'Roma666', '$2y$12$nA5jedTlkTE03eovTVVWxeQ0YLB1195XI6Hg/dlcu0bsth/mAHA5C', '1999-03-18', 'Romann', 'Ranshov',
-        'sportzman@gmail.com', '+375293486999', 2, true, false, '2021-06-28', 'linkedin.com/rmn18', 'msmc', 'IP', '+375335485698');
+        'sportzman@gmail.com', '+375293486999', 2, false, false, '2021-06-28', 'linkedin.com/rmn18', 'msmc', 'IP', '+375335485698');
 
 insert into profile_comment (id, profile_owner_id,  user_id, `date`, comment_txt) values (1, 1, 2, '2021-07-05 11:23:50', 'first comment');
 insert into profile_comment (id, profile_owner_id,  user_id, `date`, comment_txt) values (2, 2, 3, '2021-07-05 20:34:47', 'second comment');

@@ -52,6 +52,9 @@ public class AuthenticationRestController {
             response.put("login", requestDTO.getLogin());
             response.put("token", token);
             LOGGER.info("Logged in success - " + requestDTO.getLogin() + ".");
+            User user_active = userRepository.findByLogin(requestDTO.getLogin()).get();
+            user_active.setIsActive(true);
+            userRepository.save(user_active);
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
             LOGGER.error("Invalid login/password!");
@@ -59,10 +62,19 @@ public class AuthenticationRestController {
         }
     }
 
-    @PostMapping("/logout") //TODO подумать про логи и подумать про аннулирование токена...
+    @PostMapping("/logout")
     @PreAuthorize("hasAuthority('standard:permission')")
     public void logout(HttpServletRequest request, HttpServletResponse response) {
+        String token = tokenProvider.resolveToken(request);
+
+
+        User user_active = userRepository.findByLogin(tokenProvider.getLogin(token)).get();
+        user_active.setIsActive(false);
+        userRepository.save(user_active);
+
         SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
         securityContextLogoutHandler.logout(request, response, null);
+
+
     }
 }

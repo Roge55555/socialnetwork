@@ -21,4 +21,5 @@ services:
       - db
     volumes:
       - .\target\socialnetwork0.5.war:/socialnetwork/target/socialnetwork0.5.war
+      - .\logs\:/logs/
     entrypoint: [ "java", "-jar", "/socialnetwork/target/socialnetwork0.5.war" ]

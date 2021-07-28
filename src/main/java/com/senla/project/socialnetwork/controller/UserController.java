@@ -1,7 +1,7 @@
 package com.senla.project.socialnetwork.controller;
 
-import com.senla.project.socialnetwork.controller.dto.UserAddDTO;
-import com.senla.project.socialnetwork.controller.dto.UserUpdateDTO;
+import com.senla.project.socialnetwork.model.dto.UserAddDTO;
+import com.senla.project.socialnetwork.model.dto.UserUpdateDTO;
 import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.exeptions.NotOldPasswordException;

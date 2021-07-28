@@ -45,14 +45,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(noSuchLoginMessage + noSuchElementException.getLogin(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(value = DataAlreadyTakenException.class) //TODO нужны и дата и элемент?!
+    @ExceptionHandler(value = DataAlreadyTakenException.class)
     public ResponseEntity<String> DataAlreadyTaken(DataAlreadyTakenException dataAlreadyTakenException) {
         return new ResponseEntity<>(dataAlreadyTakenMessage, HttpStatus.CONFLICT);
-    }
-
-    @ExceptionHandler(value = SQLIntegrityConstraintViolationException.class) //TODO нужны и дата и элемент?!
-    public ResponseEntity<String> ElementAlreadyTaken(SQLIntegrityConstraintViolationException sqlIntegrityConstraintViolationException) {
-        return new ResponseEntity<>(elementAlreadyTakenMessage, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(value = TryingRequestToYourselfException.class)

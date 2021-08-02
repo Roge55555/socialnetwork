@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)//включает AOP для authority
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtConfigure jwtConfigure;
@@ -26,11 +26,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()//межсайтовая подделка запроса
 
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)//запрет на использование сессий в любом виде
                 .and()
 
-                .authorizeRequests()
-                .antMatchers("/").permitAll()
+                .authorizeRequests()//ограничивае доступ на основе HttpServletRequest
 
                 .antMatchers("/auth/login").permitAll()
                 .antMatchers("/registration").permitAll()
@@ -45,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
+    public AuthenticationManager authenticationManagerBean() throws Exception {//контейнер для поставщиков аутентификации
         return super.authenticationManagerBean();
     }
 

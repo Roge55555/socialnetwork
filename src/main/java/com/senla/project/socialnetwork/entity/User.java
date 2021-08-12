@@ -77,12 +77,6 @@ public class User {
     @JoinColumn(name = "role")
     private AccessRole role;
 
-    @Column(name = "is_active")
-    private Boolean isActive;
-
-    @Column(name = "is_blocked")
-    private Boolean isBlocked;
-
     @Column(name = "registration_date")
     private LocalDate registrationDate;
 

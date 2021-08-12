@@ -38,8 +38,6 @@ CREATE TABLE `user`
     email             VARCHAR(255) NOT NULL UNIQUE,
     phone             VARCHAR(20)  NOT NULL UNIQUE,
     `role`            bigint       NOT NULL,
-    is_active         BOOL DEFAULT false,
-    is_blocked        BOOL DEFAULT false,
     registration_date date         NOT NULL,
     website           VARCHAR(255) NULL,
     about_yourself    VARCHAR(255) NULL,
@@ -49,15 +47,15 @@ CREATE TABLE `user`
 );
 insert into `user`
 values (1, 'rogE', '$2y$12$.ZAsJHbg3ZUcGe/oPF/STey9e2UGDzjQ3rFpCc7jt1TAShufFjBHC', '1998-05-26', 'Egor', 'Perehodko',
-        'roge55555@gmail.com', '+375293039973', 1, false, false, '2021-06-24', null,
+        'roge55555@gmail.com', '+375293039973', 1, '2021-06-24', null,
         'nothing special', 'sysadmin', '+375293039973');
 insert into `user`
 values (2, 'CtrogE', '$2y$12$cWWU.g2PIX8rrqxb4Jybr.N5.57dnwbiCU5CFIbQspce6yT/25brC', '1998-05-13', 'Roge', 'Ctrannik',
-        'ctrannik555@gmail.com', '+375333236700', 1, false, false, '2021-06-24', 'vk.com',
+        'ctrannik555@gmail.com', '+375333236700', 1, '2021-06-24', 'vk.com',
         null, null, '+375333236700');
 insert into `user`
 values (3, 'Roma666', '$2y$12$nA5jedTlkTE03eovTVVWxeQ0YLB1195XI6Hg/dlcu0bsth/mAHA5C', '1999-03-18', 'Romann', 'Ranshov',
-        'sportzman@gmail.com', '+375293486999', 2, false, false, '2021-06-28', 'linkedin.com/rmn18',
+        'sportzman@gmail.com', '+375293486999', 2, '2021-06-28', 'linkedin.com/rmn18',
         'msmc', 'IP', '+375335485698');
 
 CREATE TABLE profile_comment

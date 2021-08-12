@@ -6,14 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,14 +26,4 @@ public class AuthenticationRestController {
         return authenticationRestService.login(requestDTO);
     }
 
-    @PostMapping("/logout")
-    @PreAuthorize("hasAuthority('standard:permission')")
-    public void logout(HttpServletRequest request, HttpServletResponse response) {
-        authenticationRestService.logout(request);
-
-//        SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
-//        securityContextLogoutHandler.logout(request, response, null);
-
-
-    }
 }

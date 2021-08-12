@@ -41,8 +41,6 @@ class UserServiceTest {
         user.setEmail("greg@mail.ru");
         user.setPhone("+3358885522");
         user.setRole(accessRoleService.findById(1L));
-        user.setIsActive(true);
-        user.setIsBlocked(false);
         user.setRegistrationDate(LocalDate.now());
         user.setWebsite("www.refopl.org");
         user.setAboutYourself("about yourself3");

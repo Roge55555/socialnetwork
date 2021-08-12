@@ -4,6 +4,7 @@ import com.senla.project.socialnetwork.exeptions.JwtAuthenticationException;
 import com.senla.project.socialnetwork.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
@@ -32,8 +33,10 @@ public class JwtTokenFilter extends GenericFilterBean {
             if (token != null && jwtTokenProvider.validateToken(token)) {
 
                 Authentication authentication = jwtTokenProvider.getAuthentication(token);
+
                 if (authentication != null) {
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    SecurityContext context = SecurityContextHolder.getContext();
+                    context.setAuthentication(authentication);
                 }
             }
         } catch (JwtAuthenticationException e) {
@@ -41,6 +44,7 @@ public class JwtTokenFilter extends GenericFilterBean {
             ((HttpServletResponse) response).sendError(e.getHttpStatus().value());
             throw new JwtAuthenticationException("JWT token invalid/expire");
         }
+
         chain.doFilter(request, response);
     }
 }

@@ -42,8 +42,6 @@
             <column name="role" type="bigint">
                 <constraints nullable="false" foreignKeyName="fk_role_user_ar" references="access_role(id)"/>
             </column>
-            <column name="is_active" type="boolean"/>
-            <column name="is_blocked" type="boolean"/>
             <column name="registration_date" type="date">
                 <constraints nullable="false"/>
             </column>

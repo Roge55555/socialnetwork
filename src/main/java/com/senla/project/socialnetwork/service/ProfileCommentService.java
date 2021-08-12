@@ -1,91 +1,19 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.ProfileComment;
-import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
-import com.senla.project.socialnetwork.repository.ProfileCommentRepository;
-import com.senla.project.socialnetwork.repository.UserRepository;
-import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-@AllArgsConstructor
-public class ProfileCommentService {
+public interface ProfileCommentService {
 
-    private final ProfileCommentRepository profileCommentRepository;
+    ProfileComment add(ProfileComment profileComment);
 
-    private final UserRepository userRepository;
+    List<ProfileComment> findAll();
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileCommentService.class);
+    ProfileComment findById(Long id);
 
-    public ProfileComment add(ProfileComment profileComment) {
-        LOGGER.info("Trying to add comment.");
+    ProfileComment update(Long id, ProfileComment profileComment);
 
-        if (userRepository.findById(profileComment.getUser().getId()).isEmpty() ||
-                userRepository.findById(profileComment.getProfileOwner().getId()).isEmpty()) {
-            LOGGER.error("Profile owner/Sender do(es)n`t exist");
-            throw new NoSuchElementException();
-        }
-        profileComment.setId(null);
-        ProfileComment save = profileCommentRepository.save(profileComment);
-        LOGGER.info("Comment added.");
-        return save;
-    }
+    void delete(Long id);
 
-    public List<ProfileComment> findAll() {
-        LOGGER.info("Trying to show all comments.");
-        if (profileCommentRepository.findAll().isEmpty()) {
-            LOGGER.warn("Comment`s list is empty!");
-        } else {
-            LOGGER.info("Comment(s) found.");
-        }
-        return profileCommentRepository.findAll();
-    }
-
-    public ProfileComment findById(Long id) {
-        LOGGER.info("Trying to find comment by id");
-        final ProfileComment comment = profileCommentRepository.findById(id).orElseThrow(() -> {
-            LOGGER.error("No element with such id - {}.", id);
-            return new NoSuchElementException(id);
-        });
-        LOGGER.info("Comment found using id {}", comment.getId());
-        return comment;
-    }
-
-    public ProfileComment update(Long id, ProfileComment profileComment) {
-        LOGGER.info("Trying to update comment with id - {}.", id);
-        if (userRepository.findById(profileComment.getUser().getId()).isEmpty() ||
-                userRepository.findById(profileComment.getProfileOwner().getId()).isEmpty()) {
-            LOGGER.error("Profile owner/Sender do(es)n`t exist");
-            throw new NoSuchElementException();
-        }
-
-
-        return profileCommentRepository.findById(id).map(pc -> {
-            pc.setProfileOwner(profileComment.getProfileOwner());
-            pc.setUser(profileComment.getUser());
-            pc.setDate(profileComment.getDate());
-            pc.setCommentTxt(profileComment.getCommentTxt());
-            ProfileComment save = profileCommentRepository.save(pc);
-            LOGGER.info("Comment with id {} updated.", id);
-            return save;
-        })
-                .orElseThrow(() -> {
-                    LOGGER.error("No element with such id - {}.", id);
-                    return new NoSuchElementException(id);
-                });
-    }
-
-    public void delete(Long id) {
-        LOGGER.info("Trying to delete comment with id - {}.", id);
-        if (profileCommentRepository.findById(id).isEmpty()) {
-            LOGGER.error("No comment with id - {}.", id);
-            throw new NoSuchElementException(id);
-        }
-        profileCommentRepository.deleteById(id);
-        LOGGER.info("Comment with id - {} was deleted.", id);
-    }
 }

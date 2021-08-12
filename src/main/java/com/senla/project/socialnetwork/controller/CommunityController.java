@@ -2,7 +2,7 @@ package com.senla.project.socialnetwork.controller;
 
 import com.senla.project.socialnetwork.entity.Community;
 import com.senla.project.socialnetwork.service.CommunityService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -23,9 +23,10 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/")
 public class CommunityController {
+
     private final CommunityService communityService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CommunityController.class);

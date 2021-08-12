@@ -2,7 +2,7 @@ package com.senla.project.socialnetwork.controller;
 
 import com.senla.project.socialnetwork.entity.AccessRole;
 import com.senla.project.socialnetwork.service.AccessRoleService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/")
 public class AccessRoleController {
 

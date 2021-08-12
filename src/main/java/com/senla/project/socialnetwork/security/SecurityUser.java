@@ -23,32 +23,29 @@ public class SecurityUser implements UserDetails {
 
     private final List<SimpleGrantedAuthority> authorities;
 
-    private final boolean isActive;
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
     }
 
-
     @Override
     public boolean isAccountNonExpired() {
-        return isActive;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return isActive;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return isActive;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return isActive;
+        return true;
     }
 
     public static UserDetails fromUser(User user) {

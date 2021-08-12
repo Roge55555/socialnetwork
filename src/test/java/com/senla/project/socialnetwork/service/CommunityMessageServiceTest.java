@@ -4,10 +4,10 @@ import com.senla.project.socialnetwork.entity.Community;
 import com.senla.project.socialnetwork.entity.CommunityMessage;
 import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -19,16 +19,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @SpringBootTest
 @Sql(scripts = "classpath:data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = "classpath:clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@RequiredArgsConstructor
 class CommunityMessageServiceTest {
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    CommunityService communityService;
+    private final CommunityService communityService;
 
-    @Autowired
-    CommunityMessageService communityMessageService;
+    private final CommunityMessageService communityMessageService;
 
 
     @Test

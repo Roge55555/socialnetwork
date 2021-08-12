@@ -4,10 +4,10 @@ import com.senla.project.socialnetwork.entity.Community;
 import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.entity.UserOfCommunity;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -19,16 +19,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @SpringBootTest
 @Sql(scripts = "classpath:data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = "classpath:clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@RequiredArgsConstructor
 class UserOfCommunityServiceTest {
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    CommunityService communityService;
+    private final CommunityService communityService;
 
-    @Autowired
-    UserOfCommunityService userOfCommunityService;
+    private final UserOfCommunityService userOfCommunityService;
 
 
     @Test
@@ -83,49 +81,6 @@ class UserOfCommunityServiceTest {
     @DisplayName("Exception when we trying to find not existing subscription by id")
     void findByIdException() {
         assertThatThrownBy(() -> userOfCommunityService.findById(7L))
-                .isInstanceOf(NoSuchElementException.class);
-    }
-
-    @Test
-    @DisplayName("Successful updating subscription by his id")
-    void updateSuccess() {
-        UserOfCommunity subscriber = userOfCommunityService.findById(2L);
-        subscriber.setUser(userService.findById(3L));
-        subscriber.setCommunity(communityService.findById(2L));
-        userOfCommunityService.update(2L, subscriber);
-        Assertions.assertEquals(subscriber, userOfCommunityService.findById(2L));
-
-    }
-
-    @Test
-    @DisplayName("Exception when we trying to update not existing subscription")
-    void updateNoSuchElement() {
-        UserOfCommunity subscriber = userOfCommunityService.findById(2L);
-        subscriber.setUser(userService.findById(3L));
-        subscriber.setCommunity(communityService.findById(2L));
-        assertThatThrownBy(() -> userOfCommunityService.update(12L, subscriber))
-                .isInstanceOf(NoSuchElementException.class);
-    }
-
-    @Test
-    @DisplayName("Exception when we trying to update subscriber to a not existing")
-    void updateTryingToUseNotExistingUser() {
-        UserOfCommunity subscriberUser = userOfCommunityService.findById(1L);
-        User user = userService.findById(3L);
-        user.setId(5L);
-        subscriberUser.setUser(user);
-        assertThatThrownBy(() -> userOfCommunityService.update(1L, subscriberUser))
-                .isInstanceOf(NoSuchElementException.class);
-    }
-
-    @Test
-    @DisplayName("Exception when we trying to update community of subscription to a not existing")
-    void updateTryingToUseNotExistingCommunity() {
-        UserOfCommunity subscriberCommunity = userOfCommunityService.findById(1L);
-        Community community = communityService.findById(2L);
-        community.setId(4L);
-        subscriberCommunity.setCommunity(community);
-        assertThatThrownBy(() -> userOfCommunityService.update(1L, subscriberCommunity))
                 .isInstanceOf(NoSuchElementException.class);
     }
 

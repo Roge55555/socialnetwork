@@ -1,13 +1,13 @@
 package com.senla.project.socialnetwork.controller;
 
-import com.senla.project.socialnetwork.model.dto.UserAddDTO;
-import com.senla.project.socialnetwork.model.dto.UserUpdateDTO;
 import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.exeptions.NotOldPasswordException;
 import com.senla.project.socialnetwork.model.ChangePassword;
+import com.senla.project.socialnetwork.model.dto.UserAddDTO;
+import com.senla.project.socialnetwork.model.dto.UserUpdateDTO;
 import com.senla.project.socialnetwork.service.UserService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -28,10 +28,11 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.List;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/")
 public class UserController {
+
     private final UserService userService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);

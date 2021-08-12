@@ -1,9 +1,8 @@
 package com.senla.project.socialnetwork.controller;
 
 import com.senla.project.socialnetwork.model.AuthenticationRequestDTO;
-import com.senla.project.socialnetwork.repository.UserRepository;
 import com.senla.project.socialnetwork.service.AuthenticationRestService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthenticationRestController {
 

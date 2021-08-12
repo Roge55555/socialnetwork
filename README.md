@@ -1,8 +1,8 @@
-#Socialnetwork
+# Socialnetwork
 
-###Senla Test Project
+### Senla Test Project
 
-##QUICK START
+## QUICK START
 
     - Check  
            

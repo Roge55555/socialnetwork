@@ -2,7 +2,7 @@ package com.senla.project.socialnetwork.controller;
 
 import com.senla.project.socialnetwork.entity.UserEvent;
 import com.senla.project.socialnetwork.service.UserEventService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -21,9 +21,10 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/")
 public class UserEventController {
+
     private final UserEventService userEventService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserEventController.class);

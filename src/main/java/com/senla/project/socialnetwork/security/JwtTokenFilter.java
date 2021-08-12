@@ -2,7 +2,7 @@ package com.senla.project.socialnetwork.security;
 
 import com.senla.project.socialnetwork.exeptions.JwtAuthenticationException;
 import com.senla.project.socialnetwork.repository.UserRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class JwtTokenFilter extends GenericFilterBean {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -29,7 +29,8 @@ public class JwtTokenFilter extends GenericFilterBean {
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
 
         try {
-            if (token != null && jwtTokenProvider.validateToken(token) && userRepository.findByLogin(jwtTokenProvider.getLogin(token)).get().getIsActive().equals(true)) {
+            if (token != null && jwtTokenProvider.validateToken(token)) {
+
                 Authentication authentication = jwtTokenProvider.getAuthentication(token);
                 if (authentication != null) {
                     SecurityContextHolder.getContext().setAuthentication(authentication);

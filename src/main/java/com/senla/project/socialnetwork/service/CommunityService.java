@@ -1,8 +1,6 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.Community;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -13,11 +11,11 @@ public interface CommunityService {
 
     List<Community> findAll();
 
-    Page<Community> findAll(Pageable pageable);
+    Community findById(Long Id);
 
-    Community findById(Long id);
+    Community findByName(String name);
 
-    Community update(Long id, Community community);
+    Community update(String name, Community community);
 
     void delete(Long id);
 

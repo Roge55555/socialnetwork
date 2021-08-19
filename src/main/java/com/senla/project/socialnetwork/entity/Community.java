@@ -2,6 +2,7 @@ package com.senla.project.socialnetwork.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 @Entity
 @Table(name = "community")
 public class Community {
@@ -38,7 +40,7 @@ public class Community {
     @JoinColumn(name = "creator_id")
     private User creator;
 
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     @Size(min = 3)
     @NotBlank
     private String name;

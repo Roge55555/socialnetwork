@@ -59,4 +59,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> JWTInvalidToken(JwtAuthenticationException jwtAuthenticationException) {
         return new ResponseEntity<>(JWTInvalidTokenMessage, HttpStatus.GONE);
     }
+
+    @ExceptionHandler(value = TryingModifyNotYourDataException.class)
+    public ResponseEntity<String> tryingModifyNotYourData(TryingModifyNotYourDataException tryingModifyNotYourDataException) {
+        return new ResponseEntity<>(tryingModifyNotYourDataException.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(value = DataIntegrityViolationException.class)
+    public ResponseEntity<String> dataIntegrityViolationException(DataIntegrityViolationException dataIntegrityViolationException) {
+        return new ResponseEntity<>(dataIntegrityViolationException.getLocalizedMessage(), HttpStatus.CONFLICT);
+    }
+
 }

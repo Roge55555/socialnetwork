@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -90,15 +89,15 @@ public class UserServiceImpl implements UserService {
         LOGGER.info("Trying to find user by login");
         final User user = userRepository.findByLogin(login).orElseThrow(() -> {
             LOGGER.error("No element with such login - {}.", login);
-            return new NoSuchElementException("login - " + login + ".");
+            return new NoSuchElementException("login - " + login + "."); //TODO return->throw
         });
         LOGGER.info("User with login {} found.", user.getLogin());
         return user;
     }
 
-
     @Override
-    public User update(Long id, User user) {
+    public User update(User user) {
+        Long id = userRepository.findByLogin(Utils.getLogin()).get().getId();
         LOGGER.info("Trying to update user with id - {}.", id);
         //TODO: refactoring
 //        if ((userRepository.findByLogin(user.getLogin()).isPresent() && userRepository.findById(id).isPresent() && !userRepository.findByLogin(user.getLogin()).get().getId().equals(id)) ||
@@ -133,7 +132,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete() {
+        Long id = userRepository.findByLogin(Utils.getLogin()).get().getId();
         LOGGER.info("Trying to delete user with id - {}.", id);
         if (userRepository.findById(id).isEmpty()) {
             LOGGER.error("No user with id - {}.", id);
@@ -144,7 +144,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changePassword(Long id, ChangePassword password) {
+    public void changePassword(ChangePassword password) {
+        Long id = userRepository.findByLogin(Utils.getLogin()).get().getId();
         LOGGER.info("Trying to change password for User with id - {}.", id);
         if (userRepository.findById(id).isEmpty()) {
             LOGGER.error("No user with id - {}", id);

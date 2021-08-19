@@ -1,16 +1,19 @@
 package com.senla.project.socialnetwork.service.impl;
 
+import com.senla.project.socialnetwork.Utils;
 import com.senla.project.socialnetwork.entity.UserOfCommunity;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
-import com.senla.project.socialnetwork.repository.CommunityRepository;
+import com.senla.project.socialnetwork.exeptions.TryingModifyNotYourDataException;
 import com.senla.project.socialnetwork.repository.UserOfCommunityRepository;
-import com.senla.project.socialnetwork.repository.UserRepository;
+import com.senla.project.socialnetwork.service.CommunityService;
 import com.senla.project.socialnetwork.service.UserOfCommunityService;
+import com.senla.project.socialnetwork.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -19,80 +22,69 @@ public class UserOfCommunityServiceImpl implements UserOfCommunityService {
 
     private final UserOfCommunityRepository userOfCommunityRepository;
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    private final CommunityRepository communityRepository;
+    private final CommunityService communityService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserOfCommunityServiceImpl.class);
 
     @Override
-    public UserOfCommunity add(UserOfCommunity userOfCommunity) {
-        LOGGER.info("Trying to add user of community.");
-
-        if (userRepository.findById(userOfCommunity.getUser().getId()).isEmpty() ||
-                communityRepository.findById(userOfCommunity.getCommunity().getId()).isEmpty()) {
-            LOGGER.error("Subscriber/Community do(es)n`t exist");
-            throw new NoSuchElementException();
+    public UserOfCommunity add(Long communityId, Long userId) {
+        if (!Utils.getLogin().equals(communityService.findById(communityId).getCreator().getLogin())) {
+            LOGGER.error("Only creator can add users.");
+            throw new TryingModifyNotYourDataException("Only creator can add users.");
         }
-        userOfCommunity.setId(null);
-        UserOfCommunity save = userOfCommunityRepository.save(userOfCommunity);
-        LOGGER.info("User added to community.");
-        return save;
+
+        return userOfCommunityRepository.save(
+                UserOfCommunity.builder()
+                        .community(communityService.findById(communityId))
+                        .user(userService.findById(userId))
+                        .dateEntered(LocalDate.now())
+                        .build());
     }
 
     @Override
-    public List<UserOfCommunity> findAll() {
-        LOGGER.info("Trying to show all subscribers.");
-        if (userOfCommunityRepository.findAll().isEmpty()) {
-            LOGGER.warn("Subscriber`s list is empty!");
-        } else {
-            LOGGER.info("Subscriber(s) found.");
+    public List<UserOfCommunity> findAllCommunitiesOfUser(String userLogin) {
+        if (!Utils.getLogin().equals(userLogin)) {
+            LOGGER.error("Trying to check subscriptions of other person - {}", userLogin);
+            throw new TryingModifyNotYourDataException("You can check only yourself subscriptions.");
         }
-        return userOfCommunityRepository.findAll();
+
+        return userOfCommunityRepository.findByUserLoginOrderByCommunity(userLogin);
     }
 
     @Override
-    public UserOfCommunity findById(Long id) {
-        LOGGER.info("Trying to find subscriber by id");
-        final UserOfCommunity userOfCommunity = userOfCommunityRepository.findById(id).orElseThrow(() -> {
-            LOGGER.error("No element with such id - {}.", id);
-            return new NoSuchElementException(id);
+    public List<UserOfCommunity> findAllUsersOfCommunity(String communityName) {
+        if (findByCommunityNameAndUserLogin(communityName, Utils.getLogin()) != null) {
+            LOGGER.error("Trying to check subscribers of community - {}, by not member.", communityName);
+            throw new TryingModifyNotYourDataException("You can check only yourself subscriptions.");
+        }
+
+        return userOfCommunityRepository.findByCommunityNameOrderByUser(communityName);
+    }
+
+    @Override
+    public UserOfCommunity findByCommunityNameAndUserLogin(String communityName, String userLogin) {
+        return userOfCommunityRepository.findByCommunityNameAndUserLogin(communityName, userLogin).orElseThrow(() -> {
+            LOGGER.error("No subscription: user - {} to community - {}.", userLogin, communityName);
+            return new NoSuchElementException(userLogin + " / " + communityName);
         });
-        LOGGER.info("Subscriber found using id {}", userOfCommunity.getId());
-        return userOfCommunity;
     }
-
-//    public UserOfCommunity update(Long id, UserOfCommunity userOfCommunity) {
-//        LOGGER.info("Trying to update subscriber with id - {}.", id);
-//        if (userRepository.findById(userOfCommunity.getUser().getId()).isEmpty() ||
-//                communityRepository.findById(userOfCommunity.getCommunity().getId()).isEmpty()) {
-//            LOGGER.error("Subscriber/Community do(es)n`t exist");
-//            throw new NoSuchElementException(id);
-//        }
-
-
-//        return userOfCommunityRepository.findById(id).map(uoc -> {
-//            uoc.setCommunity(userOfCommunity.getCommunity());
-//            uoc.setUser(userOfCommunity.getUser());
-//            uoc.setDateEntered(userOfCommunity.getDateEntered());
-//            UserOfCommunity save = userOfCommunityRepository.save(uoc);
-//            LOGGER.info("Subscriber with id {} updated.", id);
-//            return save;
-//        })
-//                .orElseThrow(() -> {
-//                    LOGGER.error("No element with such id - {}.", id);
-//                    return new NoSuchElementException(id);
-//                });
-//    }
 
     @Override
-    public void delete(Long id) {
-        LOGGER.info("Trying to delete subscriber with id - {}.", id);
-        if (userOfCommunityRepository.findById(id).isEmpty()) {
-            LOGGER.error("No subscriber with id - {}.", id);
-            throw new NoSuchElementException(id);
+    public void delete(Long communityId, Long userId) {
+        if (!Utils.getLogin().equals(communityService.findById(communityId).getCreator().getLogin()) ||
+                !Utils.getLogin().equals(userService.findById(userId).getLogin())) { //TODO findByCommunityNameAndUserLogin()
+            LOGGER.error("Only creator can delete user from community {}.", Utils.getLogin());
+            throw new TryingModifyNotYourDataException("Only creator can delete user from community.");
         }
-        userOfCommunityRepository.deleteById(id);
-        LOGGER.info("Subscriber with id - {} was deleted.", id);
+
+        if (userOfCommunityRepository.findByCommunityNameAndUserLogin(communityService.findById(communityId).getName(), userService.findById(userId).getLogin()).isEmpty()) {
+            LOGGER.error("No subscriber - {} in community - {}.", userId, communityId);
+            throw new NoSuchElementException(userId + " / " + communityId);
+        }
+
+        userOfCommunityRepository.deleteByCommunityIdAndUserId(userId, communityId);
     }
+
 }

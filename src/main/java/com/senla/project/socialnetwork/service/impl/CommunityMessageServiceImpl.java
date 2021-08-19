@@ -1,16 +1,22 @@
 package com.senla.project.socialnetwork.service.impl;
 
+import com.senla.project.socialnetwork.Utils;
 import com.senla.project.socialnetwork.entity.CommunityMessage;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
+import com.senla.project.socialnetwork.exeptions.TryingModifyNotYourDataException;
 import com.senla.project.socialnetwork.repository.CommunityMessageRepository;
 import com.senla.project.socialnetwork.repository.CommunityRepository;
 import com.senla.project.socialnetwork.repository.UserRepository;
 import com.senla.project.socialnetwork.service.CommunityMessageService;
+import com.senla.project.socialnetwork.service.CommunityService;
+import com.senla.project.socialnetwork.service.UserOfCommunityService;
+import com.senla.project.socialnetwork.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -19,36 +25,70 @@ public class CommunityMessageServiceImpl implements CommunityMessageService {
 
     private final CommunityMessageRepository communityMessageRepository;
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    private final CommunityRepository communityRepository;
+    private final CommunityService communityService;
+
+    private final UserOfCommunityService userOfCommunityService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CommunityMessageServiceImpl.class);
 
     @Override
-    public CommunityMessage add(CommunityMessage communityMessage) {
+    public CommunityMessage add(String communityName, String txt) {
         LOGGER.info("Trying to add community message.");
 
-        if (userRepository.findById(communityMessage.getCreator().getId()).isEmpty() ||
-                communityRepository.findById(communityMessage.getCommunity().getId()).isEmpty()) {
-            LOGGER.error("Creator/Community do(es)n`t exist");
+        if (userOfCommunityService.findByCommunityNameAndUserLogin(communityName, Utils.getLogin()) == null &&
+        !communityService.findByName(communityName).getCreator().equals(userService.findByLogin(Utils.getLogin()))) {
+            LOGGER.error("Not member of community can not add messages.");
+            throw new TryingModifyNotYourDataException("Not member of community can not add messages!");
+        }
+        if (communityService.findByName(communityName) == null) {
+            LOGGER.error("Community do(es)n`t exist");
             throw new NoSuchElementException();
         }
-        communityMessage.setId(null);
+
+        CommunityMessage communityMessage = CommunityMessage.builder()
+                .creator(userService.findByLogin(Utils.getLogin()))
+                .community(communityService.findByName(communityName))
+                .date(LocalDateTime.now())
+                .txt(txt)
+                .build();
         final CommunityMessage save = communityMessageRepository.save(communityMessage);
         LOGGER.info("Community message added.");
         return save;
     }
 
     @Override
-    public List<CommunityMessage> findAll() {
+    public List<CommunityMessage> findCommunityMessagesByCommunityName(String communityName) {
         LOGGER.info("Trying to show all community messages.");
-        if (communityMessageRepository.findAll().isEmpty()) {
+        if (communityMessageRepository.findCommunityMessagesByCommunityNameOrderByDate(communityName).isEmpty()) {
             LOGGER.warn("Community message`s list is empty!");
         } else {
             LOGGER.info("Community message(s) found.");
         }
-        return communityMessageRepository.findAll();
+        return communityMessageRepository.findCommunityMessagesByCommunityNameOrderByDate(communityName);
+    }
+
+    @Override
+    public List<CommunityMessage> findCommunityMessagesByCommunityNameAndCreatorLogin(String communityName, String userLogin) {
+        LOGGER.info("Trying to show all community messages.");
+        if (communityMessageRepository.findCommunityMessagesByCommunityNameAndCreatorLoginOrderByDate(communityName, userLogin).isEmpty()) {
+            LOGGER.warn("Community message`s list is empty!");
+        } else {
+            LOGGER.info("Community message(s) found.");
+        }
+        return communityMessageRepository.findCommunityMessagesByCommunityNameAndCreatorLoginOrderByDate(communityName, userLogin);
+    }
+
+    @Override
+    public List<CommunityMessage> findCommunityMessagesByDateBetween(LocalDateTime from, LocalDateTime to) {
+        LOGGER.info("Trying to show all community messages.");
+        if (communityMessageRepository.findCommunityMessagesByDateBetweenOrderByDate(from, to).isEmpty()) {
+            LOGGER.warn("Community message`s list is empty!");
+        } else {
+            LOGGER.info("Community message(s) found.");
+        }
+        return communityMessageRepository.findCommunityMessagesByDateBetweenOrderByDate(from, to);
     }
 
     @Override
@@ -63,20 +103,17 @@ public class CommunityMessageServiceImpl implements CommunityMessageService {
     }
 
     @Override
-    public CommunityMessage update(Long id, CommunityMessage communityMessage) {
+    public CommunityMessage update(Long id, String txt) {
         LOGGER.info("Trying to update community message with id - {}.", id);
-        if (userRepository.findById(communityMessage.getCreator().getId()).isEmpty() ||
-                communityRepository.findById(communityMessage.getCommunity().getId()).isEmpty()) {
-            LOGGER.error("Creator/Community do(es)n`t exist");
-            throw new NoSuchElementException(id);
+        if (!findById(id).getCreator().equals(userService.findByLogin(Utils.getLogin()))) {
+            LOGGER.error("Trying update not his message");
+            throw new TryingModifyNotYourDataException("You can update only yourself messages!");
         }
 
 
         return communityMessageRepository.findById(id).map(comm -> {
-            comm.setCreator(communityMessage.getCreator());
-            comm.setCommunity(communityMessage.getCommunity());
-            comm.setDate(communityMessage.getDate());
-            comm.setTxt(communityMessage.getTxt());
+            comm.setDate(LocalDateTime.now());
+            comm.setTxt(txt);
             final CommunityMessage save = communityMessageRepository.save(comm);
             LOGGER.info("Community message with id {} updated.", id);
             return save;
@@ -90,6 +127,11 @@ public class CommunityMessageServiceImpl implements CommunityMessageService {
     @Override
     public void delete(Long id) {
         LOGGER.info("Trying to delete community message with id - {}.", id);
+        if (userOfCommunityService.findByCommunityNameAndUserLogin(communityService.findById(id).getName(), Utils.getLogin()) == null &&
+                !communityService.findById(id).getCreator().equals(userService.findByLogin(Utils.getLogin()))) {
+            LOGGER.error("Not member of community can not delete messages.");
+            throw new TryingModifyNotYourDataException("Not member of community can not delete messages!");
+        }
         if (communityMessageRepository.findById(id).isEmpty()) {
             LOGGER.error("No community message with id - {}.", id);
             throw new NoSuchElementException(id);
@@ -97,4 +139,5 @@ public class CommunityMessageServiceImpl implements CommunityMessageService {
         communityMessageRepository.deleteById(id);
         LOGGER.info("Community message with id - {} was deleted.", id);
     }
+
 }

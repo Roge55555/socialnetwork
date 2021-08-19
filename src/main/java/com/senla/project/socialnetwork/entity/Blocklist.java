@@ -1,6 +1,7 @@
 package com.senla.project.socialnetwork.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 @Entity
 @Table(name = "blocklist", uniqueConstraints = @UniqueConstraint(columnNames = {"community_id", "who_baned", "whom_baned"}))
 public class Blocklist {

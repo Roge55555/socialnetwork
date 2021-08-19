@@ -30,28 +30,28 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/")
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
-    @GetMapping("/users")
+    @GetMapping
     @PreAuthorize("hasAuthority('standard:permission')")
     public List<User> getAllUsers() {
         LOGGER.debug("Entering findAll users endpoint");
         return userService.findAll();
     }
 
-    @GetMapping("/usersPage")
+    @GetMapping("/page")
     @PreAuthorize("hasAuthority('standard:permission')")
     public Page<User> getAllUsers(Pageable pageable) {
         LOGGER.debug("Entering findAll users in pages endpoint");
         return userService.findAll(pageable);
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('standard:permission')")
     @ResponseStatus(HttpStatus.FOUND)
     public User getById(@PathVariable("id") Long id) {
@@ -59,7 +59,7 @@ public class UserController {
         return userService.findById(id);
     }
 
-    @GetMapping("/users/find/{login}")
+    @GetMapping("/find/{login}")
     @PreAuthorize("hasAuthority('standard:permission')")
     @ResponseStatus(HttpStatus.FOUND)
     public User getByLogin(@PathVariable("login") String login) {
@@ -87,10 +87,10 @@ public class UserController {
         return userService.add(user);
     }
 
-    @PutMapping("/users/{id}")
+    @PutMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void updateUser(@PathVariable("id") Long id, @Valid @RequestBody UserUpdateDTO userUpdateDTO) throws NoSuchElementException {
+    public void updateUser(@Valid @RequestBody UserUpdateDTO userUpdateDTO) throws NoSuchElementException {
         User user = User.builder()
                 .login(userUpdateDTO.getLogin())
                 .dateBirth(userUpdateDTO.getDateBirth())
@@ -104,22 +104,23 @@ public class UserController {
                 .workPhone(userUpdateDTO.getWorkPhone())
                 .build();
         LOGGER.debug("Entering updateUser endpoint");
-        userService.update(id, user);
+        userService.update(user);
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void deleteUser(@PathVariable("id") Long id) {
+    public void deleteUser() {
         LOGGER.debug("Entering deleteUser endpoint");
-        userService.delete(id);
+        userService.delete();
     }
 
-    @PatchMapping("/users/{id}")
+    @PatchMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void changeUserPassword(@PathVariable("id") Long id, @Valid @RequestBody ChangePassword password) throws NoSuchElementException, NotOldPasswordException {
+    public void changeUserPassword(@Valid @RequestBody ChangePassword password) throws NoSuchElementException, NotOldPasswordException {
         LOGGER.debug("Entering changeUserPassword endpoint");
-        userService.changePassword(id, password);
+        userService.changePassword(password);
     }
+
 }

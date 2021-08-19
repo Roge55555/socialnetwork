@@ -184,7 +184,7 @@
             <column name="community_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="fk_community_cm_community" references="community(id)"/>
             </column>
-            <column name="date" type="date">
+            <column name="date" type="datetime">
                 <constraints nullable="false"/>
             </column>
             <column name="txt" type="varchar(255)">

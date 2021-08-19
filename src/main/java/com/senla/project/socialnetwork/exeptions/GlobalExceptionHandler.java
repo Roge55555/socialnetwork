@@ -10,22 +10,22 @@ import java.sql.SQLIntegrityConstraintViolationException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-  
+
     @Value(value = "${data.exception.notOldPassword:Error old password}")
     private String notOldPasswordMessage;
-  
+
     @Value(value = "${data.exception.noSuchIdMessage:No such id - }")
     private String noSuchIdMessage;
- 
+
     @Value(value = "${data.exception.noSuchLoginMessage:No such }")
     private String noSuchLoginMessage;
-    
+
     @Value(value = "${data.exception.dataAlreadyTakenMessage:This login/email/phone is already in use, try another.}")
     private String dataAlreadyTakenMessage;
-    
+
     @Value(value = "${data.exception.elementAlreadyTakenMessage:Such element already exist.}")
     private String elementAlreadyTakenMessage;
-    
+
     @Value(value = "${data.exception.tryingRequestToYourselfMessage:You can`t do it to yourself.}")
     private String tryingRequestToYourselfMessage;
 

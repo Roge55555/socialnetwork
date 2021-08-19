@@ -8,5 +8,5 @@ public interface AccessRoleService {
     AccessRole findById(Long id);
 
     AccessRole findByName(Role name);
-}
 
+}

@@ -22,21 +22,21 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/")
+@RequestMapping("/userEvents")
 public class UserEventController {
 
     private final UserEventService userEventService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserEventController.class);
 
-    @GetMapping("/userEvents")
+    @GetMapping
     @PreAuthorize("hasAuthority('standard:permission')")
     public List<UserEvent> getAllEvents() {
         LOGGER.debug("Entering findAll events endpoint");
         return userEventService.findAll();
     }
 
-    @GetMapping("/userEvents/{id}")
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.FOUND)
     @PreAuthorize("hasAuthority('standard:permission')")
     public UserEvent getById(@PathVariable("id") Long id) {
@@ -44,7 +44,7 @@ public class UserEventController {
         return userEventService.findById(id);
     }
 
-    @PostMapping("/userEvents")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('standard:permission')")
     public UserEvent addEvent(@Valid @RequestBody UserEvent userEvent) {
@@ -52,7 +52,7 @@ public class UserEventController {
         return userEventService.add(userEvent);
     }
 
-    @PutMapping("/userEvents/{id}")
+    @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('standard:permission')")
     public void updateEvent(@PathVariable("id") Long id, @RequestBody UserEvent userEvent) {
@@ -60,11 +60,12 @@ public class UserEventController {
         userEventService.update(id, userEvent);
     }
 
-    @DeleteMapping("/userEvents/{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('standard:permission')")
     public void deleteEvent(@PathVariable("id") Long id) {
         LOGGER.debug("Entering deleteEvent endpoint");
         userEventService.delete(id);
     }
+
 }

@@ -21,21 +21,21 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/")
+@RequestMapping("/profileComments")
 public class ProfileCommentController {
 
     private final ProfileCommentService profileCommentService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileCommentController.class);
 
-    @GetMapping("/profileComments")
+    @GetMapping
     @PreAuthorize("hasAuthority('standard:permission')")
     public List<ProfileComment> getAllProfileComments() {
         LOGGER.debug("Entering findAll profile comments endpoint");
         return profileCommentService.findAll();
     }
 
-    @GetMapping("/profileComments/{id}")
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.FOUND)
     @PreAuthorize("hasAuthority('standard:permission')")
     public ProfileComment getById(@PathVariable("id") Long id) {
@@ -43,7 +43,7 @@ public class ProfileCommentController {
         return profileCommentService.findById(id);
     }
 
-    @PostMapping("/profileComments")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('standard:permission')")
     public ProfileComment addProfileComment(@RequestBody ProfileComment profileComment) {
@@ -51,7 +51,7 @@ public class ProfileCommentController {
         return profileCommentService.add(profileComment);
     }
 
-    @PutMapping("/profileComments/{id}")
+    @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('standard:permission')")
     public void updateProfileComment(@PathVariable("id") Long id, @RequestBody ProfileComment profileComment) {
@@ -59,11 +59,12 @@ public class ProfileCommentController {
         profileCommentService.update(id, profileComment);
     }
 
-    @DeleteMapping("/profileComments/{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('standard:permission')")
     public void deleteProfileComment(@PathVariable("id") Long id) {
         LOGGER.debug("Entering deleteProfileComment endpoint");
         profileCommentService.delete(id);
     }
+
 }

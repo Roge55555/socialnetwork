@@ -39,5 +39,5 @@ public class AccessRoleServiceImpl implements AccessRoleService {
         LOGGER.debug("Access role with login {} found.", accessRole.getName());
         return accessRole;
     }
-}
 
+}

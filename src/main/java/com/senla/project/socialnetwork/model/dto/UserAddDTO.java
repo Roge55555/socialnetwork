@@ -12,6 +12,8 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @Data
 public class UserAddDTO extends UserUpdateDTO {
+
     @Size(min = 5)
     private String password;
+
 }

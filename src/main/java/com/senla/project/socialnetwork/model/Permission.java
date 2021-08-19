@@ -1,6 +1,7 @@
 package com.senla.project.socialnetwork.model;
 
 public enum Permission {
+
     USERS_PERMISSION("standard:permission"),
     ADMINS_PERMISSION("communities:permission");
 
@@ -13,4 +14,5 @@ public enum Permission {
     public String getPermission() {
         return permission;
     }
+
 }

@@ -21,21 +21,21 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/")
+@RequestMapping("/contacts")
 public class ContactController {
 
     private final ContactService contactService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContactController.class);
 
-    @GetMapping("/contacts")
+    @GetMapping
     @PreAuthorize("hasAuthority('standard:permission')")
     public List<Contact> getAllContacts() {
         LOGGER.debug("Entering findAll contacts endpoint");
         return contactService.findAll();
     }
 
-    @GetMapping("/contacts/{id}")
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.FOUND)
     @PreAuthorize("hasAuthority('standard:permission')")
     public Contact getById(@PathVariable("id") Long id) {
@@ -43,7 +43,7 @@ public class ContactController {
         return contactService.findById(id);
     }
 
-    @PostMapping("/contacts")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('standard:permission')")
     public Contact addContact(@RequestBody Contact contact) {
@@ -51,7 +51,7 @@ public class ContactController {
         return contactService.add(contact);
     }
 
-    @PutMapping("/contacts/{id}")
+    @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('standard:permission')")
     public void updateContact(@PathVariable("id") Long id, @RequestBody Contact contact) {
@@ -59,11 +59,12 @@ public class ContactController {
         contactService.update(id, contact);
     }
 
-    @DeleteMapping("/contacts/{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('standard:permission')")
     public void deleteContact(@PathVariable("id") Long id) {
         LOGGER.debug("Entering deleteContact endpoint");
         contactService.delete(id);
     }
+
 }

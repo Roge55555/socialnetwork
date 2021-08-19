@@ -10,7 +10,6 @@ public enum Role {
     USER(Set.of(Permission.USERS_PERMISSION)),
     ADMIN(Set.of(Permission.USERS_PERMISSION, Permission.ADMINS_PERMISSION));
 
-
     private final Set<Permission> permissions;
 
     Role(Set<Permission> permissions) {
@@ -26,4 +25,5 @@ public enum Role {
                 .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
                 .collect(Collectors.toSet());
     }
+
 }

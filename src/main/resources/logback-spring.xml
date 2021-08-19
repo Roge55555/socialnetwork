@@ -33,16 +33,15 @@
     </appender>
 
 
-
     <!-- LOG everything at INFO level -->
     <root level="info">
         <appender-ref ref="Console"/>
     </root>
 
-<!--     LOG "com.senla.project.socialnetwork.*" at DEBUG level -->
+    <!--LOG "com.senla.project.socialnetwork.*" at DEBUG level -->
     <logger name="com.senla.project.socialnetwork" level="debug" additivity="false">
         <appender-ref ref="RollingFile"/>
-                <appender-ref ref="Console"/>
+        <appender-ref ref="Console"/>
     </logger>
 
 </configuration>

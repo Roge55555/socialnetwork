@@ -21,21 +21,21 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/")
+@RequestMapping("/roleLists")
 public class RoleListController {
 
     private final RoleListService roleListService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RoleListController.class);
 
-    @GetMapping("/roleLists")
+    @GetMapping
     @PreAuthorize("hasAuthority('standard:permission')")
     public List<RoleList> getAllRoleLists() {
         LOGGER.debug("Entering findAll roles endpoint");
         return roleListService.findAll();
     }
 
-    @GetMapping("/roleLists/{id}")
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.FOUND)
     @PreAuthorize("hasAuthority('standard:permission')")
     public RoleList getById(@PathVariable("id") Long id) {
@@ -43,7 +43,7 @@ public class RoleListController {
         return roleListService.findById(id);
     }
 
-    @PostMapping("/roleLists")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('standard:permission')")
     public RoleList addRoleList(@RequestBody RoleList roleList) {
@@ -51,7 +51,7 @@ public class RoleListController {
         return roleListService.add(roleList);
     }
 
-    @PutMapping("/roleLists/{id}")
+    @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('communities:permission')")
     public void updateRoleList(@PathVariable("id") Long id, @RequestBody RoleList roleList) {
@@ -59,11 +59,12 @@ public class RoleListController {
         roleListService.update(id, roleList);
     }
 
-    @DeleteMapping("/roleLists/{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('communities:permission')")
     public void deleteRoleList(@PathVariable("id") Long id) {
         LOGGER.debug("Entering deleteRoleList endpoint");
         roleListService.delete(id);
     }
+
 }

@@ -1,7 +1,6 @@
 package com.senla.project.socialnetwork.security;
 
 import com.senla.project.socialnetwork.exeptions.JwtAuthenticationException;
-import com.senla.project.socialnetwork.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -22,8 +21,6 @@ import java.io.IOException;
 public class JwtTokenFilter extends GenericFilterBean {
 
     private final JwtTokenProvider jwtTokenProvider;
-
-    private final UserRepository userRepository;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -47,4 +44,5 @@ public class JwtTokenFilter extends GenericFilterBean {
 
         chain.doFilter(request, response);
     }
+
 }

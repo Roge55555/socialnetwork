@@ -76,4 +76,5 @@ public class RoleListServiceImpl implements RoleListService {
         roleListRepository.deleteById(id);
         LOGGER.info("Role with id - {} was deleted.", id);
     }
+
 }

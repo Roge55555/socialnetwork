@@ -92,4 +92,5 @@ public class UserEventServiceImpl implements UserEventService {
         userEventRepository.deleteById(id);
         LOGGER.info("Event with id - {} was deleted.", id);
     }
+
 }

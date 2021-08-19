@@ -106,4 +106,5 @@ public class ContactServiceImpl implements ContactService {
         contactRepository.deleteById(id);
         LOGGER.info("Contact with id - {} was deleted.", id);
     }
+
 }

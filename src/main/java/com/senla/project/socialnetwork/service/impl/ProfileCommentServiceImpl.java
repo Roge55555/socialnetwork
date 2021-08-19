@@ -94,4 +94,5 @@ public class ProfileCommentServiceImpl implements ProfileCommentService {
         profileCommentRepository.deleteById(id);
         LOGGER.info("Comment with id - {} was deleted.", id);
     }
+
 }

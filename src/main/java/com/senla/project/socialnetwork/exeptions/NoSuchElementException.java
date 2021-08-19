@@ -20,4 +20,5 @@ public class NoSuchElementException extends RuntimeException {
     public NoSuchElementException(String login) {
         this.login = login;
     }
+
 }

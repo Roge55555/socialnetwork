@@ -32,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()//ограничивае доступ на основе HttpServletRequest
 
                 .antMatchers("/auth/login").permitAll()
-                .antMatchers("/registration").permitAll()
+                .antMatchers("/users/registration").permitAll()
 
                 .anyRequest()
                 .authenticated()
@@ -52,4 +52,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
     }
+
 }

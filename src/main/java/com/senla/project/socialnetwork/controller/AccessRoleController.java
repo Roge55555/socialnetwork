@@ -15,18 +15,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/")
+@RequestMapping("/accessRoles")
 public class AccessRoleController {
 
     private final AccessRoleService accessRoleService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccessRoleController.class);
 
-    @GetMapping("/accessRoles/{id}")
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.FOUND)
     @PreAuthorize("hasAuthority('standard:permission')")
     public AccessRole getById(@PathVariable("id") Long id) {
         LOGGER.debug("Entering getById access role endpoint");
         return accessRoleService.findById(id);
     }
+
 }

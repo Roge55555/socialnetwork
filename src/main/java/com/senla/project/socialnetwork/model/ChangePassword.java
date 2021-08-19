@@ -11,7 +11,6 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class ChangePassword {
 
-
     @Column
     @NotBlank
     @Size(min = 5)
@@ -21,4 +20,5 @@ public class ChangePassword {
     @NotBlank
     @Size(min = 5)
     private String newPassword;
+
 }

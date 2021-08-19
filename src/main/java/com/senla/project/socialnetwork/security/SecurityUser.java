@@ -59,4 +59,5 @@ public class SecurityUser implements UserDetails {
                 user.getRole().getName().getAuthority()
         );
     }
+
 }

@@ -1,18 +1,21 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.Contact;
+import com.senla.project.socialnetwork.model.dto.ContactFilterRequest;
 
 import java.util.List;
 
 public interface ContactService {
 
-    Contact add(Contact contact);
+    Contact add(Long mateId);
 
-    List<Contact> findAll();
+    List<Contact> findAll(ContactFilterRequest request);
 
     Contact findById(Long id);
 
-    Contact update(Long id, Contact contact);
+    void acceptRequest(Long id);
+
+    void updateRole(Long id, Long roleId);
 
     void delete(Long id);
 

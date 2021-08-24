@@ -118,8 +118,11 @@
                 <constraints nullable="false"/>
             </column>
             <column name="contact_level" type="boolean"/>
-            <column name="contact_role" type="bigint">
+            <column name="creator_role" type="bigint">
                 <constraints nullable="false" foreignKeyName="fk_cr_contact_rl" references="role_list(id)"/>
+            </column>
+            <column name="mate_role" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_mr_contact_rl" references="role_list(id)"/>
             </column>
         </createTable>
 

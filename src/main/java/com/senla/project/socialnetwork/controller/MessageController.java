@@ -3,9 +3,12 @@ package com.senla.project.socialnetwork.controller;
 import com.senla.project.socialnetwork.entity.Message;
 import com.senla.project.socialnetwork.model.TimeInterval;
 import com.senla.project.socialnetwork.model.dto.MessageDTO;
+import com.senla.project.socialnetwork.model.dto.MessageFilterRequest;
 import com.senla.project.socialnetwork.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.jni.Time;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,16 +38,22 @@ public class MessageController {
         return messageService.add(messageDTO.getUserLogin(), messageDTO.getTxt());
     }
 
-    @GetMapping("/dialog/{login}")
-    @PreAuthorize("hasAuthority('standard:permission')")
-    public List<Message> getMessagesByLogin(@PathVariable("login") String userLogin) {
-        return messageService.findAllMessagesWith(userLogin);
-    }
+//    @GetMapping("/dialog/{login}")
+//    @PreAuthorize("hasAuthority('standard:permission')")
+//    public List<Message> getMessagesByLogin(@PathVariable("login") String userLogin) {
+//        return messageService.findAllMessagesWith(userLogin);
+//    }
+//
+//    @GetMapping("/dialogTimeInterval/{login}")
+//    @PreAuthorize("hasAuthority('standard:permission')")
+//    public List<Message> getMessagesByLoginTimeInterval(@PathVariable("login") String userLogin, @RequestBody TimeInterval<LocalDateTime> timeInterval) {
+//        return messageService.findAllMessagesWithBetween(userLogin, timeInterval.getFrom(), timeInterval.getTo());
+//    }
 
-    @GetMapping("/dialogTimeInterval/{login}")
+    @GetMapping("/dialog")
     @PreAuthorize("hasAuthority('standard:permission')")
-    public List<Message> getMessagesByLoginTimeInterval(@PathVariable("login") String userLogin, @RequestBody TimeInterval<LocalDateTime> timeInterval) {
-        return messageService.findAllMessagesWithBetween(userLogin, timeInterval.getFrom(), timeInterval.getTo());
+    public List<Message> getM(@RequestBody MessageFilterRequest request) {
+        return messageService.findAll(request);
     }
 
     @PutMapping("/{id}")

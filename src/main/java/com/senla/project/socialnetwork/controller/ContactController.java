@@ -1,10 +1,9 @@
 package com.senla.project.socialnetwork.controller;
 
 import com.senla.project.socialnetwork.entity.Contact;
+import com.senla.project.socialnetwork.model.dto.ContactFilterRequest;
 import com.senla.project.socialnetwork.service.ContactService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,44 +25,44 @@ public class ContactController {
 
     private final ContactService contactService;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ContactController.class);
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('standard:permission')")
+    public Contact addContact(@RequestBody Long mateId) {
+        return contactService.add(mateId);
+    }
 
     @GetMapping
     @PreAuthorize("hasAuthority('standard:permission')")
-    public List<Contact> getAllContacts() {
-        LOGGER.debug("Entering findAll contacts endpoint");
-        return contactService.findAll();
+    public List<Contact> getAllContacts(@RequestBody ContactFilterRequest request) {
+        return contactService.findAll(request);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.FOUND)
     @PreAuthorize("hasAuthority('standard:permission')")
     public Contact getById(@PathVariable("id") Long id) {
-        LOGGER.debug("Entering getById contact endpoint");
         return contactService.findById(id);
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAuthority('standard:permission')")
-    public Contact addContact(@RequestBody Contact contact) {
-        LOGGER.debug("Entering addContact endpoint");
-        return contactService.add(contact);
-    }
-
-    @PutMapping("/{id}")
+    @PutMapping("/accept/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void updateContact(@PathVariable("id") Long id, @RequestBody Contact contact) {
-        LOGGER.debug("Entering updateContact endpoint");
-        contactService.update(id, contact);
+    public void updateContact(@PathVariable("id") Long id) {
+        contactService.acceptRequest(id);
+    }
+
+    @PutMapping("/changeRole/{id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PreAuthorize("hasAuthority('standard:permission')")
+    public void updateContact(@PathVariable("id") Long id, @RequestBody Long roleId) {
+        contactService.updateRole(id, roleId);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('standard:permission')")
     public void deleteContact(@PathVariable("id") Long id) {
-        LOGGER.debug("Entering deleteContact endpoint");
         contactService.delete(id);
     }
 

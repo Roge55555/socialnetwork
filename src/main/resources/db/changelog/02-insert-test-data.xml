@@ -115,15 +115,17 @@
             <column name="mate_id" valueNumeric="1"/>
             <column name="date_connected" valueDate="2021-06-25"/>
             <column name="contact_level" valueBoolean="true"/>
-            <column name="contact_role" valueNumeric="5"/>
+            <column name="creator_role" valueNumeric="5"/>
+            <column name="mate_role" valueNumeric="5"/>
         </insert>
         <insert tableName="contact">
             <column name="id" valueNumeric="2"/>
             <column name="creator_id" valueNumeric="3"/>
             <column name="mate_id" valueNumeric="1"/>
             <column name="date_connected" valueDate="2021-07-17"/>
-            <column name="contact_level" valueBoolean="false"/>
-            <column name="contact_role" valueNumeric="3"/>
+            <column name="contact_level" valueBoolean="true"/>
+            <column name="creator_role" valueNumeric="3"/>
+            <column name="mate_role" valueNumeric="null"/>
         </insert>
 
         <insert tableName="message">

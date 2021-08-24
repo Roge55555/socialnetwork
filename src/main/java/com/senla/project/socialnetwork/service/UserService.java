@@ -19,9 +19,10 @@ public interface UserService {
 
     User findByLogin(String login);
 
-    User update(Long id, User user);
+    User update(User user);
 
-    void delete(Long id);
+    void delete();
 
-    void changePassword(Long id, ChangePassword password);
+    void changePassword(ChangePassword password);
+
 }

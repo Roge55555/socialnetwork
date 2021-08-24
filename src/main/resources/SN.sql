@@ -108,15 +108,17 @@ CREATE TABLE contact
     mate_id        bigint,
     date_connected date NOT NULL,
     contact_level  boolean,
-    contact_role   bigint,
+    creator_role   bigint,
+    mate_role   bigint,
     foreign key (creator_id) references `user` (id),
     foreign key (mate_id) references `user` (id),
-    foreign key (contact_role) references role_list (id)
+    foreign key (creator_role) references role_list (id),
+    foreign key (mate_role) references role_list (id)
 );
 insert into contact
-values (1, 2, 1, '2021-06-25', true, 5);
+values (1, 2, 1, '2021-06-25', true, 5, 5);
 insert into contact
-values (2, 3, 1, '2021-07-17', false, 3);
+values (2, 3, 1, '2021-07-17', true, 3, null);
 
 CREATE TABLE message
 (

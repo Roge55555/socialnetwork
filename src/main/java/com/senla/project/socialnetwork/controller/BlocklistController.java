@@ -5,8 +5,6 @@ import com.senla.project.socialnetwork.model.TimeInterval;
 import com.senla.project.socialnetwork.model.dto.BlocklistAddDTO;
 import com.senla.project.socialnetwork.service.BlocklistService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -54,7 +52,7 @@ public class BlocklistController {
 
     @GetMapping("/bansIn")
     @PreAuthorize("hasAuthority('communities:permission')")
-    public List<Blocklist> getBansIn(@RequestBody String community) {
+    public List<Blocklist> getBansInCommunity(@RequestBody String community) {
         return blocklistService.findAllBannedIn(community);
     }
 

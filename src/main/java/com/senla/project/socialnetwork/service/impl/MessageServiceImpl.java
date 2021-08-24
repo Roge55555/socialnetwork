@@ -4,13 +4,16 @@ import com.senla.project.socialnetwork.Utils;
 import com.senla.project.socialnetwork.entity.Message;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.exeptions.TryingModifyNotYourDataException;
+import com.senla.project.socialnetwork.model.dto.MessageFilterRequest;
 import com.senla.project.socialnetwork.repository.MessageRepository;
 import com.senla.project.socialnetwork.repository.UserRepository;
+import com.senla.project.socialnetwork.repository.specification.MessageSpecification;
 import com.senla.project.socialnetwork.service.MessageService;
 import com.senla.project.socialnetwork.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -47,34 +50,40 @@ public class MessageServiceImpl implements MessageService {
     }
 
 
+//    @Override
+//    public List<Message> findAllMessagesWith(String userLogin) {
+//
+//        LOGGER.info("Trying to show all messages with {}.", userLogin);
+//
+//        if (messageRepository.findAllByReceiverLoginAndSenderLoginOrReceiverLoginAndSenderLoginOrderByDateCreated(
+//                Utils.getLogin(), userLogin, userLogin, Utils.getLogin()).isEmpty()) {
+//            LOGGER.warn("Message`s list is empty!");
+//        } else {
+//            LOGGER.info("Message(s) found.");
+//        }
+//        return messageRepository.findAllByReceiverLoginAndSenderLoginOrReceiverLoginAndSenderLoginOrderByDateCreated(
+//                Utils.getLogin(), userLogin, userLogin, Utils.getLogin());
+//    }
+//
+//    @Override
+//    public List<Message> findAllMessagesWithBetween(String userLogin, LocalDateTime from, LocalDateTime to) {
+//
+//        LOGGER.info("Trying to show all messages with {} from {} to {}.", userLogin, from, to);
+//
+//        if (messageRepository.findAllByReceiverLoginAndSenderLoginOrReceiverLoginAndSenderLoginAndDateCreatedBetweenOrderByDateCreated(
+//                Utils.getLogin(), userLogin, userLogin, Utils.getLogin(), from, to).isEmpty()) {
+//            LOGGER.warn("Message`s list is empty!");
+//        } else {
+//            LOGGER.info("Message(s) found.");
+//        }
+//        return messageRepository.findAllByReceiverLoginAndSenderLoginOrReceiverLoginAndSenderLoginAndDateCreatedBetweenOrderByDateCreated(
+//                Utils.getLogin(), userLogin, userLogin, Utils.getLogin(), from, to);
+//    }
+
     @Override
-    public List<Message> findAllMessagesWith(String userLogin) {
+    public List<Message> findAll(MessageFilterRequest request) {
 
-        LOGGER.info("Trying to show all messages with {}.", userLogin);
-
-        if (messageRepository.findAllByReceiverLoginAndSenderLoginOrReceiverLoginAndSenderLoginOrderByDateCreated(
-                Utils.getLogin(), userLogin, userLogin, Utils.getLogin()).isEmpty()) {
-            LOGGER.warn("Message`s list is empty!");
-        } else {
-            LOGGER.info("Message(s) found.");
-        }
-        return messageRepository.findAllByReceiverLoginAndSenderLoginOrReceiverLoginAndSenderLoginOrderByDateCreated(
-                Utils.getLogin(), userLogin, userLogin, Utils.getLogin());
-    }
-
-    @Override
-    public List<Message> findAllMessagesWithBetween(String userLogin, LocalDateTime from, LocalDateTime to) {
-
-        LOGGER.info("Trying to show all messages with {} from {} to {}.", userLogin, from, to);
-
-        if (messageRepository.findAllByReceiverLoginAndSenderLoginOrReceiverLoginAndSenderLoginAndDateCreatedBetweenOrderByDateCreated(
-                Utils.getLogin(), userLogin, userLogin, Utils.getLogin(), from, to).isEmpty()) {
-            LOGGER.warn("Message`s list is empty!");
-        } else {
-            LOGGER.info("Message(s) found.");
-        }
-        return messageRepository.findAllByReceiverLoginAndSenderLoginOrReceiverLoginAndSenderLoginAndDateCreatedBetweenOrderByDateCreated(
-                Utils.getLogin(), userLogin, userLogin, Utils.getLogin(), from, to);
+        return messageRepository.findAll(MessageSpecification.getSpecification(request), Sort.by("dateCreated"));
     }
 
     @Override

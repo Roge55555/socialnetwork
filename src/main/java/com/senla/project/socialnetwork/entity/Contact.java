@@ -1,6 +1,7 @@
 package com.senla.project.socialnetwork.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 @Entity
 @Table(name = "contact", uniqueConstraints = @UniqueConstraint(columnNames = {"creator_id", "mate_id"}))
 public class Contact {
@@ -43,6 +45,10 @@ public class Contact {
 
     @ManyToOne
     @JoinColumn(name = "contact_role")
-    private RoleList contactRole;
+    private RoleList creatorRole;
+
+    @ManyToOne
+    @JoinColumn(name = "contact_role")
+    private RoleList mateRole;
 
 }

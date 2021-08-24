@@ -1,17 +1,24 @@
 package com.senla.project.socialnetwork.service.impl;
 
+import com.senla.project.socialnetwork.Utils;
 import com.senla.project.socialnetwork.entity.Contact;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
+import com.senla.project.socialnetwork.exeptions.TryingModifyNotYourDataException;
 import com.senla.project.socialnetwork.exeptions.TryingRequestToYourselfException;
+import com.senla.project.socialnetwork.model.dto.ContactFilterRequest;
 import com.senla.project.socialnetwork.repository.ContactRepository;
 import com.senla.project.socialnetwork.repository.RoleListRepository;
 import com.senla.project.socialnetwork.repository.UserRepository;
+import com.senla.project.socialnetwork.repository.specification.ContactSpecification;
 import com.senla.project.socialnetwork.service.ContactService;
+import com.senla.project.socialnetwork.service.RoleListService;
+import com.senla.project.socialnetwork.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -20,72 +27,61 @@ public class ContactServiceImpl implements ContactService {
 
     private final ContactRepository contactRepository;
 
-    private final RoleListRepository roleListRepository;
+    private final RoleListService roleListService;
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContactServiceImpl.class);
 
     @Override
-    public Contact add(Contact contact) {
+    public Contact add(Long mateId) {
         LOGGER.info("Trying to add contact.");
 
-        if (userRepository.findById(contact.getCreator().getId()).isEmpty() ||
-                userRepository.findById(contact.getMate().getId()).isEmpty() ||
-                roleListRepository.findById(contact.getContactRole().getId()).isEmpty()) {
-            LOGGER.error("Creator/Mate/Role do(es)n`t exist");
-            throw new NoSuchElementException();
-        } else if (contact.getCreator().getId().equals(contact.getMate().getId())) {
-            LOGGER.error("User {} trying contact himself", contact.getCreator());
-            throw new TryingRequestToYourselfException();
-        }
-        contact.setId(null);
+        Contact contact = Contact.builder()
+                .creator(userService.findByLogin(Utils.getLogin()))
+                .mate(userService.findById(mateId))
+                .dateConnected(LocalDate.now())
+                .contactLevel(false)
+                .creatorRole(null)
+                .mateRole(null)
+                .build();
+
         final Contact save = contactRepository.save(contact);
         LOGGER.info("Contact added.");
         return save;
     }
 
     @Override
-    public List<Contact> findAll() {
-        LOGGER.info("Trying to show all contacts.");
-        if (contactRepository.findAll().isEmpty()) {
-            LOGGER.warn("Contact`s list is empty!");
-        } else {
-            LOGGER.info("Contact(s) found.");
-        }
-        return contactRepository.findAll();
+    public List<Contact> findAll(ContactFilterRequest request) {
+        return contactRepository.findAll(ContactSpecification.getSpecification(request));
     }
 
     @Override
     public Contact findById(Long id) {
+        if(!contactRepository.findById(id).get().getCreator().getLogin().equals(Utils.getLogin()) ||
+                !contactRepository.findById(id).get().getMate().getLogin().equals(Utils.getLogin())) {
+            throw new TryingModifyNotYourDataException("Not your contact.");
+        }
         LOGGER.info("Trying to find contact by id");
         final Contact contact = contactRepository.findById(id).orElseThrow(() -> {
             LOGGER.error("No element with such id - {}.", id);
             return new NoSuchElementException(id);
         });
-        LOGGER.info("Blocklist found using id {}", contact.getId());
+        LOGGER.info("Contact found using id {}", contact.getId());
         return contact;
     }
 
     @Override
-    public Contact update(Long id, Contact contact) {
+    public void acceptRequest(Long id) {
         LOGGER.info("Trying to update contact with id - {}.", id);
-        if (userRepository.findById(contact.getCreator().getId()).isEmpty() ||
-                userRepository.findById(contact.getMate().getId()).isEmpty() ||
-                roleListRepository.findById(contact.getContactRole().getId()).isEmpty()) {
-            LOGGER.error("Creator/Mate/Role do(es)n`t exist");
-            throw new NoSuchElementException();
-        } else if (contact.getCreator().getId().equals(contact.getMate().getId())) {
-            LOGGER.error("User {} trying contact himself", contact.getCreator());
-            throw new TryingRequestToYourselfException();
+
+        if(!findById(id).getMate().getLogin().equals(Utils.getLogin())) {
+            throw new TryingModifyNotYourDataException("Only mate can accept request!");
         }
 
-        return contactRepository.findById(id).map(cont -> {
-            cont.setCreator(contact.getCreator());
-            cont.setMate(contact.getMate());
-            cont.setDateConnected(contact.getDateConnected());
-            cont.setContactLevel(contact.getContactLevel());
-            cont.setContactRole(contact.getContactRole());
+        contactRepository.findById(id).map(cont -> {
+            cont.setDateConnected(LocalDate.now());
+            cont.setContactLevel(true);
             final Contact save = contactRepository.save(cont);
             LOGGER.info("Contact with id {} updated.", id);
             return save;
@@ -97,14 +93,59 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
+    public void updateRole(Long id, Long roleId) {
+        LOGGER.info("Trying to update contact with id - {}.", id);
+
+        if(!findById(id).getContactLevel()) {
+            throw new TryingModifyNotYourDataException("You can set role only after mate accept request.");
+        }
+
+        if(findById(id).getCreator().getLogin().equals(Utils.getLogin())) {
+            contactRepository.findById(id).map(cont -> {
+                cont.setDateConnected(LocalDate.now());
+                cont.setMateRole(roleListService.findById(roleId));
+                final Contact save = contactRepository.save(cont);
+                LOGGER.info("Contact with id {} updated.", id);
+                return save;
+            })
+                    .orElseThrow(() -> {
+                        LOGGER.error("No element with such id - {}.", id);
+                        return new NoSuchElementException(id);
+                    });
+        }
+        else {
+            contactRepository.findById(id).map(cont -> {
+                cont.setDateConnected(LocalDate.now());
+                cont.setCreatorRole(roleListService.findById(roleId));
+                final Contact save = contactRepository.save(cont);
+                LOGGER.info("Contact with id {} updated.", id);
+                return save;
+            })
+                    .orElseThrow(() -> {
+                        LOGGER.error("No element with such id - {}.", id);
+                        return new NoSuchElementException(id);
+                    });
+        }
+    }
+
+    @Override
     public void delete(Long id) {
         LOGGER.info("Trying to delete contact with id - {}.", id);
-        if (contactRepository.findById(id).isEmpty()) {
-            LOGGER.error("No contact with id - {}.", id);
-            throw new NoSuchElementException(id);
+        if(findById(id).getCreator().getLogin().equals(Utils.getLogin())) {
+            contactRepository.deleteById(id);
+            LOGGER.info("Contact with id - {} was deleted.", id);
         }
-        contactRepository.deleteById(id);
-        LOGGER.info("Contact with id - {} was deleted.", id);
+        else {
+            contactRepository.findById(id).map(cont -> {
+                cont.setDateConnected(LocalDate.now());
+                cont.setContactLevel(false);
+                cont.setCreatorRole(null);
+                cont.setMateRole(null);
+                return contactRepository.save(cont);
+            });
+            LOGGER.info("Contact with id - {} was level downed.", id);
+        }
+
     }
 
 }

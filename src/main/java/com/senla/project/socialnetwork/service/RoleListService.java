@@ -8,7 +8,7 @@ public interface RoleListService {
 
     RoleList add(RoleList roleList);
 
-    List<RoleList> findAll();
+    List<RoleList> findAllWith(String name);
 
     RoleList findById(Long id);
 

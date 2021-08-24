@@ -28,11 +28,11 @@ public class RoleListController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RoleListController.class);
 
-    @GetMapping
+    @GetMapping("/{name}")
     @PreAuthorize("hasAuthority('standard:permission')")
-    public List<RoleList> getAllRoleLists() {
+    public List<RoleList> getAllRoleLists(@PathVariable("name") String name) {
         LOGGER.debug("Entering findAll roles endpoint");
-        return roleListService.findAll();
+        return roleListService.findAllWith(name);
     }
 
     @GetMapping("/{id}")

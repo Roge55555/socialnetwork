@@ -29,14 +29,14 @@ public class RoleListServiceImpl implements RoleListService {
     }
 
     @Override
-    public List<RoleList> findAll() {
+    public List<RoleList> findAllWith(String name) {
         LOGGER.info("Trying to show all roles.");
-        if (roleListRepository.findAll().isEmpty()) {
+        if (roleListRepository.findByNameContaining(name).isEmpty()) {
             LOGGER.warn("Role`s list is empty!");
         } else {
             LOGGER.info("Role(s) found.");
         }
-        return roleListRepository.findAll();
+        return roleListRepository.findByNameContaining(name);
     }
 
     @Override

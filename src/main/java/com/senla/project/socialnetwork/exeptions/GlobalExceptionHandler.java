@@ -64,9 +64,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(tryingModifyNotYourDataException.getMessage(), HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(value = DataIntegrityViolationException.class)
-    public ResponseEntity<String> dataIntegrityViolationException(DataIntegrityViolationException dataIntegrityViolationException) {
-        return new ResponseEntity<>(dataIntegrityViolationException.getLocalizedMessage(), HttpStatus.CONFLICT);
+    @ExceptionHandler(value = NoNecessaryFieldInSpecificationException.class)
+    public ResponseEntity<String> noNecessaryFieldInSpecification(NoNecessaryFieldInSpecificationException noNecessaryFieldInSpecificationException) {
+        return new ResponseEntity<>(noNecessaryFieldInSpecificationException.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+//    @ExceptionHandler(value = DataIntegrityViolationException.class)
+//    public ResponseEntity<String> dataIntegrityViolationException(DataIntegrityViolationException dataIntegrityViolationException) {
+//        return new ResponseEntity<>(dataIntegrityViolationException.getLocalizedMessage(), HttpStatus.CONFLICT);
+//    }
 
 }

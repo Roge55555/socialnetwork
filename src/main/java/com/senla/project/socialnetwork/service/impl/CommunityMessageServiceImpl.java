@@ -4,9 +4,9 @@ import com.senla.project.socialnetwork.Utils;
 import com.senla.project.socialnetwork.entity.CommunityMessage;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.exeptions.TryingModifyNotYourDataException;
+import com.senla.project.socialnetwork.model.dto.CommunityMessageFilterRequest;
 import com.senla.project.socialnetwork.repository.CommunityMessageRepository;
-import com.senla.project.socialnetwork.repository.CommunityRepository;
-import com.senla.project.socialnetwork.repository.UserRepository;
+import com.senla.project.socialnetwork.repository.specification.CommunityMessageSpecification;
 import com.senla.project.socialnetwork.service.CommunityMessageService;
 import com.senla.project.socialnetwork.service.CommunityService;
 import com.senla.project.socialnetwork.service.UserOfCommunityService;
@@ -14,6 +14,7 @@ import com.senla.project.socialnetwork.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -58,37 +59,43 @@ public class CommunityMessageServiceImpl implements CommunityMessageService {
         return save;
     }
 
-    @Override
-    public List<CommunityMessage> findCommunityMessagesByCommunityName(String communityName) {
-        LOGGER.info("Trying to show all community messages.");
-        if (communityMessageRepository.findCommunityMessagesByCommunityNameOrderByDate(communityName).isEmpty()) {
-            LOGGER.warn("Community message`s list is empty!");
-        } else {
-            LOGGER.info("Community message(s) found.");
-        }
-        return communityMessageRepository.findCommunityMessagesByCommunityNameOrderByDate(communityName);
-    }
+//    @Override
+//    public List<CommunityMessage> findCommunityMessagesByCommunityName(String communityName) {
+//        LOGGER.info("Trying to show all community messages.");
+//        if (communityMessageRepository.findCommunityMessagesByCommunityNameOrderByDate(communityName).isEmpty()) {
+//            LOGGER.warn("Community message`s list is empty!");
+//        } else {
+//            LOGGER.info("Community message(s) found.");
+//        }
+//        return communityMessageRepository.findCommunityMessagesByCommunityNameOrderByDate(communityName);
+//    }
+//
+//    @Override
+//    public List<CommunityMessage> findCommunityMessagesByCommunityNameAndCreatorLogin(String communityName, String userLogin) {
+//        LOGGER.info("Trying to show all community messages.");
+//        if (communityMessageRepository.findCommunityMessagesByCommunityNameAndCreatorLoginOrderByDate(communityName, userLogin).isEmpty()) {
+//            LOGGER.warn("Community message`s list is empty!");
+//        } else {
+//            LOGGER.info("Community message(s) found.");
+//        }
+//        return communityMessageRepository.findCommunityMessagesByCommunityNameAndCreatorLoginOrderByDate(communityName, userLogin);
+//    }
+//
+//    @Override
+//    public List<CommunityMessage> findCommunityMessagesByDateBetween(LocalDateTime from, LocalDateTime to) {
+//        LOGGER.info("Trying to show all community messages.");
+//        if (communityMessageRepository.findCommunityMessagesByDateBetweenOrderByDate(from, to).isEmpty()) {
+//            LOGGER.warn("Community message`s list is empty!");
+//        } else {
+//            LOGGER.info("Community message(s) found.");
+//        }
+//        return communityMessageRepository.findCommunityMessagesByDateBetweenOrderByDate(from, to);
+//    }
 
     @Override
-    public List<CommunityMessage> findCommunityMessagesByCommunityNameAndCreatorLogin(String communityName, String userLogin) {
-        LOGGER.info("Trying to show all community messages.");
-        if (communityMessageRepository.findCommunityMessagesByCommunityNameAndCreatorLoginOrderByDate(communityName, userLogin).isEmpty()) {
-            LOGGER.warn("Community message`s list is empty!");
-        } else {
-            LOGGER.info("Community message(s) found.");
-        }
-        return communityMessageRepository.findCommunityMessagesByCommunityNameAndCreatorLoginOrderByDate(communityName, userLogin);
-    }
+    public List<CommunityMessage> findAll(CommunityMessageFilterRequest request) {
 
-    @Override
-    public List<CommunityMessage> findCommunityMessagesByDateBetween(LocalDateTime from, LocalDateTime to) {
-        LOGGER.info("Trying to show all community messages.");
-        if (communityMessageRepository.findCommunityMessagesByDateBetweenOrderByDate(from, to).isEmpty()) {
-            LOGGER.warn("Community message`s list is empty!");
-        } else {
-            LOGGER.info("Community message(s) found.");
-        }
-        return communityMessageRepository.findCommunityMessagesByDateBetweenOrderByDate(from, to);
+        return communityMessageRepository.findAll(CommunityMessageSpecification.getSpecification(request), Sort.by("date"));
     }
 
     @Override

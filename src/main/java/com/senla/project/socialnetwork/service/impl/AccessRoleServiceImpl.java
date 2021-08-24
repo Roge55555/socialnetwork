@@ -14,17 +14,14 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AccessRoleServiceImpl implements AccessRoleService {
 
-    private final AccessRoleRepository accessRoleRepository;
+    private final AccessRoleService accessRoleService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccessRoleServiceImpl.class);
 
     @Override
     public AccessRole findById(Long id) {
         LOGGER.debug("Trying to find access role by id");
-        final AccessRole accessRole = accessRoleRepository.findById(id).orElseThrow(() -> {
-            LOGGER.error("No element with such id - {}.", id);
-            return new NoSuchElementException(id);
-        });
+        final AccessRole accessRole = accessRoleService.findById(id);
         LOGGER.debug("Access role found using id {}", accessRole.getId());
         return accessRole;
     }
@@ -32,10 +29,7 @@ public class AccessRoleServiceImpl implements AccessRoleService {
     @Override
     public AccessRole findByName(Role name) {
         LOGGER.debug("Trying to find access role by login");
-        final AccessRole accessRole = accessRoleRepository.findByName(name).orElseThrow(() -> {
-            LOGGER.error("No element with such login - {}.", name);
-            return new NoSuchElementException("role - " + name.name() + ".");
-        });
+        final AccessRole accessRole = accessRoleService.findByName(name);
         LOGGER.debug("Access role with login {} found.", accessRole.getName());
         return accessRole;
     }

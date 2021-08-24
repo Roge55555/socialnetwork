@@ -1,6 +1,9 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.CommunityMessage;
+import com.senla.project.socialnetwork.entity.Message;
+import com.senla.project.socialnetwork.model.dto.CommunityMessageFilterRequest;
+import com.senla.project.socialnetwork.model.dto.MessageFilterRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,11 +12,13 @@ public interface CommunityMessageService {
 
     CommunityMessage add(String communityName, String txt);
 
-    List<CommunityMessage> findCommunityMessagesByCommunityName(String communityName);
+    List<CommunityMessage> findAll(CommunityMessageFilterRequest request);
 
-    List<CommunityMessage> findCommunityMessagesByCommunityNameAndCreatorLogin(String communityName, String userLogin);
-
-    List<CommunityMessage> findCommunityMessagesByDateBetween(LocalDateTime from, LocalDateTime to);
+//    List<CommunityMessage> findCommunityMessagesByCommunityName(String communityName);
+//
+//    List<CommunityMessage> findCommunityMessagesByCommunityNameAndCreatorLogin(String communityName, String userLogin);
+//
+//    List<CommunityMessage> findCommunityMessagesByDateBetween(LocalDateTime from, LocalDateTime to);
 
     CommunityMessage findById(Long id);
 

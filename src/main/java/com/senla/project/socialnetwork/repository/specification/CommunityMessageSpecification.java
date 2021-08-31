@@ -1,6 +1,10 @@
 package com.senla.project.socialnetwork.repository.specification;
 
+import com.senla.project.socialnetwork.entity.Community;
 import com.senla.project.socialnetwork.entity.CommunityMessage;
+import com.senla.project.socialnetwork.entity.CommunityMessage_;
+import com.senla.project.socialnetwork.entity.Community_;
+import com.senla.project.socialnetwork.entity.User_;
 import com.senla.project.socialnetwork.exeptions.NoNecessaryFieldInSpecificationException;
 import com.senla.project.socialnetwork.model.filter.CommunityMessageFilterRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -11,16 +15,12 @@ import static org.springframework.data.jpa.domain.Specification.where;
 
 public class CommunityMessageSpecification {
 
-    private static final String COMMUNITY = "community";
-    private static final String USER = "creator";
-    private static final String CREATION_TIME = "date";
-
     private static Specification<CommunityMessage> hasCommunity(final Long community) {
         if (community == null)
             throw new NoNecessaryFieldInSpecificationException("No community!");
 
         return (root, query, builder) ->
-                builder.equal((root.get(COMMUNITY).get("id")), community);
+                builder.equal((root.get(CommunityMessage_.COMMUNITY).get(Community_.ID)), community);
     }
 
     private static Specification<CommunityMessage> hasUser(final Long user) {
@@ -28,7 +28,7 @@ public class CommunityMessageSpecification {
             return null;
 
         return (root, query, builder) ->
-                builder.equal((root.get(USER).get("id")), user);
+                builder.equal((root.get(CommunityMessage_.CREATOR).get(User_.ID)), user);
     }
 
 
@@ -37,19 +37,19 @@ public class CommunityMessageSpecification {
             return null;
 
         if (from == null)
-            return (root, query, builder) -> builder.lessThanOrEqualTo(root.get(CREATION_TIME), to);
+            return (root, query, builder) -> builder.lessThanOrEqualTo(root.get(CommunityMessage_.DATE), to);
 
         if (to == null)
-            return (root, query, builder) -> builder.greaterThanOrEqualTo(root.get(CREATION_TIME), from);
+            return (root, query, builder) -> builder.greaterThanOrEqualTo(root.get(CommunityMessage_.DATE), from);
 
-        return (root, query, builder) -> builder.between(root.get(CREATION_TIME), from, to);
+        return (root, query, builder) -> builder.between(root.get(CommunityMessage_.DATE), from, to);
     }
 
-    public static Specification<CommunityMessage> getSpecification (final CommunityMessageFilterRequest request) {
+    public static Specification<CommunityMessage> getSpecification(final CommunityMessageFilterRequest request) {
         return (root, query, builder) -> {
             query.distinct(true);
-            return where(hasCommunity(request.getCommunity_id()))
-                    .and(hasUser(request.getUser_id()))
+            return where(hasCommunity(request.getCommunityId()))
+                    .and(hasUser(request.getUserId()))
                     .and(hasTimeInterval(request.getFrom(), request.getTo()))
                     .toPredicate(root, query, builder);
         };

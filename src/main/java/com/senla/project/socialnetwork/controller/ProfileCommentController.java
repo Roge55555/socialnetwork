@@ -1,10 +1,10 @@
 package com.senla.project.socialnetwork.controller;
 
 import com.senla.project.socialnetwork.entity.ProfileComment;
+import com.senla.project.socialnetwork.model.dto.ProfileCommentDTO;
+import com.senla.project.socialnetwork.model.filter.ProfileCommentFilterRequest;
 import com.senla.project.socialnetwork.service.ProfileCommentService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,36 +26,30 @@ public class ProfileCommentController {
 
     private final ProfileCommentService profileCommentService;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileCommentController.class);
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('standard:permission')")
+    public ProfileComment addProfileComment(@RequestBody ProfileCommentDTO profileCommentDTO) {
+        return profileCommentService.add(profileCommentDTO.getUserId(), profileCommentDTO.getTxt());
+    }
 
     @GetMapping
     @PreAuthorize("hasAuthority('standard:permission')")
-    public List<ProfileComment> getAllProfileComments() {
-        LOGGER.debug("Entering findAll profile comments endpoint");
-        return profileCommentService.findAll();
+    public List<ProfileComment> getAllProfileComments(@RequestBody ProfileCommentFilterRequest request) {
+        return profileCommentService.findAll(request);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.FOUND)
     @PreAuthorize("hasAuthority('standard:permission')")
     public ProfileComment getById(@PathVariable("id") Long id) {
-        LOGGER.debug("Entering getById profile comment endpoint");
         return profileCommentService.findById(id);
-    }
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAuthority('standard:permission')")
-    public ProfileComment addProfileComment(@RequestBody ProfileComment profileComment) {
-        LOGGER.debug("Entering addProfileComment endpoint");
-        return profileCommentService.add(profileComment);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void updateProfileComment(@PathVariable("id") Long id, @RequestBody ProfileComment profileComment) {
-        LOGGER.debug("Entering updateProfileComment endpoint");
+    public void updateProfileComment(@PathVariable("id") Long id, @RequestBody String profileComment) {
         profileCommentService.update(id, profileComment);
     }
 
@@ -63,7 +57,6 @@ public class ProfileCommentController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('standard:permission')")
     public void deleteProfileComment(@PathVariable("id") Long id) {
-        LOGGER.debug("Entering deleteProfileComment endpoint");
         profileCommentService.delete(id);
     }
 

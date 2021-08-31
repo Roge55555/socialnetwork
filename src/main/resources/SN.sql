@@ -109,7 +109,7 @@ CREATE TABLE contact
     date_connected date NOT NULL,
     contact_level  boolean,
     creator_role   bigint,
-    mate_role   bigint,
+    mate_role      bigint,
     foreign key (creator_id) references `user` (id),
     foreign key (mate_id) references `user` (id),
     foreign key (creator_role) references role_list (id),

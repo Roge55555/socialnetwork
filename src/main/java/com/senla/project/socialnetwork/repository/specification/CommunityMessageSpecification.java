@@ -1,6 +1,5 @@
 package com.senla.project.socialnetwork.repository.specification;
 
-import com.senla.project.socialnetwork.entity.Community;
 import com.senla.project.socialnetwork.entity.CommunityMessage;
 import com.senla.project.socialnetwork.entity.CommunityMessage_;
 import com.senla.project.socialnetwork.entity.Community_;

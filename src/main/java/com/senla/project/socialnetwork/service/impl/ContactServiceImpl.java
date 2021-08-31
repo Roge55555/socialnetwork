@@ -55,7 +55,7 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public Contact findById(Long id) {
-        if(!contactRepository.findById(id).get().getCreator().getLogin().equals(Utils.getLogin()) ||
+        if (!contactRepository.findById(id).get().getCreator().getLogin().equals(Utils.getLogin()) ||
                 !contactRepository.findById(id).get().getMate().getLogin().equals(Utils.getLogin())) {
             throw new TryingModifyNotYourDataException("Not your contact.");
         }
@@ -72,7 +72,7 @@ public class ContactServiceImpl implements ContactService {
     public void acceptRequest(Long id) {
         LOGGER.info("Trying to update contact with id - {}.", id);
 
-        if(!findById(id).getMate().getLogin().equals(Utils.getLogin())) {
+        if (!findById(id).getMate().getLogin().equals(Utils.getLogin())) {
             throw new TryingModifyNotYourDataException("Only mate can accept request!");
         }
 
@@ -93,11 +93,11 @@ public class ContactServiceImpl implements ContactService {
     public void updateRole(Long id, Long roleId) {
         LOGGER.info("Trying to update contact with id - {}.", id);
 
-        if(!findById(id).getContactLevel()) {
+        if (!findById(id).getContactLevel()) {
             throw new TryingModifyNotYourDataException("You can set role only after mate accept request.");
         }
 
-        if(findById(id).getCreator().getLogin().equals(Utils.getLogin())) {
+        if (findById(id).getCreator().getLogin().equals(Utils.getLogin())) {
             contactRepository.findById(id).map(cont -> {
                 cont.setDateConnected(LocalDate.now());
                 cont.setMateRole(roleListService.findById(roleId));
@@ -109,8 +109,7 @@ public class ContactServiceImpl implements ContactService {
                         LOGGER.error("No element with such id - {}.", id);
                         throw new NoSuchElementException(id);
                     });
-        }
-        else {
+        } else {
             contactRepository.findById(id).map(cont -> {
                 cont.setDateConnected(LocalDate.now());
                 cont.setCreatorRole(roleListService.findById(roleId));
@@ -128,11 +127,10 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public void delete(Long id) {
         LOGGER.info("Trying to delete contact with id - {}.", id);
-        if(findById(id).getCreator().getLogin().equals(Utils.getLogin())) {
+        if (findById(id).getCreator().getLogin().equals(Utils.getLogin())) {
             contactRepository.deleteById(id);
             LOGGER.info("Contact with id - {} was deleted.", id);
-        }
-        else {
+        } else {
             contactRepository.findById(id).map(cont -> {
                 cont.setDateConnected(LocalDate.now());
                 cont.setContactLevel(false);

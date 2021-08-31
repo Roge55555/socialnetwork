@@ -1,15 +1,11 @@
 package com.senla.project.socialnetwork.controller;
 
 import com.senla.project.socialnetwork.entity.User;
-import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
-import com.senla.project.socialnetwork.exeptions.NotOldPasswordException;
 import com.senla.project.socialnetwork.model.ChangePassword;
 import com.senla.project.socialnetwork.model.dto.UserAddDTO;
 import com.senla.project.socialnetwork.model.dto.UserUpdateDTO;
 import com.senla.project.socialnetwork.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;

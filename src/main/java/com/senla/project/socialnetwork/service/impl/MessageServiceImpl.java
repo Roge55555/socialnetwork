@@ -4,14 +4,15 @@ import com.senla.project.socialnetwork.Utils;
 import com.senla.project.socialnetwork.entity.Message;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.exeptions.TryingModifyNotYourDataException;
+import com.senla.project.socialnetwork.model.filter.MessageFilterRequest;
 import com.senla.project.socialnetwork.repository.MessageRepository;
+import com.senla.project.socialnetwork.repository.specification.MessageSpecification;
 import com.senla.project.socialnetwork.service.MessageService;
 import com.senla.project.socialnetwork.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

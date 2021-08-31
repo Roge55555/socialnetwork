@@ -3,8 +3,6 @@ package com.senla.project.socialnetwork.controller;
 import com.senla.project.socialnetwork.entity.AccessRole;
 import com.senla.project.socialnetwork.service.AccessRoleService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;

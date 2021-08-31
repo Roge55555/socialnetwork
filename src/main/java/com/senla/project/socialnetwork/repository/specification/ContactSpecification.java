@@ -8,7 +8,6 @@ import com.senla.project.socialnetwork.entity.User_;
 import com.senla.project.socialnetwork.model.filter.ContactFilterRequest;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.criteria.JoinType;
 import java.time.LocalDate;
 
 import static org.springframework.data.jpa.domain.Specification.where;

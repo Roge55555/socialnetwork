@@ -1,7 +1,6 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.UserOfCommunity;
-import com.senla.project.socialnetwork.model.dto.UserOfCommunityDTO;
 
 import java.util.List;
 

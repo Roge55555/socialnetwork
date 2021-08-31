@@ -1,15 +1,10 @@
 package com.senla.project.socialnetwork.controller;
 
 import com.senla.project.socialnetwork.entity.Message;
-import com.senla.project.socialnetwork.model.TimeInterval;
 import com.senla.project.socialnetwork.model.dto.MessageDTO;
 import com.senla.project.socialnetwork.model.filter.MessageFilterRequest;
-import com.senla.project.socialnetwork.repository.specification.MessageSpecification;
 import com.senla.project.socialnetwork.service.MessageService;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.jni.Time;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController

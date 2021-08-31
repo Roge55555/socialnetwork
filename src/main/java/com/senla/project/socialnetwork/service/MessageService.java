@@ -1,9 +1,8 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.Message;
-import org.springframework.data.jpa.domain.Specification;
+import com.senla.project.socialnetwork.model.filter.MessageFilterRequest;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface MessageService {

@@ -1,7 +1,6 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.User;
-import com.senla.project.socialnetwork.model.ChangePassword;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

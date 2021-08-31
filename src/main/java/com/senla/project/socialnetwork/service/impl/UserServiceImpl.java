@@ -2,10 +2,8 @@ package com.senla.project.socialnetwork.service.impl;
 
 import com.senla.project.socialnetwork.Utils;
 import com.senla.project.socialnetwork.entity.User;
-import com.senla.project.socialnetwork.exeptions.DataAlreadyTakenException;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.exeptions.NotOldPasswordException;
-import com.senla.project.socialnetwork.model.ChangePassword;
 import com.senla.project.socialnetwork.model.Role;
 import com.senla.project.socialnetwork.repository.UserRepository;
 import com.senla.project.socialnetwork.service.AccessRoleService;
@@ -15,8 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

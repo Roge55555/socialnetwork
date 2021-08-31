@@ -5,7 +5,6 @@ import com.senla.project.socialnetwork.entity.Community;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.exeptions.TryingModifyNotYourDataException;
 import com.senla.project.socialnetwork.model.Role;
-import com.senla.project.socialnetwork.model.dto.CommunityUpdateDTO;
 import com.senla.project.socialnetwork.repository.CommunityRepository;
 import com.senla.project.socialnetwork.service.CommunityService;
 import com.senla.project.socialnetwork.service.UserService;

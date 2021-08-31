@@ -4,7 +4,6 @@ import com.senla.project.socialnetwork.Utils;
 import com.senla.project.socialnetwork.entity.UserEvent;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.repository.UserEventRepository;
-import com.senla.project.socialnetwork.repository.UserRepository;
 import com.senla.project.socialnetwork.service.UserEventService;
 import com.senla.project.socialnetwork.service.UserService;
 import lombok.RequiredArgsConstructor;

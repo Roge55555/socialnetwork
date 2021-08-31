@@ -39,7 +39,7 @@ public class CommunityMessageServiceImpl implements CommunityMessageService {
         LOGGER.info("Trying to add community message.");
 
         if (userOfCommunityService.findByCommunityNameAndUserLogin(communityName, Utils.getLogin()) == null &&
-        !communityService.findByName(communityName).getCreator().equals(userService.findByLogin(Utils.getLogin()))) {
+                !communityService.findByName(communityName).getCreator().equals(userService.findByLogin(Utils.getLogin()))) {
             LOGGER.error("Not member of community can not add messages.");
             throw new TryingModifyNotYourDataException("Not member of community can not add messages!");
         }

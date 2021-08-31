@@ -1,7 +1,6 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.UserEvent;
-import liquibase.pro.packaged.S;
 
 import java.time.LocalDateTime;
 import java.util.List;

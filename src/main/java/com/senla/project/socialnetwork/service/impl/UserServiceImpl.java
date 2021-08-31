@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -30,23 +31,19 @@ public class UserServiceImpl implements UserService {
 
     private final AccessRoleService accessRoleService;
 
+    private final PasswordEncoder passwordEncoder;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override
     public User add(User user) {
         LOGGER.info("Trying to add user.");
 
-        user.setPassword(new BCryptPasswordEncoder(12).encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         user.setRole(accessRoleService.findByName(Role.USER));
         user.setRegistrationDate(LocalDate.now());
 
-        if (userRepository.findByLogin(user.getLogin()).isPresent() ||
-                userRepository.findByEmail(user.getEmail()).isPresent() ||
-                userRepository.findByPhone(user.getPhone()).isPresent()) {
-            LOGGER.error("Login/Email/Phone already occupied");
-            throw new DataAlreadyTakenException();
-        }
         final User save = userRepository.save(user);
         LOGGER.info("User added.");
         return save;
@@ -55,22 +52,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findAll() {
         LOGGER.info("Trying to show all users.");
-        if (userRepository.findAll().isEmpty()) {
-            LOGGER.warn("User`s list is empty!");
-        } else {
-            LOGGER.info("User(s) found.");
-        }
         return userRepository.findAll();
     }
 
     @Override
-    public Page<User> findAll(Pageable pageable) {
+    public Page<User> findAll(String name, Pageable pageable) {
         LOGGER.info("Trying to show all users in pages.");
-        if (userRepository.findAll().isEmpty())
-            LOGGER.warn("User`s list is empty!");
-        else
-            LOGGER.info("User(s) found.");
-        return userRepository.findAll(pageable);
+        return userRepository.findByLoginContainingOrFirstNameContainingOrLastNameContaining(name, name, name, pageable);
     }
 
     @Override
@@ -78,7 +66,7 @@ public class UserServiceImpl implements UserService {
         LOGGER.info("Trying to find user by id");
         final User user = userRepository.findById(id).orElseThrow(() -> {
             LOGGER.error("No element with such id - {}.", id);
-            return new NoSuchElementException(id);
+            throw new NoSuchElementException(id);
         });
         LOGGER.info("User found using id {}", user.getId());
         return user;
@@ -89,7 +77,7 @@ public class UserServiceImpl implements UserService {
         LOGGER.info("Trying to find user by login");
         final User user = userRepository.findByLogin(login).orElseThrow(() -> {
             LOGGER.error("No element with such login - {}.", login);
-            return new NoSuchElementException("login - " + login + "."); //TODO return->throw
+            throw new NoSuchElementException("login - " + login + ".");
         });
         LOGGER.info("User with login {} found.", user.getLogin());
         return user;
@@ -97,18 +85,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(User user) {
-        Long id = userRepository.findByLogin(Utils.getLogin()).get().getId();
-        LOGGER.info("Trying to update user with id - {}.", id);
-        //TODO: refactoring
-//        if ((userRepository.findByLogin(user.getLogin()).isPresent() && userRepository.findById(id).isPresent() && !userRepository.findByLogin(user.getLogin()).get().getId().equals(id)) ||
-//                (userRepository.findByEmail(user.getEmail()).isPresent() && userRepository.findById(id).isPresent() && !userRepository.findByEmail(user.getEmail()).get().getId().equals(id)) ||
-//                (userRepository.findByPhone(user.getPhone()).isPresent() && userRepository.findById(id).isPresent() && !userRepository.findByPhone(user.getPhone()).get().getId().equals(id))) {
-//            LOGGER.error("Login/Email/Phone already occupied" + id);
-//            throw new DataAlreadyTakenException();
-//        }
-        final User save = userRepository.save(userRepository.findById(id).map(usr ->
+        LOGGER.info("Trying to update user with id - {}.", findByLogin(Utils.getLogin()).getId());
+
+        return userRepository.save(userRepository.findById(findByLogin(Utils.getLogin()).getId()).map(usr ->
                 User.builder()
-                        .id(id)
+                        .id(findByLogin(Utils.getLogin()).getId())
                         .login(user.getLogin())
                         .password(usr.getPassword())
                         .dateBirth(user.getDateBirth())
@@ -124,35 +105,24 @@ public class UserServiceImpl implements UserService {
                         .workPhone(user.getWorkPhone())
                         .build())
                 .orElseThrow(() -> {
-                    LOGGER.error("No element with such id - {}.", id);
-                    return new NoSuchElementException(id);
+                    LOGGER.error("No element with such id - {}.", findByLogin(Utils.getLogin()).getId());
+                    throw new NoSuchElementException(findByLogin(Utils.getLogin()).getId());
                 }));
-        LOGGER.info("User with id {} updated.", id);
-        return save;
     }
 
     @Override
     public void delete() {
-        Long id = userRepository.findByLogin(Utils.getLogin()).get().getId();
-        LOGGER.info("Trying to delete user with id - {}.", id);
-        if (userRepository.findById(id).isEmpty()) {
-            LOGGER.error("No user with id - {}.", id);
-            throw new NoSuchElementException(id);
-        }
-        userRepository.deleteById(id);
-        LOGGER.info("User with id - {} was deleted.", id);
+        LOGGER.info("Trying to delete user - {}.", Utils.getLogin());
+        userRepository.deleteById(findByLogin(Utils.getLogin()).getId());
+        LOGGER.info("User - {} was deleted.", Utils.getLogin());
     }
 
     @Override
-    public void changePassword(ChangePassword password) {
-        Long id = userRepository.findByLogin(Utils.getLogin()).get().getId();
-        LOGGER.info("Trying to change password for User with id - {}.", id);
-        if (userRepository.findById(id).isEmpty()) {
-            LOGGER.error("No user with id - {}", id);
-            throw new NoSuchElementException(id);
-        } else if (new BCryptPasswordEncoder(12).matches(password.getOldPassword(), userRepository.findById(id).get().getPassword())) {
-            userRepository.findById(id).map(usr -> {
-                usr.setPassword(new BCryptPasswordEncoder(12).encode(password.getNewPassword()));
+    public void changePassword(String oldPassword, String newPassword) {
+        LOGGER.info("Trying to change password for User with id - {}.", findByLogin(Utils.getLogin()).getId());
+        if (passwordEncoder.matches(oldPassword, findById(findByLogin(Utils.getLogin()).getId()).getPassword())) {
+            userRepository.findById(findByLogin(Utils.getLogin()).getId()).map(usr -> {
+                usr.setPassword(passwordEncoder.encode(newPassword));
                 final User save = userRepository.save(usr);
                 LOGGER.info("Password was changed.");
                 return save;

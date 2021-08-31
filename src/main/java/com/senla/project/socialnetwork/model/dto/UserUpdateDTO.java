@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 public class UserUpdateDTO {
 
     @NotBlank
+    @NotNull
     @Size(min = 4)
     private String login;
 

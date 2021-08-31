@@ -13,7 +13,7 @@ public interface UserService {
 
     List<User> findAll();
 
-    Page<User> findAll(Pageable pageable);
+    Page<User> findAll(String name, Pageable pageable);
 
     User findById(Long id);
 
@@ -23,6 +23,6 @@ public interface UserService {
 
     void delete();
 
-    void changePassword(ChangePassword password);
+    void changePassword(String oldPassword, String newPassword);
 
 }

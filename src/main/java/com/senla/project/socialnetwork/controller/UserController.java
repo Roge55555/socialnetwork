@@ -35,38 +35,6 @@ public class UserController {
 
     private final UserService userService;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
-
-    @GetMapping
-    @PreAuthorize("hasAuthority('standard:permission')")
-    public List<User> getAllUsers() {
-        LOGGER.debug("Entering findAll users endpoint");
-        return userService.findAll();
-    }
-
-    @GetMapping("/page")
-    @PreAuthorize("hasAuthority('standard:permission')")
-    public Page<User> getAllUsers(Pageable pageable) {
-        LOGGER.debug("Entering findAll users in pages endpoint");
-        return userService.findAll(pageable);
-    }
-
-    @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('standard:permission')")
-    @ResponseStatus(HttpStatus.FOUND)
-    public User getById(@PathVariable("id") Long id) {
-        LOGGER.debug("Entering getById user endpoint");
-        return userService.findById(id);
-    }
-
-    @GetMapping("/find/{login}")
-    @PreAuthorize("hasAuthority('standard:permission')")
-    @ResponseStatus(HttpStatus.FOUND)
-    public User getByLogin(@PathVariable("login") String login) {
-        LOGGER.debug("Entering getByLogin user endpoint");
-        return userService.findByLogin(login);
-    }
-
     @PostMapping("/registration")
     @ResponseStatus(HttpStatus.CREATED)
     public User addUser(@Valid @RequestBody UserAddDTO userAddDTO) {
@@ -83,14 +51,39 @@ public class UserController {
                 .jobTitle(userAddDTO.getJobTitle())
                 .workPhone(userAddDTO.getWorkPhone())
                 .build();
-        LOGGER.debug("Entering addUser endpoint");
         return userService.add(user);
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAuthority('standard:permission')")
+    public List<User> getAllUsers() {
+        return userService.findAll();
+    }
+
+    @GetMapping("/page/{name}")
+    @PreAuthorize("hasAuthority('standard:permission')") //TODO set default pageable
+    public Page<User> getAllUsers(@PathVariable("name") String name, Pageable pageable) {
+        return userService.findAll(name, pageable);
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('standard:permission')")
+    @ResponseStatus(HttpStatus.FOUND)
+    public User getById(@PathVariable("id") Long id) {
+        return userService.findById(id);
+    }
+
+    @GetMapping("/find/{login}")
+    @PreAuthorize("hasAuthority('standard:permission')")
+    @ResponseStatus(HttpStatus.FOUND)
+    public User getByLogin(@PathVariable("login") String login) {
+        return userService.findByLogin(login);
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void updateUser(@Valid @RequestBody UserUpdateDTO userUpdateDTO) throws NoSuchElementException {
+    public void updateUser(@Valid @RequestBody UserUpdateDTO userUpdateDTO) {
         User user = User.builder()
                 .login(userUpdateDTO.getLogin())
                 .dateBirth(userUpdateDTO.getDateBirth())
@@ -103,7 +96,6 @@ public class UserController {
                 .jobTitle(userUpdateDTO.getJobTitle())
                 .workPhone(userUpdateDTO.getWorkPhone())
                 .build();
-        LOGGER.debug("Entering updateUser endpoint");
         userService.update(user);
     }
 
@@ -111,16 +103,14 @@ public class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('standard:permission')")
     public void deleteUser() {
-        LOGGER.debug("Entering deleteUser endpoint");
         userService.delete();
     }
 
     @PatchMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void changeUserPassword(@Valid @RequestBody ChangePassword password) throws NoSuchElementException, NotOldPasswordException {
-        LOGGER.debug("Entering changeUserPassword endpoint");
-        userService.changePassword(password);
+    public void changeUserPassword(@Valid @RequestBody ChangePassword password) {
+        userService.changePassword(password.getOldPassword(), password.getNewPassword());
     }
 
 }

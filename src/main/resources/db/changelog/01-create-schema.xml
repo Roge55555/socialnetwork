@@ -90,7 +90,7 @@
             <column name="description" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="date" type="date">
+            <column name="date" type="datetime">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -119,10 +119,10 @@
             </column>
             <column name="contact_level" type="boolean"/>
             <column name="creator_role" type="bigint">
-                <constraints nullable="false" foreignKeyName="fk_cr_contact_rl" references="role_list(id)"/>
+                <constraints nullable="true" foreignKeyName="fk_cr_contact_rl" references="role_list(id)"/>
             </column>
             <column name="mate_role" type="bigint">
-                <constraints nullable="false" foreignKeyName="fk_mr_contact_rl" references="role_list(id)"/>
+                <constraints nullable="true" foreignKeyName="fk_mr_contact_rl" references="role_list(id)"/>
             </column>
         </createTable>
 

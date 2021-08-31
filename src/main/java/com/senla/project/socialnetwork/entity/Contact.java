@@ -44,11 +44,11 @@ public class Contact {
     private Boolean contactLevel; //TODO isAccepted
 
     @ManyToOne
-    @JoinColumn(name = "contact_role")
+    @JoinColumn(name = "creator_role")
     private RoleList creatorRole;
 
     @ManyToOne
-    @JoinColumn(name = "contact_role")
+    @JoinColumn(name = "mate_role")
     private RoleList mateRole;
 
 }

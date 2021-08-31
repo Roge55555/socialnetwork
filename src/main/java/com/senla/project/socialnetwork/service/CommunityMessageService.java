@@ -3,7 +3,6 @@ package com.senla.project.socialnetwork.service;
 import com.senla.project.socialnetwork.entity.CommunityMessage;
 import com.senla.project.socialnetwork.model.filter.CommunityMessageFilterRequest;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CommunityMessageService {

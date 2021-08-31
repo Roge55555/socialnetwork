@@ -44,7 +44,7 @@ public class RoleListServiceImpl implements RoleListService {
         LOGGER.info("Trying to find role by id");
         final RoleList roleList = roleListRepository.findById(id).orElseThrow(() -> {
             LOGGER.error("No element with such id - {}.", id);
-            return new NoSuchElementException(id);
+            throw new NoSuchElementException(id);
         });
         LOGGER.info("Role found using id {}", roleList.getId());
         return roleList;
@@ -62,7 +62,7 @@ public class RoleListServiceImpl implements RoleListService {
         })
                 .orElseThrow(() -> {
                     LOGGER.error("No element with such id - {}.", id);
-                    return new NoSuchElementException(id);
+                    throw new NoSuchElementException(id);
                 });
     }
 

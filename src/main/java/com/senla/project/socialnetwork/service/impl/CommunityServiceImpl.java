@@ -55,7 +55,7 @@ public class CommunityServiceImpl implements CommunityService {
         LOGGER.info("Trying to find community by id");
         final Community community = communityRepository.findById(id).orElseThrow(() -> {
             LOGGER.error("No element with such id - {} or you not part of that community.", id);
-            return new NoSuchElementException(id);
+            throw new NoSuchElementException(id);
         });
         LOGGER.info("Community found using id - {}", id);
         return community;
@@ -67,7 +67,7 @@ public class CommunityServiceImpl implements CommunityService {
         final Community community = communityRepository.findByNameAndCreator(name,
                 userService.findByLogin(Utils.getLogin())).orElseThrow(() -> {
             LOGGER.error("No element with such name - {} or you not part of that community.", name);
-            return new NoSuchElementException(name);
+            throw new NoSuchElementException(name);
         });
         LOGGER.info("Community found using name {}", name);
         return community;
@@ -97,7 +97,7 @@ public class CommunityServiceImpl implements CommunityService {
         })
                 .orElseThrow(() -> {
                     LOGGER.error("No element {}.", name);
-                    return new NoSuchElementException(name);
+                    throw new NoSuchElementException(name);
                 });
     }
 

@@ -37,7 +37,7 @@ public class AuthenticationRestServiceImpl implements AuthenticationRestService 
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDTO.getLogin(), requestDTO.getPassword()));
             User user = userRepository.findByLogin(requestDTO.getLogin()).orElseThrow(() -> {
                 LOGGER.error("No account with such login - " + requestDTO.getLogin());
-                return new UsernameNotFoundException("No such user");
+                throw new UsernameNotFoundException("No such user");
             });
             String token = tokenProvider.createToken(user.getLogin(), user.getPassword());
             Map<Object, Object> response = new HashMap<>();

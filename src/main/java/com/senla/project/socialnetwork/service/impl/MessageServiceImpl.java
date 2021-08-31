@@ -4,10 +4,7 @@ import com.senla.project.socialnetwork.Utils;
 import com.senla.project.socialnetwork.entity.Message;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.exeptions.TryingModifyNotYourDataException;
-import com.senla.project.socialnetwork.model.dto.MessageFilterRequest;
 import com.senla.project.socialnetwork.repository.MessageRepository;
-import com.senla.project.socialnetwork.repository.UserRepository;
-import com.senla.project.socialnetwork.repository.specification.MessageSpecification;
 import com.senla.project.socialnetwork.service.MessageService;
 import com.senla.project.socialnetwork.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -91,7 +88,7 @@ public class MessageServiceImpl implements MessageService {
         LOGGER.info("Trying to find message by id");
         final Message message = messageRepository.findById(id).orElseThrow(() -> {
             LOGGER.error("No element with such id - {}.", id);
-            return new NoSuchElementException(id);
+            throw new NoSuchElementException(id);
         });
         LOGGER.info("Message found using id {}", message.getId());
         return message;
@@ -115,7 +112,7 @@ public class MessageServiceImpl implements MessageService {
         })
                 .orElseThrow(() -> {
                     LOGGER.error("No element with such id - {}.", id);
-                    return new NoSuchElementException(id);
+                    throw new NoSuchElementException(id);
                 });
     }
 

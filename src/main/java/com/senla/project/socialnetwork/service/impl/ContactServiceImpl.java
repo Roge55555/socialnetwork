@@ -6,8 +6,6 @@ import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.exeptions.TryingModifyNotYourDataException;
 import com.senla.project.socialnetwork.model.filter.ContactFilterRequest;
 import com.senla.project.socialnetwork.repository.ContactRepository;
-import com.senla.project.socialnetwork.repository.RoleListRepository;
-import com.senla.project.socialnetwork.repository.UserRepository;
 import com.senla.project.socialnetwork.repository.specification.ContactSpecification;
 import com.senla.project.socialnetwork.service.ContactService;
 import com.senla.project.socialnetwork.service.RoleListService;
@@ -64,7 +62,7 @@ public class ContactServiceImpl implements ContactService {
         LOGGER.info("Trying to find contact by id");
         final Contact contact = contactRepository.findById(id).orElseThrow(() -> {
             LOGGER.error("No element with such id - {}.", id);
-            return new NoSuchElementException(id);
+            throw new NoSuchElementException(id);
         });
         LOGGER.info("Contact found using id {}", contact.getId());
         return contact;
@@ -87,7 +85,7 @@ public class ContactServiceImpl implements ContactService {
         })
                 .orElseThrow(() -> {
                     LOGGER.error("No element with such id - {}.", id);
-                    return new NoSuchElementException(id);
+                    throw new NoSuchElementException(id);
                 });
     }
 
@@ -109,7 +107,7 @@ public class ContactServiceImpl implements ContactService {
             })
                     .orElseThrow(() -> {
                         LOGGER.error("No element with such id - {}.", id);
-                        return new NoSuchElementException(id);
+                        throw new NoSuchElementException(id);
                     });
         }
         else {
@@ -122,7 +120,7 @@ public class ContactServiceImpl implements ContactService {
             })
                     .orElseThrow(() -> {
                         LOGGER.error("No element with such id - {}.", id);
-                        return new NoSuchElementException(id);
+                        throw new NoSuchElementException(id);
                     });
         }
     }

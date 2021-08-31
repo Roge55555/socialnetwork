@@ -103,7 +103,7 @@ public class CommunityMessageServiceImpl implements CommunityMessageService {
         LOGGER.info("Trying to find community message by id");
         final CommunityMessage communityMessage = communityMessageRepository.findById(id).orElseThrow(() -> {
             LOGGER.error("No element with such id - {}.", id);
-            return new NoSuchElementException(id);
+            throw new NoSuchElementException(id);
         });
         LOGGER.info("Community message found using id {}", communityMessage.getId());
         return communityMessage;
@@ -127,7 +127,7 @@ public class CommunityMessageServiceImpl implements CommunityMessageService {
         })
                 .orElseThrow(() -> {
                     LOGGER.error("No element with such id - {}.", id);
-                    return new NoSuchElementException(id);
+                    throw new NoSuchElementException(id);
                 });
     }
 

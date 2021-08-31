@@ -83,7 +83,7 @@ CREATE TABLE user_event
     foreign key (user_id) references `user` (id)
 );
 insert into user_event
-values (1, 3, 'birthday', 'admin`s birthday', '2022-05-26');
+values (1, 3, 'birthday', 'admin`s birthday', '2022-05-26 20:34:47');
 
 CREATE TABLE role_list
 (

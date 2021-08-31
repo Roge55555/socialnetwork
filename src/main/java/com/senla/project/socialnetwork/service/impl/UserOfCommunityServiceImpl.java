@@ -67,7 +67,7 @@ public class UserOfCommunityServiceImpl implements UserOfCommunityService {
     public UserOfCommunity findByCommunityNameAndUserLogin(String communityName, String userLogin) {
         return userOfCommunityRepository.findByCommunityNameAndUserLogin(communityName, userLogin).orElseThrow(() -> {
             LOGGER.error("No subscription: user - {} to community - {}.", userLogin, communityName);
-            return new NoSuchElementException(userLogin + " / " + communityName);
+            throw new NoSuchElementException(userLogin + " / " + communityName);
         });
     }
 

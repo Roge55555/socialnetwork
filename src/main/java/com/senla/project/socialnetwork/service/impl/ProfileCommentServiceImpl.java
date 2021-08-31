@@ -58,7 +58,7 @@ public class ProfileCommentServiceImpl implements ProfileCommentService {
         LOGGER.info("Trying to find comment by id");
         final ProfileComment comment = profileCommentRepository.findById(id).orElseThrow(() -> {
             LOGGER.error("No element with such id - {}.", id);
-            return new NoSuchElementException(id);
+            throw new NoSuchElementException(id);
         });
         LOGGER.info("Comment found using id {}", comment.getId());
         return comment;
@@ -82,7 +82,7 @@ public class ProfileCommentServiceImpl implements ProfileCommentService {
         })
                 .orElseThrow(() -> {
                     LOGGER.error("No element with such id - {}.", id);
-                    return new NoSuchElementException(id);
+                    throw new NoSuchElementException(id);
                 });
     }
 

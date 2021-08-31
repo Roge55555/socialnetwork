@@ -26,12 +26,9 @@ public class RoleListController {
 
     private final RoleListService roleListService;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RoleListController.class);
-
     @GetMapping("/{name}")
     @PreAuthorize("hasAuthority('standard:permission')")
     public List<RoleList> getAllRoleLists(@PathVariable("name") String name) {
-        LOGGER.debug("Entering findAll roles endpoint");
         return roleListService.findAllWith(name);
     }
 
@@ -39,7 +36,6 @@ public class RoleListController {
     @ResponseStatus(HttpStatus.FOUND)
     @PreAuthorize("hasAuthority('standard:permission')")
     public RoleList getById(@PathVariable("id") Long id) {
-        LOGGER.debug("Entering getById role endpoint");
         return roleListService.findById(id);
     }
 
@@ -47,7 +43,6 @@ public class RoleListController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('standard:permission')")
     public RoleList addRoleList(@RequestBody RoleList roleList) {
-        LOGGER.debug("Entering addRoleList endpoint");
         return roleListService.add(roleList);
     }
 
@@ -55,7 +50,6 @@ public class RoleListController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('communities:permission')")
     public void updateRoleList(@PathVariable("id") Long id, @RequestBody RoleList roleList) {
-        LOGGER.debug("Entering updateRoleList endpoint");
         roleListService.update(id, roleList);
     }
 
@@ -63,7 +57,6 @@ public class RoleListController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('communities:permission')")
     public void deleteRoleList(@PathVariable("id") Long id) {
-        LOGGER.debug("Entering deleteRoleList endpoint");
         roleListService.delete(id);
     }
 

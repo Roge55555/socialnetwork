@@ -1,6 +1,7 @@
 package com.senla.project.socialnetwork.controller;
 
 import com.senla.project.socialnetwork.entity.UserEvent;
+import com.senla.project.socialnetwork.model.dto.UserEventDTO;
 import com.senla.project.socialnetwork.service.UserEventService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -27,44 +28,37 @@ public class UserEventController {
 
     private final UserEventService userEventService;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserEventController.class);
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('standard:permission')")
+    public UserEvent addEvent(@RequestBody UserEventDTO userEventDTO) {
+        return userEventService.add(userEventDTO.getName(), userEventDTO.getDescription(), userEventDTO.getDate());
+    }
 
     @GetMapping
     @PreAuthorize("hasAuthority('standard:permission')")
-    public List<UserEvent> getAllEvents() {
-        LOGGER.debug("Entering findAll events endpoint");
-        return userEventService.findAll();
+    public List<UserEvent> getAllEvents(@RequestBody String name) {
+        return userEventService.findAllWith(name);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.FOUND)
     @PreAuthorize("hasAuthority('standard:permission')")
     public UserEvent getById(@PathVariable("id") Long id) {
-        LOGGER.debug("Entering getById event endpoint");
         return userEventService.findById(id);
-    }
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAuthority('standard:permission')")
-    public UserEvent addEvent(@Valid @RequestBody UserEvent userEvent) {
-        LOGGER.debug("Entering addEvent endpoint");
-        return userEventService.add(userEvent);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void updateEvent(@PathVariable("id") Long id, @RequestBody UserEvent userEvent) {
-        LOGGER.debug("Entering updateEvent endpoint");
-        userEventService.update(id, userEvent);
+    public void updateEvent(@PathVariable("id") Long id, @RequestBody UserEventDTO userEventDTO) {
+        userEventService.update(id, userEventDTO.getName(), userEventDTO.getDescription(), userEventDTO.getDate());
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('standard:permission')")
     public void deleteEvent(@PathVariable("id") Long id) {
-        LOGGER.debug("Entering deleteEvent endpoint");
         userEventService.delete(id);
     }
 

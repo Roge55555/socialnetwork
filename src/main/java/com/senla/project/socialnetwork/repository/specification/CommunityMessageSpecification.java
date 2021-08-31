@@ -2,8 +2,7 @@ package com.senla.project.socialnetwork.repository.specification;
 
 import com.senla.project.socialnetwork.entity.CommunityMessage;
 import com.senla.project.socialnetwork.exeptions.NoNecessaryFieldInSpecificationException;
-import com.senla.project.socialnetwork.exeptions.TryingModifyNotYourDataException;
-import com.senla.project.socialnetwork.model.dto.CommunityMessageFilterRequest;
+import com.senla.project.socialnetwork.model.filter.CommunityMessageFilterRequest;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDateTime;

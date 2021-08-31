@@ -1,9 +1,7 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.CommunityMessage;
-import com.senla.project.socialnetwork.entity.Message;
-import com.senla.project.socialnetwork.model.dto.CommunityMessageFilterRequest;
-import com.senla.project.socialnetwork.model.dto.MessageFilterRequest;
+import com.senla.project.socialnetwork.model.filter.CommunityMessageFilterRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;

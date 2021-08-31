@@ -1,7 +1,7 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.Contact;
-import com.senla.project.socialnetwork.model.dto.ContactFilterRequest;
+import com.senla.project.socialnetwork.model.filter.ContactFilterRequest;
 
 import java.util.List;
 

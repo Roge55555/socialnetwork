@@ -1,6 +1,6 @@
 package com.senla.project.socialnetwork.controller;
 
-import com.senla.project.socialnetwork.model.AuthenticationRequestDTO;
+import com.senla.project.socialnetwork.model.dto.AuthenticationRequestDTO;
 import com.senla.project.socialnetwork.service.AuthenticationRestService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;

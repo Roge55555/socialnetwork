@@ -1,4 +1,4 @@
-package com.senla.project.socialnetwork.model.dto;
+package com.senla.project.socialnetwork.model.filter;
 
 import lombok.Data;
 
@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Data
 public class MessageFilterRequest {
 
-    Long mate_id;
+    Long mateId;
 
     LocalDateTime from;
 

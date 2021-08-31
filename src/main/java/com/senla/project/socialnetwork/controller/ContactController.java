@@ -1,7 +1,7 @@
 package com.senla.project.socialnetwork.controller;
 
 import com.senla.project.socialnetwork.entity.Contact;
-import com.senla.project.socialnetwork.model.dto.ContactFilterRequest;
+import com.senla.project.socialnetwork.model.filter.ContactFilterRequest;
 import com.senla.project.socialnetwork.service.ContactService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

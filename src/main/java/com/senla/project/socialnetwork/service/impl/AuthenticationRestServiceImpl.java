@@ -1,7 +1,7 @@
 package com.senla.project.socialnetwork.service.impl;
 
 import com.senla.project.socialnetwork.entity.User;
-import com.senla.project.socialnetwork.model.AuthenticationRequestDTO;
+import com.senla.project.socialnetwork.model.dto.AuthenticationRequestDTO;
 import com.senla.project.socialnetwork.repository.UserRepository;
 import com.senla.project.socialnetwork.security.JwtTokenProvider;
 import com.senla.project.socialnetwork.service.AuthenticationRestService;

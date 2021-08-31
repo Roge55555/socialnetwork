@@ -1,4 +1,4 @@
-package com.senla.project.socialnetwork.model;
+package com.senla.project.socialnetwork.model.dto;
 
 import lombok.Data;
 

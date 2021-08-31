@@ -2,7 +2,7 @@ package com.senla.project.socialnetwork.controller;
 
 import com.senla.project.socialnetwork.entity.CommunityMessage;
 import com.senla.project.socialnetwork.model.dto.CommunityMessageDTO;
-import com.senla.project.socialnetwork.model.dto.CommunityMessageFilterRequest;
+import com.senla.project.socialnetwork.model.filter.CommunityMessageFilterRequest;
 import com.senla.project.socialnetwork.service.CommunityMessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

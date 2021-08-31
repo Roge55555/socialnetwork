@@ -4,7 +4,7 @@ import com.senla.project.socialnetwork.Utils;
 import com.senla.project.socialnetwork.entity.CommunityMessage;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.exeptions.TryingModifyNotYourDataException;
-import com.senla.project.socialnetwork.model.dto.CommunityMessageFilterRequest;
+import com.senla.project.socialnetwork.model.filter.CommunityMessageFilterRequest;
 import com.senla.project.socialnetwork.repository.CommunityMessageRepository;
 import com.senla.project.socialnetwork.repository.specification.CommunityMessageSpecification;
 import com.senla.project.socialnetwork.service.CommunityMessageService;

@@ -45,8 +45,8 @@ public class UserEvent {
     @Size(min = 13)
     private String description;
 
-    @Future
     @Column(name = "date")
+    @Future
     private LocalDateTime date;
 
 }

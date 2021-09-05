@@ -81,8 +81,6 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public void updateRole(Long id, Long roleId) {
-        LOGGER.info("Trying to update contact with id - {}.", id);
-
         if (!findById(id).getContactLevel()) {
             LOGGER.error("No element with such id - {}.", id);
             throw new TryingModifyNotYourDataException("You can set role only after mate accept request.");

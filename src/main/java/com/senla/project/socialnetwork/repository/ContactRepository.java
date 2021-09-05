@@ -7,11 +7,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ContactRepository extends JpaRepository<Contact, Long>, JpaSpecificationExecutor<Contact> {
-
-//    List<Contact> findByCreatorAndContactLevelOrMateAndContactLevel();
-//
-//    List<Contact> findByCreatorAndCreatorRoleOrMateAndMateRole();
-//
-//    List<Contact> findByCreatorAndCreatorRoleAndMateAndMateRoleAndDateConnectedBetweenOrCreatorAndCreatorRoleAndMateAndMateRoleAndDateConnectedBetween();
-
 }

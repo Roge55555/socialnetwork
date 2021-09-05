@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 
@@ -41,6 +42,7 @@ public class ProfileComment {
     private LocalDateTime date;
 
     @Column(name = "comment_txt")
+    @NotBlank
     private String commentTxt;
 
 }

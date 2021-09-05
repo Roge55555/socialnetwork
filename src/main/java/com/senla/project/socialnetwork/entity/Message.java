@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -40,6 +41,7 @@ public class Message {
     private LocalDateTime dateCreated;
 
     @Column(name = "message_txt")
+    @NotBlank
     private String messageTxt;
 
 }

@@ -17,7 +17,6 @@ public class MessageSpecification {
     private static Specification<Message> hasMe(String who) {
         return (root, query, builder) ->
                 builder.equal((root.get(who).get(User_.LOGIN)), Utils.getLogin());
-        //builder.like(builder.lower(root.get(SENDER)), "%" + sender_name.toLowerCase() + "%");
     }
 
     private static Specification<Message> hasMate(final Long receiverId, String who) {

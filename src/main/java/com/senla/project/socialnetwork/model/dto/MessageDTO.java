@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class MessageDTO {
 
-    private String userLogin;
+    private Long userId;
 
     @NotBlank
     private String txt;

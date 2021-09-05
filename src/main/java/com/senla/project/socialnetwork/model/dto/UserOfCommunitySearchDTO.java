@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class UserOfCommunitySearchDTO {
 
-    private String communityName;
+    private Long communityId;
 
-    private String userLogin;
+    private Long userId;
 
 }

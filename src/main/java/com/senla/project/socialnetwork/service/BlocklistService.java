@@ -9,13 +9,15 @@ public interface BlocklistService {
 
     Blocklist add(Blocklist blocklist);
 
-    List<Blocklist> findAllBannsOf(String login);
+    List<Blocklist> findAllBannsOf(Long whomBanedId);
 
-    List<Blocklist> findAllBannedBy(String login);
+    List<Blocklist> findAllBannedBy(Long whoBanedId);
 
-    List<Blocklist> findAllBannedIn(String community);
+    List<Blocklist> findAllBannedIn(Long communityId);
 
     List<Blocklist> findAllBannsBetween(LocalDate from, LocalDate to);
+
+    Blocklist findById(Long id);
 
     void delete(Long id);
 

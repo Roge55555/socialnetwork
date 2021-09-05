@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -31,88 +32,62 @@ public class CommunityServiceImpl implements CommunityService {
         community.setCreator(userService.findByLogin(Utils.getLogin()));
         community.setDateCreated(LocalDate.now());
 
-        final Community save = communityRepository.save(community);
-        LOGGER.info("Community added with id = {}.", save.getId());
-        return save;
+        return communityRepository.save(community);
     }
 
     @Override
     public List<Community> findAll() {
-        LOGGER.info("Trying to show all communities you create.");
-
-        if (communityRepository.findAll().isEmpty()) {
-            LOGGER.warn("Community`s list is empty!");
-        } else {
-            LOGGER.info("Community(es) found.");
-        }
-
-        return communityRepository.findAllByCreatorOrderByDateCreated(userService.findByLogin(Utils.getLogin()));
+        return communityRepository.findAllByCreatorLoginOrderByDateCreated(Utils.getLogin());
     }
 
     @Override
-    public Community findById(Long id) {
-        LOGGER.info("Trying to find community by id");
-        final Community community = communityRepository.findById(id).orElseThrow(() -> {
-            LOGGER.error("No element with such id - {} or you not part of that community.", id);
-            throw new NoSuchElementException(id);
-        });
-        LOGGER.info("Community found using id - {}", id);
-        return community;
+    public Community findById(Long communityId) {
+            return communityRepository.findById(communityId).orElseThrow(() -> {
+                LOGGER.error("No element with such id - {}.", communityId);
+                throw new NoSuchElementException(communityId);
+            });
     }
 
     @Override
     public Community findByName(String name) {
-        LOGGER.info("Trying to find community by name");
-        final Community community = communityRepository.findByNameAndCreator(name,
-                userService.findByLogin(Utils.getLogin())).orElseThrow(() -> {
-            LOGGER.error("No element with such name - {} or you not part of that community.", name);
+        return communityRepository.findByNameAndCreatorLogin(name, Utils.getLogin()).orElseThrow(() -> {
+            LOGGER.error("No element with such name - {} or you not creator of that community.", name);
             throw new NoSuchElementException(name);
         });
-        LOGGER.info("Community found using name {}", name);
-        return community;
     }
 
     @Override
-    public Community update(String name, Community community) {
-        LOGGER.info("Trying to update community - {}.", name);
-        if (communityRepository.findByNameAndCreator(name,
-                userService.findByLogin(Utils.getLogin())).isEmpty()) {
+    public Community update(Long id, Community community) {
+        if (Objects.isNull(findByName(findById(id).getName()))) {
             LOGGER.error("Community doesn`t exist or not creator trying to update community.");
             throw new TryingModifyNotYourDataException("Community doesn`t exist or not creator trying to update community.");
         }
-        if (community.getCreator().getRole().getName().equals(Role.USER)) {
-            LOGGER.error("Creator don`t have enough permissions.");
-            throw new TryingModifyNotYourDataException("Creator don`t have enough permissions.");
+
+        if (userService.findById(community.getCreator().getId()).getRole().getName().equals(Role.USER)) {
+            LOGGER.error("User don`t have enough permissions to be creator.");
+            throw new TryingModifyNotYourDataException("User don`t have enough permissions to be creator.");
         }
 
-        return communityRepository.findByNameAndCreator(name,
-                userService.findByLogin(Utils.getLogin())).map(com -> {
-            com.setCreator(community.getCreator());
-            com.setName(community.getName());
-            com.setDescription(community.getDescription());
-            final Community save = communityRepository.save(com);
-            LOGGER.info("Community {} updated.", community.getName());
-            return save;
-        })
-                .orElseThrow(() -> {
-                    LOGGER.error("No element {}.", name);
-                    throw new NoSuchElementException(name);
-                });
+        Community updatedCommunity = findById(id);
+        updatedCommunity.setCreator(userService.findById(community.getCreator().getId()));
+        if(Objects.nonNull(community.getName())) {
+            updatedCommunity.setName(community.getName());
+        }
+        if(Objects.nonNull(community.getDescription())) {
+            updatedCommunity.setDescription(community.getDescription());
+        }
+        return communityRepository.save(updatedCommunity);
     }
+
 
     @Override
     public void delete(Long id) {
-        LOGGER.info("Trying to delete community with id - {}.", id);
-        if (communityRepository.findById(id).isEmpty()) {
-            LOGGER.error("No community with id - {}.", id);
-            throw new NoSuchElementException(id);
-        } else if (!communityRepository.findById(id).get().getCreator().equals(
-                userService.findByLogin(Utils.getLogin()))) {
+        if (!findById(id).getCreator().equals(userService.findByLogin(Utils.getLogin()))) {
             LOGGER.error("Community doesn`t exist or not creator trying to update community.");
             throw new TryingModifyNotYourDataException("Only creator can delete community.");
         }
+
         communityRepository.deleteById(id);
-        LOGGER.info("Community with id - {} was deleted.", id);
     }
 
 }

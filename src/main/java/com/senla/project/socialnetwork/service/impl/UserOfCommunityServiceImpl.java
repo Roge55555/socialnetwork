@@ -8,13 +8,16 @@ import com.senla.project.socialnetwork.repository.UserOfCommunityRepository;
 import com.senla.project.socialnetwork.service.CommunityService;
 import com.senla.project.socialnetwork.service.UserOfCommunityService;
 import com.senla.project.socialnetwork.service.UserService;
+import liquibase.pro.packaged.U;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -29,38 +32,26 @@ public class UserOfCommunityServiceImpl implements UserOfCommunityService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserOfCommunityServiceImpl.class);
 
     @Override
-    public UserOfCommunity add(Long communityId, Long userId) {
-        if (!Utils.getLogin().equals(communityService.findById(communityId).getCreator().getLogin())) {
+    public UserOfCommunity add(UserOfCommunity userOfCommunity) {
+        if (!Utils.getLogin().equals(communityService.findById(userOfCommunity.getCommunity().getId()).getCreator().getLogin())) {
             LOGGER.error("Only creator can add users.");
             throw new TryingModifyNotYourDataException("Only creator can add users.");
         }
-
-        return userOfCommunityRepository.save(
-                UserOfCommunity.builder()
-                        .community(communityService.findById(communityId))
-                        .user(userService.findById(userId))
-                        .dateEntered(LocalDate.now())
-                        .build());
+        return userOfCommunityRepository.save(UserOfCommunity.builder().community(communityService.findById(userOfCommunity.getCommunity().getId())).user(userService.findById(userOfCommunity.getUser().getId())).dateEntered(LocalDate.now()).build());
     }
 
     @Override
-    public List<UserOfCommunity> findAllCommunitiesOfUser(String userLogin) {
-        if (!Utils.getLogin().equals(userLogin)) {
-            LOGGER.error("Trying to check subscriptions of other person - {}", userLogin);
-            throw new TryingModifyNotYourDataException("You can check only yourself subscriptions.");
-        }
-
-        return userOfCommunityRepository.findByUserLoginOrderByCommunity(userLogin);
+    public List<UserOfCommunity> findAllCommunitiesOfUser() {
+        return userOfCommunityRepository.findByUserIdOrderByCommunity(userService.findByLogin(Utils.getLogin()).getId());
     }
 
     @Override
-    public List<UserOfCommunity> findAllUsersOfCommunity(String communityName) {
-        if (findByCommunityNameAndUserLogin(communityName, Utils.getLogin()) != null) {
-            LOGGER.error("Trying to check subscribers of community - {}, by not member.", communityName);
+    public List<UserOfCommunity> findAllUsersOfCommunity(Long communityId) {
+        if (Objects.isNull(findByCommunityNameAndUserLogin(communityService.findById(communityId).getName(), Utils.getLogin()))) {
+            LOGGER.error("Trying to check subscribers of community - {}, by not member.", communityId);
             throw new TryingModifyNotYourDataException("You can check only yourself subscriptions.");
         }
-
-        return userOfCommunityRepository.findByCommunityNameOrderByUser(communityName);
+        return userOfCommunityRepository.findByCommunityIdOrderByUser(communityId);
     }
 
     @Override
@@ -72,19 +63,29 @@ public class UserOfCommunityServiceImpl implements UserOfCommunityService {
     }
 
     @Override
-    public void delete(Long communityId, Long userId) {
-        if (!Utils.getLogin().equals(communityService.findById(communityId).getCreator().getLogin()) ||
-                !Utils.getLogin().equals(userService.findById(userId).getLogin())) { //TODO findByCommunityNameAndUserLogin()
-            LOGGER.error("Only creator can delete user from community {}.", Utils.getLogin());
-            throw new TryingModifyNotYourDataException("Only creator can delete user from community.");
+    public UserOfCommunity findByCommunityIdAndUserId(Long communityId, Long userId) {
+        if(!Utils.getLogin().equals(communityService.findById(communityId).getCreator().getLogin())) {
+            LOGGER.error("Trying to check subscription of other community - {}", Utils.getLogin());
+            throw new TryingModifyNotYourDataException("You can check only yourself subscription.");
         }
 
-        if (userOfCommunityRepository.findByCommunityNameAndUserLogin(communityService.findById(communityId).getName(), userService.findById(userId).getLogin()).isEmpty()) {
-            LOGGER.error("No subscriber - {} in community - {}.", userId, communityId);
+        return userOfCommunityRepository.findByCommunityIdAndUserId(communityId, userId).orElseThrow(() -> {
+            LOGGER.error("No subscription: userId - {} to communityId - {}.", userId, communityId);
             throw new NoSuchElementException(userId + " / " + communityId);
+        });
+    }
+
+
+    @Override
+    public void delete(Long communityId, Long userId) {
+        if (Objects.isNull(communityService.findById(communityId).getCreator().getLogin()) &&
+                (Objects.isNull(findByCommunityNameAndUserLogin(communityService.findById(communityId).getName(), Utils.getLogin())) &&
+                        Utils.getLogin().equals(userService.findById(userId).getLogin()))) {
+            LOGGER.error("Only creator/subscribers can delete user/yourself from community {}.", Utils.getLogin());
+            throw new TryingModifyNotYourDataException("Only creator/subscribers can delete user/yourself from community.");
         }
 
-        userOfCommunityRepository.deleteByCommunityIdAndUserId(userId, communityId);
+        userOfCommunityRepository.deleteByCommunityIdAndUserId(communityId, userId);
     }
 
 }

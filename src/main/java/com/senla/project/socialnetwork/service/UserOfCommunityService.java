@@ -6,13 +6,15 @@ import java.util.List;
 
 public interface UserOfCommunityService {
 
-    UserOfCommunity add(Long communityId, Long userId);
+    UserOfCommunity add(UserOfCommunity userOfCommunity);
 
-    List<UserOfCommunity> findAllCommunitiesOfUser(String userLogin);
+    List<UserOfCommunity> findAllCommunitiesOfUser();
 
-    List<UserOfCommunity> findAllUsersOfCommunity(String communityName);
+    List<UserOfCommunity> findAllUsersOfCommunity(Long communityId);
 
     UserOfCommunity findByCommunityNameAndUserLogin(String communityName, String userLogin);
+
+    UserOfCommunity findByCommunityIdAndUserId(Long communityId, Long userId);
 
     void delete(Long communityId, Long userId);
 

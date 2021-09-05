@@ -50,14 +50,8 @@ public class UserController {
         return userService.add(user);
     }
 
-    @GetMapping
+    @GetMapping("/search/{name}")
     @PreAuthorize("hasAuthority('standard:permission')")
-    public List<User> getAllUsers() {
-        return userService.findAll();
-    }
-
-    @GetMapping("/page/{name}")
-    @PreAuthorize("hasAuthority('standard:permission')") //TODO set default pageable
     public Page<User> getAllUsers(@PathVariable("name") String name, Pageable pageable) {
         return userService.findAll(name, pageable);
     }

@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class CommunityMessageDTO {
 
-    private String communityName;
+    private Long communityId;
 
     @NotBlank
     private String txt;

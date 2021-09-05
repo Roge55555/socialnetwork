@@ -30,24 +30,12 @@ public class MessageController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('standard:permission')")
     public Message addMessage(@RequestBody MessageDTO messageDTO) {
-        return messageService.add(messageDTO.getUserLogin(), messageDTO.getTxt());
+        return messageService.add(messageDTO.getUserId(), messageDTO.getTxt());
     }
 
-//    @GetMapping("/dialog/{login}")
-//    @PreAuthorize("hasAuthority('standard:permission')")
-//    public List<Message> getMessagesByLogin(@PathVariable("login") String userLogin) {
-//        return messageService.findAllMessagesWith(userLogin);
-//    }
-//
-//    @GetMapping("/dialogTimeInterval/{login}")
-//    @PreAuthorize("hasAuthority('standard:permission')")
-//    public List<Message> getMessagesByLoginTimeInterval(@PathVariable("login") String userLogin, @RequestBody TimeInterval<LocalDateTime> timeInterval) {
-//        return messageService.findAllMessagesWithBetween(userLogin, timeInterval.getFrom(), timeInterval.getTo());
-//    }
-
-    @GetMapping("/dialog")
+    @GetMapping("/filter")
     @PreAuthorize("hasAuthority('standard:permission')")
-    public List<Message> getM(@RequestBody MessageFilterRequest request) {
+    public List<Message> getMessage(@RequestBody MessageFilterRequest request) {
         return messageService.findAll(request);
     }
 

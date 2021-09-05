@@ -1,6 +1,7 @@
 package com.senla.project.socialnetwork.controller;
 
 import com.senla.project.socialnetwork.entity.ProfileComment;
+import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.model.dto.ProfileCommentDTO;
 import com.senla.project.socialnetwork.model.filter.ProfileCommentFilterRequest;
 import com.senla.project.socialnetwork.service.ProfileCommentService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -30,10 +32,14 @@ public class ProfileCommentController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('standard:permission')")
     public ProfileComment addProfileComment(@RequestBody ProfileCommentDTO profileCommentDTO) {
-        return profileCommentService.add(profileCommentDTO.getUserId(), profileCommentDTO.getTxt());
+        ProfileComment profileComment = ProfileComment.builder()
+                .user(User.builder().id(profileCommentDTO.getUserId()).build())
+                .date(LocalDateTime.now()).commentTxt(profileCommentDTO.getTxt())
+                .build();
+        return profileCommentService.add(profileComment);
     }
 
-    @GetMapping
+    @GetMapping("/filter")
     @PreAuthorize("hasAuthority('standard:permission')")
     public List<ProfileComment> getAllProfileComments(@RequestBody ProfileCommentFilterRequest request) {
         return profileCommentService.findAll(request);
@@ -49,8 +55,8 @@ public class ProfileCommentController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void updateProfileComment(@PathVariable("id") Long id, @RequestBody String profileComment) {
-        profileCommentService.update(id, profileComment);
+    public void updateProfileComment(@PathVariable("id") Long id, @RequestBody String profileCommentTxt) {
+        profileCommentService.update(id, profileCommentTxt);
     }
 
     @DeleteMapping("/{id}")

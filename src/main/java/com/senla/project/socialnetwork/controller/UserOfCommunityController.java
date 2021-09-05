@@ -1,5 +1,7 @@
 package com.senla.project.socialnetwork.controller;
 
+import com.senla.project.socialnetwork.entity.Community;
+import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.entity.UserOfCommunity;
 import com.senla.project.socialnetwork.model.dto.UserOfCommunityDTO;
 import com.senla.project.socialnetwork.model.dto.UserOfCommunitySearchDTO;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @RestController
@@ -29,26 +32,30 @@ public class UserOfCommunityController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('communities:permission')")
     public UserOfCommunity addUserOfCommunity(@RequestBody UserOfCommunityDTO userOfCommunityDTO) {
-        return userOfCommunityService.add(userOfCommunityDTO.getCommunityId(), userOfCommunityDTO.getUserId());
+        UserOfCommunity userOfCommunity = UserOfCommunity.builder()
+                .community(Community.builder().id(userOfCommunityDTO.getCommunityId()).build())
+                .user(User.builder().id(userOfCommunityDTO.getUserId()).build())
+                .build();
+        return userOfCommunityService.add(userOfCommunity);
     }
 
-    @GetMapping("/communities/{login}")
+    @GetMapping("/communities")
     @PreAuthorize("hasAuthority('standard:permission')")
-    public List<UserOfCommunity> getAllCommunitiesOfUsers(@PathVariable("login") String login) {
-        return userOfCommunityService.findAllCommunitiesOfUser(login);
+    public List<UserOfCommunity> getAllCommunitiesOfUsers() {
+        return userOfCommunityService.findAllCommunitiesOfUser();
     }
 
-    @GetMapping("/users/{name}")
+    @GetMapping("/users/{id}")
     @PreAuthorize("hasAuthority('standard:permission')")
-    public List<UserOfCommunity> getAllUsersOfCommunity(@PathVariable("name") String name) {
-        return userOfCommunityService.findAllUsersOfCommunity(name);
+    public List<UserOfCommunity> getAllUsersOfCommunity(@PathVariable("id") Long communityId) {
+        return userOfCommunityService.findAllUsersOfCommunity(communityId);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.FOUND)
-    @PreAuthorize("hasAuthority('standard:permission')")
+    @PreAuthorize("hasAuthority('communities:permission')")
     public UserOfCommunity getByIdCommunityNameAndUserLogin(@RequestBody UserOfCommunitySearchDTO userOfCommunitySearchDTO) {
-        return userOfCommunityService.findByCommunityNameAndUserLogin(userOfCommunitySearchDTO.getCommunityName(), userOfCommunitySearchDTO.getUserLogin());
+        return userOfCommunityService.findByCommunityIdAndUserId(userOfCommunitySearchDTO.getCommunityId(), userOfCommunitySearchDTO.getUserId());
     }
 
     @DeleteMapping

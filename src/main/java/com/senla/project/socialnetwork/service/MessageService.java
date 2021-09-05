@@ -7,13 +7,9 @@ import java.util.List;
 
 public interface MessageService {
 
-    Message add(String userLogin, String txt);
+    Message add(Long userId, String txt);
 
     List<Message> findAll(MessageFilterRequest request);
-
-//    List<Message> findAllMessagesWith(String userLogin);
-//
-//    List<Message> findAllMessagesWithBetween(String userLogin, LocalDateTime from, LocalDateTime to);
 
     Message findById(Long id);
 

@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ProfileCommentService {
 
-    ProfileComment add(Long ownerId, String txt);
+    ProfileComment add(ProfileComment profileComment);
 
     List<ProfileComment> findAll(ProfileCommentFilterRequest request);
 

@@ -1,5 +1,6 @@
 package com.senla.project.socialnetwork.controller;
 
+import com.senla.project.socialnetwork.entity.Community;
 import com.senla.project.socialnetwork.entity.CommunityMessage;
 import com.senla.project.socialnetwork.model.dto.CommunityMessageDTO;
 import com.senla.project.socialnetwork.model.filter.CommunityMessageFilterRequest;
@@ -30,30 +31,16 @@ public class CommunityMessageController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('standard:permission')")
     public CommunityMessage addCommunityMessage(@RequestBody CommunityMessageDTO communityMessageDTO) {
-        return communityMessageService.add(communityMessageDTO.getCommunityName(), communityMessageDTO.getTxt());
+        CommunityMessage communityMessage = CommunityMessage.builder()
+                .community(Community.builder().id(communityMessageDTO.getCommunityId()).build())
+                .txt(communityMessageDTO.getTxt())
+                .build();
+        return communityMessageService.add(communityMessage);
     }
 
-//    @GetMapping("/allMessages")
-//    @PreAuthorize("hasAuthority('standard:permission')")
-//    public List<CommunityMessage> getAllCommunityMessageByCommunity(@RequestBody String communityName) {
-//        return communityMessageService.findCommunityMessagesByCommunityName(communityName);
-//    }
-//
-//    @GetMapping("/allMessagesOf")
-//    @PreAuthorize("hasAuthority('standard:permission')")
-//    public List<CommunityMessage> getAllCommunityMessagesByCommunityAndUser(@RequestBody CommunityMessageDTO communityMessageDTO) {
-//        return communityMessageService.findCommunityMessagesByCommunityNameAndCreatorLogin(communityMessageDTO.getCommunityName(), communityMessageDTO.getTxt());
-//    }
-//
-//    @GetMapping("/allMessagesBetween")
-//    @PreAuthorize("hasAuthority('standard:permission')")
-//    public List<CommunityMessage> getCommunityMessagesByDateBetween(@RequestBody TimeInterval<LocalDateTime> timeInterval) {
-//        return communityMessageService.findCommunityMessagesByDateBetween(timeInterval.getFrom(), timeInterval.getTo());
-//    }
-
-    @GetMapping("/communityPage")
+    @GetMapping("/filter")
     @PreAuthorize("hasAuthority('standard:permission')")
-    public List<CommunityMessage> getCM(@RequestBody CommunityMessageFilterRequest request) {
+    public List<CommunityMessage> getCommunityMessages(@RequestBody CommunityMessageFilterRequest request) {
         return communityMessageService.findAll(request);
     }
 

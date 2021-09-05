@@ -3,8 +3,6 @@ package com.senla.project.socialnetwork.controller;
 import com.senla.project.socialnetwork.model.dto.AuthenticationRequestDTO;
 import com.senla.project.socialnetwork.service.AuthenticationRestService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +20,6 @@ public class AuthenticationRestController {
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequestDTO requestDTO) {
-        LOGGER.debug("Entering login endpoint");
         return authenticationRestService.login(requestDTO);
     }
 

@@ -29,7 +29,12 @@ public class UserEventController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('standard:permission')")
     public UserEvent addEvent(@RequestBody UserEventDTO userEventDTO) {
-        return userEventService.add(userEventDTO.getName(), userEventDTO.getDescription(), userEventDTO.getDate());
+        UserEvent userEvent = UserEvent.builder()
+                .name(userEventDTO.getName())
+                .description(userEventDTO.getDescription())
+                .date(userEventDTO.getDate())
+                .build();
+        return userEventService.add(userEvent);
     }
 
     @GetMapping
@@ -49,7 +54,12 @@ public class UserEventController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('standard:permission')")
     public void updateEvent(@PathVariable("id") Long id, @RequestBody UserEventDTO userEventDTO) {
-        userEventService.update(id, userEventDTO.getName(), userEventDTO.getDescription(), userEventDTO.getDate());
+        UserEvent userEvent = UserEvent.builder()
+                .name(userEventDTO.getName())
+                .description(userEventDTO.getDescription())
+                .date(userEventDTO.getDate())
+                .build();
+        userEventService.update(id, userEvent);
     }
 
     @DeleteMapping("/{id}")

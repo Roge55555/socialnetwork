@@ -1,6 +1,7 @@
 package com.senla.project.socialnetwork.controller;
 
 import com.senla.project.socialnetwork.entity.Community;
+import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.model.dto.CommunityAddDTO;
 import com.senla.project.socialnetwork.model.dto.CommunityUpdateDTO;
 import com.senla.project.socialnetwork.service.CommunityService;
@@ -27,19 +28,6 @@ public class CommunityController {
 
     private final CommunityService communityService;
 
-    @GetMapping("/page")
-    @PreAuthorize("hasAuthority('communities:permission')")
-    public List<Community> getAllCommunities() {
-        return communityService.findAll();
-    }
-
-    @GetMapping
-    @ResponseStatus(HttpStatus.FOUND)
-    @PreAuthorize("hasAuthority('standard:permission')")
-    public Community getByName(@RequestBody String name) {
-        return communityService.findByName(name);
-    }
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('communities:permission')")
@@ -51,16 +39,29 @@ public class CommunityController {
         return communityService.add(community);
     }
 
-    @PutMapping("/{name}")
+    @GetMapping
+    @PreAuthorize("hasAuthority('communities:permission')")
+    public List<Community> getAllCommunitiesByCreator() {
+        return communityService.findAll();
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.FOUND)
+    @PreAuthorize("hasAuthority('standard:permission')")
+    public Community getById(@PathVariable("id") Long communityId) {
+        return communityService.findById(communityId);
+    }
+
+    @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('communities:permission')")
-    public void updateCommunity(@PathVariable("name") String name, @RequestBody CommunityUpdateDTO communityUpdateDTO) {
+    public void updateCommunity(@PathVariable("id") Long id, @RequestBody CommunityUpdateDTO communityUpdateDTO) {
         Community community = Community.builder()
-                .creator(communityUpdateDTO.getCreator())
+                .creator(User.builder().id(communityUpdateDTO.getCreatorId()).build())
                 .name(communityUpdateDTO.getName())
                 .description(communityUpdateDTO.getDescription())
                 .build();
-        communityService.update(name, community);
+        communityService.update(id, community);
     }
 
     @DeleteMapping("/{id}")

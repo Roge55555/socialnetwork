@@ -17,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -33,96 +33,79 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User add(User user) {
-        LOGGER.info("Trying to add user.");
-
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-
         user.setRole(accessRoleService.findByName(Role.USER));
         user.setRegistrationDate(LocalDate.now());
 
-        final User save = userRepository.save(user);
-        LOGGER.info("User added.");
-        return save;
-    }
-
-    @Override
-    public List<User> findAll() {
-        LOGGER.info("Trying to show all users.");
-        return userRepository.findAll();
+        return userRepository.save(user);
     }
 
     @Override
     public Page<User> findAll(String name, Pageable pageable) {
-        LOGGER.info("Trying to show all users in pages.");
         return userRepository.findByLoginContainingOrFirstNameContainingOrLastNameContaining(name, name, name, pageable);
     }
 
     @Override
     public User findById(Long id) {
-        LOGGER.info("Trying to find user by id");
-        final User user = userRepository.findById(id).orElseThrow(() -> {
+        return userRepository.findById(id).orElseThrow(() -> {
             LOGGER.error("No element with such id - {}.", id);
             throw new NoSuchElementException(id);
         });
-        LOGGER.info("User found using id {}", user.getId());
-        return user;
     }
 
     @Override
     public User findByLogin(String login) {
-        LOGGER.info("Trying to find user by login");
-        final User user = userRepository.findByLogin(login).orElseThrow(() -> {
+        return userRepository.findByLogin(login).orElseThrow(() -> {
             LOGGER.error("No element with such login - {}.", login);
             throw new NoSuchElementException("login - " + login + ".");
         });
-        LOGGER.info("User with login {} found.", user.getLogin());
-        return user;
     }
 
     @Override
     public User update(User user) {
-        LOGGER.info("Trying to update user with id - {}.", findByLogin(Utils.getLogin()).getId());
+        User updatedUser = findByLogin(Utils.getLogin());
+        if(Objects.nonNull(user.getDateBirth())) {
+            updatedUser.setDateBirth(user.getDateBirth());
+        }
+        if(Objects.nonNull(user.getFirstName())) {
+            updatedUser.setFirstName(user.getFirstName());
+        }
+        if(Objects.nonNull(user.getLastName())) {
+            updatedUser.setLastName(user.getLastName());
+        }
+        if(Objects.nonNull(user.getEmail())) {
+            updatedUser.setEmail(user.getEmail());
+        }
+        if(Objects.nonNull(user.getPhone())) {
+            updatedUser.setPhone(user.getPhone());
+        }
+        if(Objects.nonNull(user.getWebsite())) {
+            updatedUser.setWebsite(user.getWebsite());
+        }
+        if(Objects.nonNull(user.getAboutYourself())) {
+            updatedUser.setAboutYourself(user.getAboutYourself());
+        }
+        if(Objects.nonNull(user.getJobTitle())) {
+            updatedUser.setJobTitle(user.getJobTitle());
+        }
+        if(Objects.nonNull(user.getWorkPhone())) {
+            updatedUser.setWorkPhone(user.getWorkPhone());
+        }
 
-        return userRepository.save(userRepository.findById(findByLogin(Utils.getLogin()).getId()).map(usr ->
-                User.builder()
-                        .id(findByLogin(Utils.getLogin()).getId())
-                        .login(user.getLogin())
-                        .password(usr.getPassword())
-                        .dateBirth(user.getDateBirth())
-                        .firstName(user.getFirstName())
-                        .lastName(user.getLastName())
-                        .email(user.getEmail())
-                        .role(usr.getRole())
-                        .registrationDate(usr.getRegistrationDate())
-                        .phone(user.getPhone())
-                        .website(user.getWebsite())
-                        .aboutYourself(user.getAboutYourself())
-                        .jobTitle(user.getJobTitle())
-                        .workPhone(user.getWorkPhone())
-                        .build())
-                .orElseThrow(() -> {
-                    LOGGER.error("No element with such id - {}.", findByLogin(Utils.getLogin()).getId());
-                    throw new NoSuchElementException(findByLogin(Utils.getLogin()).getId());
-                }));
+        return userRepository.save(updatedUser);
     }
 
     @Override
     public void delete() {
-        LOGGER.info("Trying to delete user - {}.", Utils.getLogin());
         userRepository.deleteById(findByLogin(Utils.getLogin()).getId());
-        LOGGER.info("User - {} was deleted.", Utils.getLogin());
     }
 
     @Override
-    public void changePassword(String oldPassword, String newPassword) {
-        LOGGER.info("Trying to change password for User with id - {}.", findByLogin(Utils.getLogin()).getId());
-        if (passwordEncoder.matches(oldPassword, findById(findByLogin(Utils.getLogin()).getId()).getPassword())) {
-            userRepository.findById(findByLogin(Utils.getLogin()).getId()).map(usr -> {
-                usr.setPassword(passwordEncoder.encode(newPassword));
-                final User save = userRepository.save(usr);
-                LOGGER.info("Password was changed.");
-                return save;
-            }).orElseThrow();
+    public void changePassword(final String oldPassword, final String newPassword) {
+        if (passwordEncoder.matches(oldPassword, findByLogin(Utils.getLogin()).getPassword())) {
+            User user = findByLogin(Utils.getLogin());
+                user.setPassword(passwordEncoder.encode(newPassword));
+                userRepository.save(user);
         } else {
             LOGGER.error("Not right old user password");
             throw new NotOldPasswordException();

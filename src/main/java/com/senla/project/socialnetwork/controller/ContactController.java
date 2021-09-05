@@ -32,7 +32,7 @@ public class ContactController {
         return contactService.add(mateId);
     }
 
-    @GetMapping
+    @GetMapping("/filter")
     @PreAuthorize("hasAuthority('standard:permission')")
     public List<Contact> getAllContacts(@RequestBody ContactFilterRequest request) {
         return contactService.findAll(request);
@@ -48,14 +48,14 @@ public class ContactController {
     @PutMapping("/accept/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void updateContact(@PathVariable("id") Long id) {
+    public void acceptContact(@PathVariable("id") Long id) {
         contactService.acceptRequest(id);
     }
 
     @PutMapping("/changeRole/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public void updateContact(@PathVariable("id") Long id, @RequestBody Long roleId) {
+    public void changeContactRole(@PathVariable("id") Long id, @RequestBody Long roleId) {
         contactService.updateRole(id, roleId);
     }
 

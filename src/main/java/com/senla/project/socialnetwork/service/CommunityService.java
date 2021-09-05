@@ -15,7 +15,7 @@ public interface CommunityService {
 
     Community findByName(String name);
 
-    Community update(String name, Community community);
+    Community update(Long id, Community community);
 
     void delete(Long id);
 

@@ -4,6 +4,7 @@ import com.senla.project.socialnetwork.Utils;
 import com.senla.project.socialnetwork.entity.Contact;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.exeptions.TryingModifyNotYourDataException;
+import com.senla.project.socialnetwork.exeptions.TryingRequestToYourselfException;
 import com.senla.project.socialnetwork.model.filter.ContactFilterRequest;
 import com.senla.project.socialnetwork.repository.ContactRepository;
 import com.senla.project.socialnetwork.repository.specification.ContactSpecification;
@@ -32,20 +33,19 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public Contact add(Long mateId) {
-        LOGGER.info("Trying to add contact.");
+        if (Utils.getLogin().equals(userService.findById(mateId).getLogin())) {
+            LOGGER.error("Trying contact to yourself!");
+            throw new TryingRequestToYourselfException();
+        }
 
-        Contact contact = Contact.builder()
+        return contactRepository.save(Contact.builder()
                 .creator(userService.findByLogin(Utils.getLogin()))
                 .mate(userService.findById(mateId))
                 .dateConnected(LocalDate.now())
                 .contactLevel(false)
                 .creatorRole(null)
                 .mateRole(null)
-                .build();
-
-        final Contact save = contactRepository.save(contact);
-        LOGGER.info("Contact added.");
-        return save;
+                .build());
     }
 
     @Override
@@ -55,38 +55,28 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public Contact findById(Long id) {
-        if (!contactRepository.findById(id).get().getCreator().getLogin().equals(Utils.getLogin()) ||
-                !contactRepository.findById(id).get().getMate().getLogin().equals(Utils.getLogin())) {
+        if (!Utils.getLogin().equals(contactRepository.findById(id).get().getCreator().getLogin()) &&
+                !Utils.getLogin().equals(contactRepository.findById(id).get().getMate().getLogin())) {
+            LOGGER.error("No element with such id - {}.", id);
             throw new TryingModifyNotYourDataException("Not your contact.");
         }
-        LOGGER.info("Trying to find contact by id");
-        final Contact contact = contactRepository.findById(id).orElseThrow(() -> {
+        return contactRepository.findById(id).orElseThrow(() -> {
             LOGGER.error("No element with such id - {}.", id);
             throw new NoSuchElementException(id);
         });
-        LOGGER.info("Contact found using id {}", contact.getId());
-        return contact;
     }
 
     @Override
     public void acceptRequest(Long id) {
-        LOGGER.info("Trying to update contact with id - {}.", id);
-
         if (!findById(id).getMate().getLogin().equals(Utils.getLogin())) {
-            throw new TryingModifyNotYourDataException("Only mate can accept request!");
+            LOGGER.error("Trying accept not his request with id - {}.", id);
+             throw new TryingModifyNotYourDataException("Only mate can accept request!");
         }
 
-        contactRepository.findById(id).map(cont -> {
-            cont.setDateConnected(LocalDate.now());
-            cont.setContactLevel(true);
-            final Contact save = contactRepository.save(cont);
-            LOGGER.info("Contact with id {} updated.", id);
-            return save;
-        })
-                .orElseThrow(() -> {
-                    LOGGER.error("No element with such id - {}.", id);
-                    throw new NoSuchElementException(id);
-                });
+        Contact contact = findById(id);
+            contact.setDateConnected(LocalDate.now());
+            contact.setContactLevel(true);
+            contactRepository.save(contact);
     }
 
     @Override
@@ -94,53 +84,42 @@ public class ContactServiceImpl implements ContactService {
         LOGGER.info("Trying to update contact with id - {}.", id);
 
         if (!findById(id).getContactLevel()) {
+            LOGGER.error("No element with such id - {}.", id);
             throw new TryingModifyNotYourDataException("You can set role only after mate accept request.");
         }
 
-        if (findById(id).getCreator().getLogin().equals(Utils.getLogin())) {
-            contactRepository.findById(id).map(cont -> {
-                cont.setDateConnected(LocalDate.now());
-                cont.setMateRole(roleListService.findById(roleId));
-                final Contact save = contactRepository.save(cont);
-                LOGGER.info("Contact with id {} updated.", id);
-                return save;
-            })
-                    .orElseThrow(() -> {
-                        LOGGER.error("No element with such id - {}.", id);
-                        throw new NoSuchElementException(id);
-                    });
+        if (Utils.getLogin().equals(findById(id).getCreator().getLogin())) {
+            Contact contact = findById(id);
+                contact.setDateConnected(LocalDate.now());
+                contact.setMateRole(roleListService.findById(roleId));
+                contactRepository.save(contact);
+
+        } else if (Utils.getLogin().equals(findById(id).getMate().getLogin())) {
+            Contact contact = findById(id);
+                contact.setDateConnected(LocalDate.now());
+                contact.setCreatorRole(roleListService.findById(roleId));
+                contactRepository.save(contact);
         } else {
-            contactRepository.findById(id).map(cont -> {
-                cont.setDateConnected(LocalDate.now());
-                cont.setCreatorRole(roleListService.findById(roleId));
-                final Contact save = contactRepository.save(cont);
-                LOGGER.info("Contact with id {} updated.", id);
-                return save;
-            })
-                    .orElseThrow(() -> {
-                        LOGGER.error("No element with such id - {}.", id);
-                        throw new NoSuchElementException(id);
-                    });
+            LOGGER.error("Trying update not your contact id - {}.", id);
+            throw new TryingModifyNotYourDataException("Trying update not your contact.");
         }
     }
 
     @Override
     public void delete(Long id) {
-        LOGGER.info("Trying to delete contact with id - {}.", id);
-        if (findById(id).getCreator().getLogin().equals(Utils.getLogin())) {
+        if (Utils.getLogin().equals(findById(id).getCreator().getLogin())) {
             contactRepository.deleteById(id);
-            LOGGER.info("Contact with id - {} was deleted.", id);
+        } else if (Utils.getLogin().equals(findById(id).getMate().getLogin())) {
+            Contact contact = findById(id);
+                contact.setDateConnected(LocalDate.now());
+                contact.setContactLevel(false);
+                contact.setCreatorRole(null);
+                contact.setMateRole(null);
+                contactRepository.save(contact);
         } else {
-            contactRepository.findById(id).map(cont -> {
-                cont.setDateConnected(LocalDate.now());
-                cont.setContactLevel(false);
-                cont.setCreatorRole(null);
-                cont.setMateRole(null);
-                return contactRepository.save(cont);
-            });
-            LOGGER.info("Contact with id - {} was level downed.", id);
+            LOGGER.error("Trying delete not your contact id - {}.", id);
+            throw new TryingModifyNotYourDataException("Trying delete not your contact.");
         }
-
     }
 
 }

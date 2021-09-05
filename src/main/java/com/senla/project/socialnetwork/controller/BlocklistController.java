@@ -1,6 +1,8 @@
 package com.senla.project.socialnetwork.controller;
 
 import com.senla.project.socialnetwork.entity.Blocklist;
+import com.senla.project.socialnetwork.entity.Community;
+import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.model.TimeInterval;
 import com.senla.project.socialnetwork.model.dto.BlocklistAddDTO;
 import com.senla.project.socialnetwork.service.BlocklistService;
@@ -31,29 +33,29 @@ public class BlocklistController {
     @PreAuthorize("hasAuthority('communities:permission')")
     public Blocklist addBlocklist(@RequestBody BlocklistAddDTO blocklistAddDTO) {
         Blocklist blocklist = Blocklist.builder()
-                .community(blocklistAddDTO.getCommunity())
-                .whomBaned(blocklistAddDTO.getWhomBaned())
+                .community(Community.builder().id(blocklistAddDTO.getCommunityId()).build())
+                .whomBaned(User.builder().id(blocklistAddDTO.getWhomBanedId()).build())
                 .blockCause(blocklistAddDTO.getBlockCause())
                 .build();
         return blocklistService.add(blocklist);
     }
 
-    @GetMapping("/bansOfUser/{login}")
+    @GetMapping("/bansOfUser/{id}")
     @PreAuthorize("hasAuthority('communities:permission')")
-    public List<Blocklist> getBansOfUser(@PathVariable("login") String login) {
-        return blocklistService.findAllBannsOf(login);
+    public List<Blocklist> getBansOfUser(@PathVariable("id") Long id) {
+        return blocklistService.findAllBannsOf(id);
     }
 
-    @GetMapping("/adminsBans/{login}")
+    @GetMapping("/adminsBans/{id}")
     @PreAuthorize("hasAuthority('communities:permission')")
-    public List<Blocklist> getAdminsBans(@PathVariable("login") String login) {
-        return blocklistService.findAllBannedBy(login);
+    public List<Blocklist> getAdminsBans(@PathVariable("id") Long id) {
+        return blocklistService.findAllBannedBy(id);
     }
 
-    @GetMapping("/bansIn")
+    @GetMapping("/bansIn/{id}")
     @PreAuthorize("hasAuthority('communities:permission')")
-    public List<Blocklist> getBansInCommunity(@RequestBody String community) {
-        return blocklistService.findAllBannedIn(community);
+    public List<Blocklist> getBansInCommunity(@PathVariable("id") Long id) {
+        return blocklistService.findAllBannedIn(id);
     }
 
     @GetMapping("/bansOnInterval")

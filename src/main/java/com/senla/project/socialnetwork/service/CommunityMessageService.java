@@ -7,15 +7,9 @@ import java.util.List;
 
 public interface CommunityMessageService {
 
-    CommunityMessage add(String communityName, String txt);
+    CommunityMessage add(CommunityMessage communityMessage);
 
     List<CommunityMessage> findAll(CommunityMessageFilterRequest request);
-
-//    List<CommunityMessage> findCommunityMessagesByCommunityName(String communityName);
-//
-//    List<CommunityMessage> findCommunityMessagesByCommunityNameAndCreatorLogin(String communityName, String userLogin);
-//
-//    List<CommunityMessage> findCommunityMessagesByDateBetween(LocalDateTime from, LocalDateTime to);
 
     CommunityMessage findById(Long id);
 

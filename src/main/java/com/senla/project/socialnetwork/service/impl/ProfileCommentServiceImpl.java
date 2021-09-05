@@ -2,6 +2,7 @@ package com.senla.project.socialnetwork.service.impl;
 
 import com.senla.project.socialnetwork.Utils;
 import com.senla.project.socialnetwork.entity.ProfileComment;
+import com.senla.project.socialnetwork.entity.ProfileComment_;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
 import com.senla.project.socialnetwork.exeptions.TryingModifyNotYourDataException;
 import com.senla.project.socialnetwork.model.filter.ProfileCommentFilterRequest;
@@ -29,73 +30,50 @@ public class ProfileCommentServiceImpl implements ProfileCommentService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileCommentServiceImpl.class);
 
     @Override
-    public ProfileComment add(Long ownerId, String txt) {
-        LOGGER.info("Trying to add comment.");
-
-        if (userService.findById(ownerId) == null) {
-            LOGGER.error("Profile owner doesn`t exist");
-            throw new NoSuchElementException();
-        }
-
-        ProfileComment profileComment = ProfileComment.builder()
-                .profileOwner(userService.findById(ownerId))
+    public ProfileComment add(ProfileComment profileComment) {
+        return profileCommentRepository.save(
+                ProfileComment.builder()
+                .profileOwner(userService.findById(profileComment.getUser().getId()))
                 .user(userService.findByLogin(Utils.getLogin()))
                 .date(LocalDateTime.now())
-                .commentTxt(txt)
-                .build();
-        ProfileComment save = profileCommentRepository.save(profileComment);
-        LOGGER.info("Comment added.");
-        return save;
+                .commentTxt(profileComment.getCommentTxt())
+                .build());
     }
 
     @Override
     public List<ProfileComment> findAll(ProfileCommentFilterRequest request) {
-        return profileCommentRepository.findAll(ProfileCommentSpecification.getSpecification(request), Sort.by("date"));
+        return profileCommentRepository.findAll(ProfileCommentSpecification.getSpecification(request), Sort.by(ProfileComment_.DATE));
     }
 
     @Override
     public ProfileComment findById(Long id) {
-        LOGGER.info("Trying to find comment by id");
-        final ProfileComment comment = profileCommentRepository.findById(id).orElseThrow(() -> {
+        return profileCommentRepository.findById(id).orElseThrow(() -> {
             LOGGER.error("No element with such id - {}.", id);
             throw new NoSuchElementException(id);
         });
-        LOGGER.info("Comment found using id {}", comment.getId());
-        return comment;
     }
 
     @Override
     public ProfileComment update(Long id, String txt) {
-        LOGGER.info("Trying to update comment with id - {}.", id);
-        if (!findById(id).getUser().getLogin().equals(Utils.getLogin())) {
+        if (!Utils.getLogin().equals(findById(id).getUser().getLogin())) {
             LOGGER.error("Trying update not his message");
             throw new TryingModifyNotYourDataException("You can update only yourself messages!");
         }
 
-
-        return profileCommentRepository.findById(id).map(pc -> {
-            pc.setDate(LocalDateTime.now());
-            pc.setCommentTxt(txt);
-            ProfileComment save = profileCommentRepository.save(pc);
-            LOGGER.info("Comment with id {} updated.", id);
-            return save;
-        })
-                .orElseThrow(() -> {
-                    LOGGER.error("No element with such id - {}.", id);
-                    throw new NoSuchElementException(id);
-                });
+        ProfileComment profileComment = findById(id);
+        profileComment.setCommentTxt(txt);
+        return profileCommentRepository.save(profileComment);
     }
 
     @Override
     public void delete(Long id) {
-        LOGGER.info("Trying to delete comment with id - {}.", id);
-        if (!findById(id).getProfileOwner().getLogin().equals(Utils.getLogin()) ||
-                !findById(id).getUser().getLogin().equals(Utils.getLogin())) {
-            LOGGER.error("Trying delete not his message or message in not his/her profile.");
+        if (!Utils.getLogin().equals(findById(id).getProfileOwner().getLogin()) &&
+                !Utils.getLogin().equals(findById(id).getUser().getLogin())) {
+            LOGGER.error("Trying delete not your message or message in not your profile.");
             throw new TryingModifyNotYourDataException("You can delete only yourself messages or your profile messages!");
         }
+
         profileCommentRepository.deleteById(id);
-        LOGGER.info("Comment with id - {} was deleted.", id);
     }
 
 }

@@ -13,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,6 +32,10 @@ public class BlocklistServiceImpl implements BlocklistService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BlocklistServiceImpl.class);
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = {NoSuchElementException.class, TryingModifyNotYourDataException.class, TryingRequestToYourselfException.class})
     @Override
     public Blocklist add(Blocklist blocklist) {
         if (!userService.findByLogin(Utils.getLogin()).equals(communityService.findById(blocklist.getCommunity().getId()).getCreator())) {
@@ -51,26 +58,41 @@ public class BlocklistServiceImpl implements BlocklistService {
                         .build());
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public List<Blocklist> findAllBannsOf(Long whomBanedId) {
         return blocklistRepository.findBlocklistByWhomBanedIdOrderByBlockDate(whomBanedId);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public List<Blocklist> findAllBannedBy(Long whoBanedId) {
         return blocklistRepository.findBlocklistByWhoBanedIdOrderByBlockDate(whoBanedId);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public List<Blocklist> findAllBannedIn(Long communityId) {
         return blocklistRepository.findBlocklistByCommunityIdOrderByBlockDate(communityId);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public List<Blocklist> findAllBannsBetween(LocalDate from, LocalDate to) {
         return blocklistRepository.findBlocklistByBlockDateBetweenOrderByBlockDate(from, to);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public Blocklist findById(Long id) {
         return blocklistRepository.findById(id).orElseThrow(() -> {
@@ -79,12 +101,17 @@ public class BlocklistServiceImpl implements BlocklistService {
         });
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = {NoSuchElementException.class, TryingModifyNotYourDataException.class})
     @Override
     public void delete(Long id) {
         if (userService.findByLogin(Utils.getLogin()).equals(findById(id).getWhoBaned())) {
             LOGGER.error("Trying remove not his ban - {}.", Utils.getLogin());
             throw new TryingModifyNotYourDataException("Only admin who give ban can remove it!");
         }
+
         blocklistRepository.deleteById(id);
     }
 

@@ -17,6 +17,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,6 +39,10 @@ public class CommunityMessageServiceImpl implements CommunityMessageService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CommunityMessageServiceImpl.class);
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = {NoSuchElementException.class, TryingModifyNotYourDataException.class})
     @Override
     public CommunityMessage add(CommunityMessage communityMessage) {
         if (Objects.isNull(userOfCommunityService.findByCommunityNameAndUserLogin(communityService.findById(communityMessage.getCommunity().getId()).getName(), Utils.getLogin())) &&
@@ -53,6 +60,9 @@ public class CommunityMessageServiceImpl implements CommunityMessageService {
                         .build());
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public List<CommunityMessage> findAll(CommunityMessageFilterRequest request) {
         if (Objects.isNull(userOfCommunityService.findByCommunityNameAndUserLogin(communityService.findById(request.getCommunityId()).getName(), Utils.getLogin())) &&
@@ -63,6 +73,9 @@ public class CommunityMessageServiceImpl implements CommunityMessageService {
         return communityMessageRepository.findAll(CommunityMessageSpecification.getSpecification(request), Sort.by(CommunityMessage_.DATE));
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public CommunityMessage findById(Long id) {
         if (Objects.isNull(userOfCommunityService.findByCommunityNameAndUserLogin(communityMessageRepository.findById(id).get().getCommunity().getName(), Utils.getLogin())) &&
@@ -77,6 +90,10 @@ public class CommunityMessageServiceImpl implements CommunityMessageService {
         });
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = {NoSuchElementException.class, TryingModifyNotYourDataException.class})
     @Override
     public CommunityMessage update(Long id, String txt) {
         CommunityMessage savedCommunityMessage = findById(id);
@@ -91,6 +108,10 @@ public class CommunityMessageServiceImpl implements CommunityMessageService {
         return communityMessageRepository.save(savedCommunityMessage);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = {NoSuchElementException.class, TryingModifyNotYourDataException.class})
     @Override
     public void delete(Long id) {
         if (!(userService.findByLogin(Utils.getLogin()).equals(findById(id).getCreator()) &&

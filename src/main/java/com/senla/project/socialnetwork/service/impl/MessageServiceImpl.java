@@ -15,6 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,6 +32,10 @@ public class MessageServiceImpl implements MessageService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageServiceImpl.class);
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = NoSuchElementException.class)
     @Override
     public Message add(Long userId, String txt) {
         return messageRepository.save(
@@ -40,11 +47,17 @@ public class MessageServiceImpl implements MessageService {
                 .build());
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public List<Message> findAll(MessageFilterRequest request) {
         return messageRepository.findAll(MessageSpecification.getSpecification(request), Sort.by(Message_.DATE_CREATED));
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public Message findById(Long id) {
         return messageRepository.findById(id).orElseThrow(() -> {
@@ -53,6 +66,10 @@ public class MessageServiceImpl implements MessageService {
         });
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = {NoSuchElementException.class, TryingModifyNotYourDataException.class})
     @Override
     public Message update(Long id, String txt) {
         if (!Utils.getLogin().equals(findById(id).getSender().getLogin())) {
@@ -65,6 +82,10 @@ public class MessageServiceImpl implements MessageService {
         return messageRepository.save(message);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = {NoSuchElementException.class, TryingModifyNotYourDataException.class})
     @Override
     public void delete(Long id) {
         if (!Utils.getLogin().equals(findById(id).getSender().getLogin())) {

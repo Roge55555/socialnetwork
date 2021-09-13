@@ -15,6 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,6 +32,10 @@ public class ProfileCommentServiceImpl implements ProfileCommentService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileCommentServiceImpl.class);
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = NoSuchElementException.class)
     @Override
     public ProfileComment add(ProfileComment profileComment) {
         return profileCommentRepository.save(
@@ -40,11 +47,17 @@ public class ProfileCommentServiceImpl implements ProfileCommentService {
                 .build());
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public List<ProfileComment> findAll(ProfileCommentFilterRequest request) {
         return profileCommentRepository.findAll(ProfileCommentSpecification.getSpecification(request), Sort.by(ProfileComment_.DATE));
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public ProfileComment findById(Long id) {
         return profileCommentRepository.findById(id).orElseThrow(() -> {
@@ -53,6 +66,10 @@ public class ProfileCommentServiceImpl implements ProfileCommentService {
         });
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = {NoSuchElementException.class, TryingModifyNotYourDataException.class})
     @Override
     public ProfileComment update(Long id, String txt) {
         if (!Utils.getLogin().equals(findById(id).getUser().getLogin())) {
@@ -65,6 +82,10 @@ public class ProfileCommentServiceImpl implements ProfileCommentService {
         return profileCommentRepository.save(profileComment);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = {NoSuchElementException.class, TryingModifyNotYourDataException.class})
     @Override
     public void delete(Long id) {
         if (!Utils.getLogin().equals(findById(id).getProfileOwner().getLogin()) &&

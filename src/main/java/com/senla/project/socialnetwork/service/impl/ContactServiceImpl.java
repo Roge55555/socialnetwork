@@ -15,6 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,6 +34,10 @@ public class ContactServiceImpl implements ContactService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContactServiceImpl.class);
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = {NoSuchElementException.class, TryingRequestToYourselfException.class})
     @Override
     public Contact add(Long mateId) {
         if (Utils.getLogin().equals(userService.findById(mateId).getLogin())) {
@@ -48,11 +55,17 @@ public class ContactServiceImpl implements ContactService {
                 .build());
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public List<Contact> findAll(ContactFilterRequest request) {
         return contactRepository.findAll(ContactSpecification.getSpecification(request));
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public Contact findById(Long id) {
         if (!Utils.getLogin().equals(contactRepository.findById(id).get().getCreator().getLogin()) &&
@@ -66,6 +79,10 @@ public class ContactServiceImpl implements ContactService {
         });
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = {NoSuchElementException.class, TryingModifyNotYourDataException.class})
     @Override
     public void acceptRequest(Long id) {
         if (!findById(id).getMate().getLogin().equals(Utils.getLogin())) {
@@ -79,6 +96,10 @@ public class ContactServiceImpl implements ContactService {
             contactRepository.save(contact);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = {NoSuchElementException.class, TryingModifyNotYourDataException.class})
     @Override
     public void updateRole(Long id, Long roleId) {
         if (!findById(id).getContactLevel()) {
@@ -103,6 +124,10 @@ public class ContactServiceImpl implements ContactService {
         }
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = {NoSuchElementException.class, TryingModifyNotYourDataException.class})
     @Override
     public void delete(Long id) {
         if (Utils.getLogin().equals(findById(id).getCreator().getLogin())) {

@@ -15,6 +15,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -31,6 +34,10 @@ public class UserServiceImpl implements UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = NoSuchElementException.class)
     @Override
     public User add(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -40,11 +47,18 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public Page<User> findAll(String name, Pageable pageable) {
         return userRepository.findByLoginContainingOrFirstNameContainingOrLastNameContaining(name, name, name, pageable);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public User findById(Long id) {
         return userRepository.findById(id).orElseThrow(() -> {
@@ -53,6 +67,9 @@ public class UserServiceImpl implements UserService {
         });
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public User findByLogin(String login) {
         return userRepository.findByLogin(login).orElseThrow(() -> {
@@ -61,6 +78,10 @@ public class UserServiceImpl implements UserService {
         });
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = NoSuchElementException.class)
     @Override
     public User update(User user) {
         User updatedUser = findByLogin(Utils.getLogin());
@@ -95,11 +116,19 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(updatedUser);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = NoSuchElementException.class)
     @Override
     public void delete() {
         userRepository.deleteById(findByLogin(Utils.getLogin()).getId());
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = {NoSuchElementException.class, NotOldPasswordException.class})
     @Override
     public void changePassword(final String oldPassword, final String newPassword) {
         if (passwordEncoder.matches(oldPassword, findByLogin(Utils.getLogin()).getPassword())) {

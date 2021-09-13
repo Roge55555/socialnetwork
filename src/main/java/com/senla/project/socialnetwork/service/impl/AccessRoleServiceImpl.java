@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +21,9 @@ public class AccessRoleServiceImpl implements AccessRoleService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccessRoleServiceImpl.class);
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public AccessRole findById(Long id) {
         return accessRoleRepository.findById(id).orElseThrow(() -> {
@@ -26,6 +32,9 @@ public class AccessRoleServiceImpl implements AccessRoleService {
         });
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public AccessRole findByName(Role name) {
         return accessRoleRepository.findByName(name).orElseThrow(() -> {

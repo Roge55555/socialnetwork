@@ -8,14 +8,15 @@ import com.senla.project.socialnetwork.repository.UserOfCommunityRepository;
 import com.senla.project.socialnetwork.service.CommunityService;
 import com.senla.project.socialnetwork.service.UserOfCommunityService;
 import com.senla.project.socialnetwork.service.UserService;
-import liquibase.pro.packaged.U;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,6 +32,10 @@ public class UserOfCommunityServiceImpl implements UserOfCommunityService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserOfCommunityServiceImpl.class);
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = {NoSuchElementException.class, TryingModifyNotYourDataException.class})
     @Override
     public UserOfCommunity add(UserOfCommunity userOfCommunity) {
         if (!Utils.getLogin().equals(communityService.findById(userOfCommunity.getCommunity().getId()).getCreator().getLogin())) {
@@ -40,11 +45,17 @@ public class UserOfCommunityServiceImpl implements UserOfCommunityService {
         return userOfCommunityRepository.save(UserOfCommunity.builder().community(communityService.findById(userOfCommunity.getCommunity().getId())).user(userService.findById(userOfCommunity.getUser().getId())).dateEntered(LocalDate.now()).build());
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public List<UserOfCommunity> findAllCommunitiesOfUser() {
         return userOfCommunityRepository.findByUserIdOrderByCommunity(userService.findByLogin(Utils.getLogin()).getId());
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public List<UserOfCommunity> findAllUsersOfCommunity(Long communityId) {
         if (Objects.isNull(findByCommunityNameAndUserLogin(communityService.findById(communityId).getName(), Utils.getLogin()))) {
@@ -54,6 +65,10 @@ public class UserOfCommunityServiceImpl implements UserOfCommunityService {
         return userOfCommunityRepository.findByCommunityIdOrderByUser(communityId);
     }
 
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public UserOfCommunity findByCommunityNameAndUserLogin(String communityName, String userLogin) {
         return userOfCommunityRepository.findByCommunityNameAndUserLogin(communityName, userLogin).orElseThrow(() -> {
@@ -62,6 +77,9 @@ public class UserOfCommunityServiceImpl implements UserOfCommunityService {
         });
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public UserOfCommunity findByCommunityIdAndUserId(Long communityId, Long userId) {
         if(!Utils.getLogin().equals(communityService.findById(communityId).getCreator().getLogin())) {
@@ -75,7 +93,10 @@ public class UserOfCommunityServiceImpl implements UserOfCommunityService {
         });
     }
 
-
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = {NoSuchElementException.class, TryingModifyNotYourDataException.class})
     @Override
     public void delete(Long communityId, Long userId) {
         if (Objects.isNull(communityService.findById(communityId).getCreator().getLogin()) &&

@@ -12,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,6 +30,10 @@ public class CommunityServiceImpl implements CommunityService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CommunityServiceImpl.class);
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = NoSuchElementException.class)
     @Override
     public Community add(Community community) {
         community.setCreator(userService.findByLogin(Utils.getLogin()));
@@ -35,11 +42,17 @@ public class CommunityServiceImpl implements CommunityService {
         return communityRepository.save(community);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public List<Community> findAll() {
         return communityRepository.findAllByCreatorLoginOrderByDateCreated(Utils.getLogin());
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public Community findById(Long communityId) {
             return communityRepository.findById(communityId).orElseThrow(() -> {
@@ -48,6 +61,9 @@ public class CommunityServiceImpl implements CommunityService {
             });
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
     @Override
     public Community findByName(String name) {
         return communityRepository.findByNameAndCreatorLogin(name, Utils.getLogin()).orElseThrow(() -> {
@@ -56,6 +72,10 @@ public class CommunityServiceImpl implements CommunityService {
         });
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = {NoSuchElementException.class, TryingModifyNotYourDataException.class})
     @Override
     public Community update(Long id, Community community) {
         if (Objects.isNull(findByName(findById(id).getName()))) {
@@ -79,7 +99,10 @@ public class CommunityServiceImpl implements CommunityService {
         return communityRepository.save(updatedCommunity);
     }
 
-
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = Exception.class,
+            noRollbackFor = {NoSuchElementException.class, TryingModifyNotYourDataException.class})
     @Override
     public void delete(Long id) {
         if (!findById(id).getCreator().equals(userService.findByLogin(Utils.getLogin()))) {

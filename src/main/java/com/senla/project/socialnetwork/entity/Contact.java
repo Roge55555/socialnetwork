@@ -45,10 +45,10 @@ public class Contact {
 
     @ManyToOne
     @JoinColumn(name = "creator_role")
-    private RoleList creatorRole;
+    private RoleList creatorRole; //TODO role which mate set to creator
 
     @ManyToOne
     @JoinColumn(name = "mate_role")
-    private RoleList mateRole;
+    private RoleList mateRole; //TODO role which creator set to mate
 
 }

@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +42,11 @@ public class UserOfCommunityServiceImpl implements UserOfCommunityService {
             LOGGER.error("Only creator can add users.");
             throw new TryingModifyNotYourDataException("Only creator can add users.");
         }
-        return userOfCommunityRepository.save(UserOfCommunity.builder().community(communityService.findById(userOfCommunity.getCommunity().getId())).user(userService.findById(userOfCommunity.getUser().getId())).dateEntered(LocalDate.now()).build());
+        return userOfCommunityRepository.save(
+                UserOfCommunity.builder().
+                        community(communityService.findById(userOfCommunity.getCommunity().getId()))
+                        .user(userService.findById(userOfCommunity.getUser().getId()))
+                        .dateEntered(LocalDate.now()).build());
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ,
@@ -58,9 +62,9 @@ public class UserOfCommunityServiceImpl implements UserOfCommunityService {
             readOnly = true)
     @Override
     public List<UserOfCommunity> findAllUsersOfCommunity(Long communityId) {
-        if (Objects.isNull(findByCommunityNameAndUserLogin(communityService.findById(communityId).getName(), Utils.getLogin()))) {
+        if (findByCommunityNameAndUserLogin(communityService.findById(communityId).getName(), Utils.getLogin()).isEmpty()) {
             LOGGER.error("Trying to check subscribers of community - {}, by not member.", communityId);
-            throw new TryingModifyNotYourDataException("You can check only yourself subscriptions.");
+            throw new TryingModifyNotYourDataException("You can`t see subscribers of community of which you are not a member.");
         }
         return userOfCommunityRepository.findByCommunityIdOrderByUser(communityId);
     }
@@ -70,11 +74,10 @@ public class UserOfCommunityServiceImpl implements UserOfCommunityService {
             propagation = Propagation.REQUIRES_NEW,
             readOnly = true)
     @Override
-    public UserOfCommunity findByCommunityNameAndUserLogin(String communityName, String userLogin) {
-        return userOfCommunityRepository.findByCommunityNameAndUserLogin(communityName, userLogin).orElseThrow(() -> {
-            LOGGER.error("No subscription: user - {} to community - {}.", userLogin, communityName);
-            throw new NoSuchElementException(userLogin + " / " + communityName);
-        });
+    public Optional<UserOfCommunity> findByCommunityNameAndUserLogin(String communityName, String userLogin) {
+        //TODO method for back using
+        //TODO no check isUserWhoRequestInCommunity cause no endpoint for method and it checks in place where this method uses
+        return userOfCommunityRepository.findByCommunityNameAndUserLogin(communityName, userLogin);
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ,
@@ -82,7 +85,8 @@ public class UserOfCommunityServiceImpl implements UserOfCommunityService {
             readOnly = true)
     @Override
     public UserOfCommunity findByCommunityIdAndUserId(Long communityId, Long userId) {
-        if(!Utils.getLogin().equals(communityService.findById(communityId).getCreator().getLogin())) {
+        //TODO endpoint for creator of community
+        if (!Utils.getLogin().equals(communityService.findById(communityId).getCreator().getLogin())) {
             LOGGER.error("Trying to check subscription of other community - {}", Utils.getLogin());
             throw new TryingModifyNotYourDataException("You can check only yourself subscription.");
         }
@@ -99,14 +103,15 @@ public class UserOfCommunityServiceImpl implements UserOfCommunityService {
             noRollbackFor = {NoSuchElementException.class, TryingModifyNotYourDataException.class})
     @Override
     public void delete(Long communityId, Long userId) {
-        if (Objects.isNull(communityService.findById(communityId).getCreator().getLogin()) &&
-                (Objects.isNull(findByCommunityNameAndUserLogin(communityService.findById(communityId).getName(), Utils.getLogin())) &&
-                        Utils.getLogin().equals(userService.findById(userId).getLogin()))) {
+        if (Utils.getLogin().equals(communityService.findById(communityId).getCreator().getLogin())) { //TODO creator?
+            userOfCommunityRepository.deleteByCommunityIdAndUserId(communityId, userId);
+        } else if (findByCommunityNameAndUserLogin(communityService.findById(communityId).getName(), Utils.getLogin()).isPresent() &&
+                Utils.getLogin().equals(userService.findById(userId).getLogin())) {  //TODO yourself?
+            userOfCommunityRepository.deleteByCommunityIdAndUserId(communityId, userId);
+        } else {
             LOGGER.error("Only creator/subscribers can delete user/yourself from community {}.", Utils.getLogin());
             throw new TryingModifyNotYourDataException("Only creator/subscribers can delete user/yourself from community.");
         }
-
-        userOfCommunityRepository.deleteByCommunityIdAndUserId(communityId, userId);
     }
 
 }

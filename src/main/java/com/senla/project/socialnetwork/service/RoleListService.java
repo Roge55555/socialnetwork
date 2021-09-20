@@ -12,8 +12,6 @@ public interface RoleListService {
 
     RoleList findById(Long id);
 
-    RoleList update(Long id, String roleListName);
-
     void delete(Long id);
 
 }

@@ -19,6 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Date;
 
@@ -48,7 +49,7 @@ public class JwtTokenProvider {
     public String createToken(String login, String password) {
         Claims claims = Jwts.claims().setSubject(login);
         claims.put("password", password);
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now().plusSeconds(1).truncatedTo(ChronoUnit.SECONDS);
 
         return Jwts.builder()
                 .setClaims(claims)

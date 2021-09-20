@@ -3,7 +3,6 @@ package com.senla.project.socialnetwork.service.impl;
 import com.senla.project.socialnetwork.Utils;
 import com.senla.project.socialnetwork.entity.UserEvent;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
-import com.senla.project.socialnetwork.exeptions.TryingModifyNotYourDataException;
 import com.senla.project.socialnetwork.repository.UserEventRepository;
 import com.senla.project.socialnetwork.service.UserEventService;
 import com.senla.project.socialnetwork.service.UserService;
@@ -36,7 +35,7 @@ public class UserEventServiceImpl implements UserEventService {
     public UserEvent add(UserEvent userEvent) {
         userEvent.setUser(userService.findByLogin(Utils.getLogin()));
 
-        return userEvent;
+        return userEventRepository.save(userEvent);
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ,
@@ -65,16 +64,16 @@ public class UserEventServiceImpl implements UserEventService {
     @Override
     public UserEvent update(Long id, UserEvent userEvent) {
         UserEvent updatedUserEvent = findById(id);
-        if(Objects.nonNull(userEvent.getName())) {
+        if (Objects.nonNull(userEvent.getName())) {
             updatedUserEvent.setName(userEvent.getName());
         }
-        if(Objects.nonNull(userEvent.getDescription())) {
+        if (Objects.nonNull(userEvent.getDescription())) {
             updatedUserEvent.setDescription(userEvent.getDescription());
         }
-        if(Objects.nonNull(userEvent.getDate())) {
+        if (Objects.nonNull(userEvent.getDate())) {
             updatedUserEvent.setDate(userEvent.getDate());
         }
-            return userEventRepository.save(updatedUserEvent);
+        return userEventRepository.save(updatedUserEvent);
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ,

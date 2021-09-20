@@ -11,9 +11,11 @@ public interface CommunityService {
 
     List<Community> findAll();
 
-    Community findById(Long Id);
+    Community findById(Long id);
 
     Community findByName(String name);
+
+    List<Community> searchBySubstringOfName(String name);
 
     Community update(Long id, Community community);
 

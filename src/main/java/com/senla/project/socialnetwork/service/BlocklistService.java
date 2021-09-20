@@ -19,6 +19,8 @@ public interface BlocklistService {
 
     Blocklist findById(Long id);
 
+    Blocklist findByCommunityIdAndWhomBanedId(Long communityId, Long whomBanedId);
+
     void delete(Long id);
 
 }

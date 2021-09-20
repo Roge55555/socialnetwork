@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -42,13 +41,6 @@ public class RoleListController {
     @PreAuthorize("hasAuthority('standard:permission')")
     public RoleList getById(@PathVariable("id") Long id) {
         return roleListService.findById(id);
-    }
-
-    @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    @PreAuthorize("hasAuthority('communities:permission')")
-    public void updateRoleList(@PathVariable("id") Long id, @RequestBody String roleListName) {
-        roleListService.update(id, roleListName);
     }
 
     @DeleteMapping("/{id}")

@@ -18,4 +18,6 @@ public interface BlocklistRepository extends JpaRepository<Blocklist, Long> {
 
     List<Blocklist> findBlocklistByBlockDateBetweenOrderByBlockDate(LocalDate from, LocalDate to);
 
+    Blocklist findBlocklistByCommunityIdAndWhomBanedId(Long communityId, Long whomBanedId);
+
 }

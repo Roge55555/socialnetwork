@@ -12,6 +12,8 @@ import java.util.Optional;
 @Repository
 public interface CommunityRepository extends JpaRepository<Community, Long> {
 
+    List<Community> findAllByNameContaining(String name);
+
     Optional<Community> findByNameAndCreatorLogin(@Size(min = 3) @NotBlank String name, @NotBlank @Size(min = 4) String creatorLogin);
 
     Optional<Community> findByIdAndCreatorLogin(Long id, @NotBlank @Size(min = 4) String creatorLogin);

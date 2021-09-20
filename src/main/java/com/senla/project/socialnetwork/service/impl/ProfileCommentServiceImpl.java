@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -40,11 +41,11 @@ public class ProfileCommentServiceImpl implements ProfileCommentService {
     public ProfileComment add(ProfileComment profileComment) {
         return profileCommentRepository.save(
                 ProfileComment.builder()
-                .profileOwner(userService.findById(profileComment.getUser().getId()))
-                .user(userService.findByLogin(Utils.getLogin()))
-                .date(LocalDateTime.now())
-                .commentTxt(profileComment.getCommentTxt())
-                .build());
+                        .profileOwner(userService.findById(profileComment.getProfileOwner().getId()))
+                        .user(userService.findByLogin(Utils.getLogin()))
+                        .date(LocalDateTime.now().plusSeconds(1).truncatedTo(ChronoUnit.SECONDS))
+                        .commentTxt(profileComment.getCommentTxt())
+                        .build());
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ,
@@ -73,7 +74,7 @@ public class ProfileCommentServiceImpl implements ProfileCommentService {
     @Override
     public ProfileComment update(Long id, String txt) {
         if (!Utils.getLogin().equals(findById(id).getUser().getLogin())) {
-            LOGGER.error("Trying update not his message");
+            LOGGER.error("Trying update not your message");
             throw new TryingModifyNotYourDataException("You can update only yourself messages!");
         }
 

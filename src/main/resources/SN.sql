@@ -118,7 +118,7 @@ CREATE TABLE contact
 insert into contact
 values (1, 2, 1, '2021-06-25', true, 5, 5);
 insert into contact
-values (2, 3, 1, '2021-07-17', true, 3, null);
+values (2, 3, 1, '2021-07-17', true, null, null);
 
 CREATE TABLE message
 (

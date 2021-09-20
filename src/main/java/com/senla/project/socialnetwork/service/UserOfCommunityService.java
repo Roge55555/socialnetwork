@@ -3,6 +3,7 @@ package com.senla.project.socialnetwork.service;
 import com.senla.project.socialnetwork.entity.UserOfCommunity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserOfCommunityService {
 
@@ -12,7 +13,7 @@ public interface UserOfCommunityService {
 
     List<UserOfCommunity> findAllUsersOfCommunity(Long communityId);
 
-    UserOfCommunity findByCommunityNameAndUserLogin(String communityName, String userLogin);
+    Optional<UserOfCommunity> findByCommunityNameAndUserLogin(String communityName, String userLogin);
 
     UserOfCommunity findByCommunityIdAndUserId(Long communityId, Long userId);
 

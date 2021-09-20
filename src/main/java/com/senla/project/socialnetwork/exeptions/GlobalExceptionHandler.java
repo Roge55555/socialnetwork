@@ -75,4 +75,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(dataIntegrityViolationException.getMessage(), HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(value = NoAccessForBlockedUserException.class)
+    public ResponseEntity<String> noAccessForBlockedUserException(NoAccessForBlockedUserException noAccessForBlockedUserException) {
+        return new ResponseEntity<>(noAccessForBlockedUserException.getMessage(), HttpStatus.CONFLICT);
+    }
+
 }

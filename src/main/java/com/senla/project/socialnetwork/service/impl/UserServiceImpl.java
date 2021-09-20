@@ -85,31 +85,31 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(User user) {
         User updatedUser = findByLogin(Utils.getLogin());
-        if(Objects.nonNull(user.getDateBirth())) {
+        if (Objects.nonNull(user.getDateBirth())) {
             updatedUser.setDateBirth(user.getDateBirth());
         }
-        if(Objects.nonNull(user.getFirstName())) {
+        if (Objects.nonNull(user.getFirstName())) {
             updatedUser.setFirstName(user.getFirstName());
         }
-        if(Objects.nonNull(user.getLastName())) {
+        if (Objects.nonNull(user.getLastName())) {
             updatedUser.setLastName(user.getLastName());
         }
-        if(Objects.nonNull(user.getEmail())) {
+        if (Objects.nonNull(user.getEmail())) {
             updatedUser.setEmail(user.getEmail());
         }
-        if(Objects.nonNull(user.getPhone())) {
+        if (Objects.nonNull(user.getPhone())) {
             updatedUser.setPhone(user.getPhone());
         }
-        if(Objects.nonNull(user.getWebsite())) {
+        if (Objects.nonNull(user.getWebsite())) {
             updatedUser.setWebsite(user.getWebsite());
         }
-        if(Objects.nonNull(user.getAboutYourself())) {
+        if (Objects.nonNull(user.getAboutYourself())) {
             updatedUser.setAboutYourself(user.getAboutYourself());
         }
-        if(Objects.nonNull(user.getJobTitle())) {
+        if (Objects.nonNull(user.getJobTitle())) {
             updatedUser.setJobTitle(user.getJobTitle());
         }
-        if(Objects.nonNull(user.getWorkPhone())) {
+        if (Objects.nonNull(user.getWorkPhone())) {
             updatedUser.setWorkPhone(user.getWorkPhone());
         }
 
@@ -133,8 +133,8 @@ public class UserServiceImpl implements UserService {
     public void changePassword(final String oldPassword, final String newPassword) {
         if (passwordEncoder.matches(oldPassword, findByLogin(Utils.getLogin()).getPassword())) {
             User user = findByLogin(Utils.getLogin());
-                user.setPassword(passwordEncoder.encode(newPassword));
-                userRepository.save(user);
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
         } else {
             LOGGER.error("Not right old user password");
             throw new NotOldPasswordException();

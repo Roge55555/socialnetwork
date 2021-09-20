@@ -48,8 +48,15 @@ public class CommunityController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.FOUND)
     @PreAuthorize("hasAuthority('standard:permission')")
-    public Community getById(@PathVariable("id") Long communityId) {
-        return communityService.findById(communityId);
+    public Community getById(@PathVariable("id") Long id) {
+        return communityService.findById(id);
+    }
+
+    @GetMapping("/{name}")
+    @ResponseStatus(HttpStatus.FOUND)
+    @PreAuthorize("hasAuthority('standard:permission')")
+    public List<Community> getByName(@PathVariable("name") String name) {
+        return communityService.searchBySubstringOfName(name);
     }
 
     @PutMapping("/{id}")

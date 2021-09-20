@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @RestController
@@ -34,7 +35,8 @@ public class ProfileCommentController {
     public ProfileComment addProfileComment(@RequestBody ProfileCommentDTO profileCommentDTO) {
         ProfileComment profileComment = ProfileComment.builder()
                 .user(User.builder().id(profileCommentDTO.getUserId()).build())
-                .date(LocalDateTime.now()).commentTxt(profileCommentDTO.getTxt())
+                .date(LocalDateTime.now().plusSeconds(1).truncatedTo(ChronoUnit.SECONDS))
+                .commentTxt(profileCommentDTO.getTxt())
                 .build();
         return profileCommentService.add(profileComment);
     }

@@ -68,15 +68,17 @@ public class ContactServiceImpl implements ContactService {
             readOnly = true)
     @Override
     public Contact findById(Long id) {
-        if (!Utils.getLogin().equals(contactRepository.findById(id).get().getCreator().getLogin()) &&
-                !Utils.getLogin().equals(contactRepository.findById(id).get().getMate().getLogin())) {
-            LOGGER.error("No element with such id - {}.", id);
-            throw new TryingModifyNotYourDataException("Not your contact.");
-        }
-        return contactRepository.findById(id).orElseThrow(() -> {
+        final Contact contact = contactRepository.findById(id).orElseThrow(() -> {
             LOGGER.error("No element with such id - {}.", id);
             throw new NoSuchElementException(id);
         });
+
+        if (!Utils.getLogin().equals(contact.getCreator().getLogin()) &&
+                !Utils.getLogin().equals(contact.getMate().getLogin())) {
+            LOGGER.error("You can see only your contacts.");
+            throw new TryingModifyNotYourDataException("Not your contact.");
+        }
+        return contact;
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ,
@@ -87,13 +89,13 @@ public class ContactServiceImpl implements ContactService {
     public void acceptRequest(Long id) {
         if (!findById(id).getMate().getLogin().equals(Utils.getLogin())) {
             LOGGER.error("Trying accept not his request with id - {}.", id);
-             throw new TryingModifyNotYourDataException("Only mate can accept request!");
+            throw new TryingModifyNotYourDataException("Only mate can accept request!");
         }
 
         Contact contact = findById(id);
-            contact.setDateConnected(LocalDate.now());
-            contact.setContactLevel(true);
-            contactRepository.save(contact);
+        contact.setDateConnected(LocalDate.now());
+        contact.setContactLevel(true);
+        contactRepository.save(contact);
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ,
@@ -102,25 +104,19 @@ public class ContactServiceImpl implements ContactService {
             noRollbackFor = {NoSuchElementException.class, TryingModifyNotYourDataException.class})
     @Override
     public void updateRole(Long id, Long roleId) {
-        if (!findById(id).getContactLevel()) {
-            LOGGER.error("No element with such id - {}.", id);
-            throw new TryingModifyNotYourDataException("You can set role only after mate accept request.");
-        }
+        findById(id);
 
         if (Utils.getLogin().equals(findById(id).getCreator().getLogin())) {
             Contact contact = findById(id);
-                contact.setDateConnected(LocalDate.now());
-                contact.setMateRole(roleListService.findById(roleId));
-                contactRepository.save(contact);
+            contact.setDateConnected(LocalDate.now());
+            contact.setMateRole(roleListService.findById(roleId));
+            contactRepository.save(contact);
 
         } else if (Utils.getLogin().equals(findById(id).getMate().getLogin())) {
             Contact contact = findById(id);
-                contact.setDateConnected(LocalDate.now());
-                contact.setCreatorRole(roleListService.findById(roleId));
-                contactRepository.save(contact);
-        } else {
-            LOGGER.error("Trying update not your contact id - {}.", id);
-            throw new TryingModifyNotYourDataException("Trying update not your contact.");
+            contact.setDateConnected(LocalDate.now());
+            contact.setCreatorRole(roleListService.findById(roleId));
+            contactRepository.save(contact);
         }
     }
 
@@ -134,14 +130,11 @@ public class ContactServiceImpl implements ContactService {
             contactRepository.deleteById(id);
         } else if (Utils.getLogin().equals(findById(id).getMate().getLogin())) {
             Contact contact = findById(id);
-                contact.setDateConnected(LocalDate.now());
-                contact.setContactLevel(false);
-                contact.setCreatorRole(null);
-                contact.setMateRole(null);
-                contactRepository.save(contact);
-        } else {
-            LOGGER.error("Trying delete not your contact id - {}.", id);
-            throw new TryingModifyNotYourDataException("Trying delete not your contact.");
+            contact.setDateConnected(LocalDate.now());
+            contact.setContactLevel(false);
+            contact.setCreatorRole(null);
+            contact.setMateRole(null);
+            contactRepository.save(contact);
         }
     }
 

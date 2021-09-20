@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -40,11 +41,11 @@ public class MessageServiceImpl implements MessageService {
     public Message add(Long userId, String txt) {
         return messageRepository.save(
                 Message.builder()
-                .sender(userService.findByLogin(Utils.getLogin()))
-                .receiver(userService.findById(userId))
-                .dateCreated(LocalDateTime.now())
-                .messageTxt(txt)
-                .build());
+                        .sender(userService.findByLogin(Utils.getLogin()))
+                        .receiver(userService.findById(userId))
+                        .dateCreated(LocalDateTime.now().plusSeconds(1).truncatedTo(ChronoUnit.SECONDS))
+                        .messageTxt(txt)
+                        .build());
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ,
@@ -60,10 +61,19 @@ public class MessageServiceImpl implements MessageService {
             readOnly = true)
     @Override
     public Message findById(Long id) {
-        return messageRepository.findById(id).orElseThrow(() -> {
+
+        final Message message = messageRepository.findById(id).orElseThrow(() -> {
             LOGGER.error("No element with such id - {}.", id);
             throw new NoSuchElementException(id);
         });
+
+        if (!Utils.getLogin().equals(message.getSender().getLogin()) &&
+                !Utils.getLogin().equals(message.getReceiver().getLogin())) {
+            LOGGER.error("Trying to find message in not your dialog.");
+            throw new TryingModifyNotYourDataException("This is not your dialog!");
+        }
+
+        return message;
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ,

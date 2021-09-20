@@ -11,10 +11,10 @@ import java.time.LocalDateTime;
 @Data
 public class MessageFilterRequest {
 
-    Long mateId;
+    private Long mateId;
 
-    LocalDateTime from;
+    private LocalDateTime from;
 
-    LocalDateTime to;
+    private LocalDateTime to;
 
 }

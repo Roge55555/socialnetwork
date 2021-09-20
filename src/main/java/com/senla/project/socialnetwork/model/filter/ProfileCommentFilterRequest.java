@@ -11,12 +11,12 @@ import java.time.LocalDateTime;
 @Data
 public class ProfileCommentFilterRequest {
 
-    Long ownerId;
+    private Long ownerId;
 
-    Long userId;
+    private Long userId;
 
-    LocalDateTime from;
+    private LocalDateTime from;
 
-    LocalDateTime to;
+    private LocalDateTime to;
 
 }

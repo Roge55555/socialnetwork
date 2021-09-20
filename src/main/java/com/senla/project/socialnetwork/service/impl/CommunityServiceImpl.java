@@ -55,10 +55,11 @@ public class CommunityServiceImpl implements CommunityService {
             readOnly = true)
     @Override
     public Community findById(Long communityId) {
-            return communityRepository.findById(communityId).orElseThrow(() -> {
-                LOGGER.error("No element with such id - {}.", communityId);
-                throw new NoSuchElementException(communityId);
-            });
+        //TODO method for "if" conditions
+        return communityRepository.findById(communityId).orElseThrow(() -> {
+            LOGGER.error("No element with such id - {}.", communityId);
+            throw new NoSuchElementException(communityId);
+        });
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ,
@@ -66,6 +67,7 @@ public class CommunityServiceImpl implements CommunityService {
             readOnly = true)
     @Override
     public Community findByName(String name) {
+        //TODO method for search by name especially for creator
         return communityRepository.findByNameAndCreatorLogin(name, Utils.getLogin()).orElseThrow(() -> {
             LOGGER.error("No element with such name - {} or you not creator of that community.", name);
             throw new NoSuchElementException(name);
@@ -74,14 +76,20 @@ public class CommunityServiceImpl implements CommunityService {
 
     @Transactional(isolation = Isolation.REPEATABLE_READ,
             propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
+    @Override
+    public List<Community> searchBySubstringOfName(String name) {
+        //TODO endpoint
+        return communityRepository.findAllByNameContaining(name);
+    }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
             rollbackFor = Exception.class,
             noRollbackFor = {NoSuchElementException.class, TryingModifyNotYourDataException.class})
     @Override
     public Community update(Long id, Community community) {
-        if (Objects.isNull(findByName(findById(id).getName()))) {
-            LOGGER.error("Community doesn`t exist or not creator trying to update community.");
-            throw new TryingModifyNotYourDataException("Community doesn`t exist or not creator trying to update community.");
-        }
+        findByName(findById(id).getName());
 
         if (userService.findById(community.getCreator().getId()).getRole().getName().equals(Role.USER)) {
             LOGGER.error("User don`t have enough permissions to be creator.");
@@ -89,13 +97,17 @@ public class CommunityServiceImpl implements CommunityService {
         }
 
         Community updatedCommunity = findById(id);
-        updatedCommunity.setCreator(userService.findById(community.getCreator().getId()));
-        if(Objects.nonNull(community.getName())) {
+
+        if (Objects.nonNull(community.getCreator())) {
+            updatedCommunity.setCreator(userService.findById(community.getCreator().getId()));
+        }
+        if (Objects.nonNull(community.getName())) {
             updatedCommunity.setName(community.getName());
         }
-        if(Objects.nonNull(community.getDescription())) {
+        if (Objects.nonNull(community.getDescription())) {
             updatedCommunity.setDescription(community.getDescription());
         }
+
         return communityRepository.save(updatedCommunity);
     }
 
@@ -105,10 +117,7 @@ public class CommunityServiceImpl implements CommunityService {
             noRollbackFor = {NoSuchElementException.class, TryingModifyNotYourDataException.class})
     @Override
     public void delete(Long id) {
-        if (!findById(id).getCreator().equals(userService.findByLogin(Utils.getLogin()))) {
-            LOGGER.error("Community doesn`t exist or not creator trying to update community.");
-            throw new TryingModifyNotYourDataException("Only creator can delete community.");
-        }
+        findByName(findById(id).getName());
 
         communityRepository.deleteById(id);
     }

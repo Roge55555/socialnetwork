@@ -11,16 +11,16 @@ import java.time.LocalDate;
 @Data
 public class ContactFilterRequest {
 
-    Long mateId;
+    private Long mateId;
 
-    Boolean level;
+    private Boolean level;
 
-    Long myRoleId;
+    private Long myRoleId;
 
-    Long mateRoleId;
+    private Long mateRoleId;
 
-    LocalDate from;
+    private LocalDate from;
 
-    LocalDate to;
+    private LocalDate to;
 
 }

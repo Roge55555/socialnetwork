@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Getter
 @ResponseStatus(code = HttpStatus.NOT_FOUND)
 public class TryingModifyNotYourDataException extends RuntimeException {
+
     private String message;
 
     public TryingModifyNotYourDataException(String message) {

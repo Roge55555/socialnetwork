@@ -8,6 +8,7 @@ import com.senla.project.socialnetwork.exeptions.TryingRequestToYourselfExceptio
 import com.senla.project.socialnetwork.repository.BlocklistRepository;
 import com.senla.project.socialnetwork.service.BlocklistService;
 import com.senla.project.socialnetwork.service.CommunityService;
+import com.senla.project.socialnetwork.service.UserOfCommunityService;
 import com.senla.project.socialnetwork.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -30,6 +31,8 @@ public class BlocklistServiceImpl implements BlocklistService {
 
     private final CommunityService communityService;
 
+    private final UserOfCommunityService userOfCommunityService;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(BlocklistServiceImpl.class);
 
     @Transactional(isolation = Isolation.REPEATABLE_READ,
@@ -43,10 +46,12 @@ public class BlocklistServiceImpl implements BlocklistService {
             throw new TryingModifyNotYourDataException("Only creator of community can give ban!");
         }
 
-        if (blocklist.getWhoBaned().getId().equals(blocklist.getWhomBaned().getId())) {
+        if (userService.findByLogin(Utils.getLogin()).getId().equals(blocklist.getWhomBaned().getId())) {
             LOGGER.error("User {} trying ban himself", blocklist.getWhoBaned());
             throw new TryingRequestToYourselfException();
         }
+
+        userOfCommunityService.findByCommunityIdAndUserId(blocklist.getCommunity().getId(), blocklist.getWhomBaned().getId());
 
         return blocklistRepository.save(
                 Blocklist.builder()
@@ -103,13 +108,23 @@ public class BlocklistServiceImpl implements BlocklistService {
 
     @Transactional(isolation = Isolation.REPEATABLE_READ,
             propagation = Propagation.REQUIRES_NEW,
+            readOnly = true)
+    @Override
+    public Blocklist findByCommunityIdAndWhomBanedId(Long communityId, Long whomBanedId) {
+        //TODO only for inside check
+        //TODO no endpoint
+        return blocklistRepository.findBlocklistByCommunityIdAndWhomBanedId(communityId, whomBanedId);
+    }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ,
+            propagation = Propagation.REQUIRES_NEW,
             rollbackFor = Exception.class,
             noRollbackFor = {NoSuchElementException.class, TryingModifyNotYourDataException.class})
     @Override
     public void delete(Long id) {
-        if (userService.findByLogin(Utils.getLogin()).equals(findById(id).getWhoBaned())) {
-            LOGGER.error("Trying remove not his ban - {}.", Utils.getLogin());
-            throw new TryingModifyNotYourDataException("Only admin who give ban can remove it!");
+        if (!userService.findByLogin(Utils.getLogin()).equals(findById(id).getCommunity().getCreator())) {
+            LOGGER.error("Trying remove ban in not his community - {}.", Utils.getLogin());
+            throw new TryingModifyNotYourDataException("Only admin of community can remove ban!");
         }
 
         blocklistRepository.deleteById(id);

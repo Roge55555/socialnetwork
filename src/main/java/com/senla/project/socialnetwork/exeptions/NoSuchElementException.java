@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Getter
 @ResponseStatus(code = HttpStatus.NOT_FOUND)
 public class NoSuchElementException extends RuntimeException {
+
     private String login;
 
     private Long id;

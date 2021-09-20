@@ -59,20 +59,8 @@ public class RoleListServiceImpl implements RoleListService {
             rollbackFor = Exception.class,
             noRollbackFor = NoSuchElementException.class)
     @Override
-    public RoleList update(Long id, String roleListName) {
-        RoleList roleList = findById(id);
-            roleList.setName(roleList.getName());
-            return roleListRepository.save(roleList);
-    }
-
-    @Transactional(isolation = Isolation.REPEATABLE_READ,
-            propagation = Propagation.REQUIRES_NEW,
-            rollbackFor = Exception.class,
-            noRollbackFor = NoSuchElementException.class)
-    @Override
     public void delete(Long id) {
         findById(id);
-
         roleListRepository.deleteById(id);
     }
 

@@ -16,8 +16,7 @@ public class ContactSpecification {
 
     private static Specification<Contact> hasMe(String who) {
         return (root, query, builder) ->
-                builder.equal((root.get(who).get("login")), Utils.getLogin());
-        //builder.like(builder.lower(root.get(SENDER)), "%" + sender_name.toLowerCase() + "%");
+                builder.equal((root.join(who).get(User_.LOGIN)), Utils.getLogin());
     }
 
     private static Specification<Contact> hasMate(final Long mateId, String who) {
@@ -25,7 +24,7 @@ public class ContactSpecification {
             return null;
 
         return (root, query, builder) ->
-                builder.equal((root.get(who).get(User_.ID)), mateId); // тебе вот это нужно посмотреть и убедиться, что джоина тут нет, потому что тут тупо айдишник из этой же самой таблицы.
+                builder.equal((root.get(who).get(User_.ID)), mateId);
     }
 
     private static Specification<Contact> hasLevel(final Boolean level) {

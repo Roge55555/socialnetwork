@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @NoArgsConstructor
 @Getter
 @ResponseStatus(code = HttpStatus.NOT_FOUND)
-public class NoNecessaryFieldInSpecificationException extends RuntimeException {
+public class NoAccessForBlockedUserException extends RuntimeException {
 
     private String message;
 
-    public NoNecessaryFieldInSpecificationException(String message) {
+    public NoAccessForBlockedUserException(String message) {
         this.message = message;
     }
 

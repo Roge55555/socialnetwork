@@ -3,91 +3,116 @@ package com.senla.project.socialnetwork.service;
 import com.senla.project.socialnetwork.entity.Community;
 import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
+import com.senla.project.socialnetwork.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @Sql(scripts = "classpath:data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = "classpath:clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 class CommunityServiceTest {
 
     private final UserService userService;
 
     private final CommunityService communityService;
 
-    @Test
-    @DisplayName("Successful add community")
-    void successAdd() {
-        Community community = new Community();
-        community.setCreator(userService.findById(2L));
-        community.setName("Modern Guns");
-        community.setDescription("Writing about history of modern pistols and rifles");
-        community.setDateCreated(LocalDate.of(2021, 6, 21));
+    private final JwtTokenProvider jwtTokenProvider;
 
-        final Community communit = communityService.add(community);
-        Assertions.assertEquals(communityService.findById(3L), communit);
+    @BeforeEach
+    public void init() {
+        getAuthentication("rogE", "55555");
+    }
+
+    private void getAuthentication(String login, String password) {
+        String token = jwtTokenProvider.createToken(login, password);
+        Authentication authentication = jwtTokenProvider.getAuthentication(token);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    private Community getCommunity(String name) {
+        Community community = new Community();
+        community.setName(name);
+        community.setDescription("Writing about history of modern pistols and rifles");
+        return community;
     }
 
     @Test
-    @DisplayName("Exception when we trying to add community with not existing creator")
-    void addTryingToUseNotExistingUser() {
-        Community community = new Community();
-        User user = userService.findById(2L);
-        user.setId(5L);
-        community.setCreator(user);
-        community.setName("Modern Guns");
-        community.setDescription("Writing about history of modern pistols and rifles");
-        community.setDateCreated(LocalDate.of(2021, 6, 21));
-
-
-        assertThatThrownBy(() -> communityService.add(community))
-                .isInstanceOf(NoSuchElementException.class);
+    @DisplayName("Successful add community")
+    void successAdd() {
+        getAuthentication("zagadka111", "f345t54tg433r");
+        final Community check = communityService.add(getCommunity("Test"));
+        final Community community = communityService.add(getCommunity("Modern Guns"));
+        assertEquals(communityService.findById(check.getId() + 1), community);
     }
 
     @Test
     @DisplayName("Successful showing all communities")
     void findAll() {
+        getAuthentication("CtrogE", "131313");
+        final Community community = communityService.add(getCommunity("Modern Guns"));
         final List<Community> communities = communityService.findAll();
-        Assertions.assertEquals(2, communities.size());
-    }
-
-    @Test
-    @DisplayName("Successful showing all communities in pages")
-    void findAllWithPageable() {
-        final Page<Community> communities = communityService.findAll(Pageable.ofSize(10));
-        Assertions.assertEquals(2, communities.toList().size());
+        assertAll(() -> assertEquals(2L, communities.get(0).getId()),
+                () -> assertEquals(community, communities.get(1)),
+                () -> assertEquals(2, communities.size()));
     }
 
     @Test
     @DisplayName("Successful finding community by id")
     void findByIdSuccess() {
         final List<Community> communities = communityService.findAll();
-        Assertions.assertEquals(communities.get(1), communityService.findById(2L));
+        assertEquals(communities.get(0), communityService.findById(1L));
     }
 
     @Test
     @DisplayName("Exception when we trying to find not existing community by id")
     void findByIdException() {
-        assertThatThrownBy(() -> communityService.findById(7L))
+        assertThatThrownBy(() -> communityService.findById(11L))
                 .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("Successful finding community by name")
+    void findByNameSuccess() {
+        final List<Community> communities = communityService.findAll();
+        assertEquals(communities.get(0), communityService.findByName("admin`s home"));
+    }
+
+    @Test
+    @DisplayName("Exception when we trying to find not existing community by name")
+    void findByNameException() {
+        assertThatThrownBy(() -> communityService.findByName("admin`s TEST"))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("Successful finding communities by part of name")
+    void searchByPartOfNameSuccess() {
+        final List<Community> communities = communityService.searchBySubstringOfName("e");
+        assertAll(() -> assertEquals("admin`s home", communities.get(0).getName()),
+                () -> assertEquals("free community", communities.get(1).getName()),
+                () -> assertEquals("FilmLover", communities.get(2).getName()),
+                () -> assertEquals(3, communities.size()));
     }
 
     @Test
     @DisplayName("Successful updating community by his id")
     void updateSuccess() {
-        Community community = communityService.findById(1L);
+        final Community community = communityService.findByName("admin`s home");
         community.setCreator(userService.findById(2L));
         communityService.update(1L, community);
         Assertions.assertEquals(community, communityService.findById(1L));
@@ -95,23 +120,12 @@ class CommunityServiceTest {
     }
 
     @Test
-    @DisplayName("Exception when we trying to update not existing community")
-    void updateNoSuchCommunity() {
+    @DisplayName("Exception when we trying to make creator of community user with not enough permissions")
+    void updateAccessNewAdminException() {
         Community community = communityService.findById(1L);
         User user = userService.findById(3L);
         community.setCreator(user);
-        assertThatThrownBy(() -> communityService.update(12L, community))
-                .isInstanceOf(NoSuchElementException.class);
-    }
-
-    @Test
-    @DisplayName("Exception when we trying to update community creator to not existing")
-    void updateTryingToUseNotExistingUser() {
-        Community community = communityService.findById(1L);
-        User user = userService.findById(3L);
-        user.setId(8L);
-        community.setCreator(user);
-        assertThatThrownBy(() -> communityService.update(12L, community))
+        assertThatThrownBy(() -> communityService.update(7L, community))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
@@ -123,10 +137,4 @@ class CommunityServiceTest {
                 .isInstanceOf(NoSuchElementException.class);
     }
 
-    @Test
-    @DisplayName("Exception when we trying to delete not existing community")
-    void deleteNoSuchId() {
-        assertThatThrownBy(() -> communityService.delete(6L))
-                .isInstanceOf(NoSuchElementException.class);
-    }
 }

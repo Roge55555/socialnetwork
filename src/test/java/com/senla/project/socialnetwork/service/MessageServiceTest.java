@@ -1,141 +1,118 @@
 package com.senla.project.socialnetwork.service;
 
 import com.senla.project.socialnetwork.entity.Message;
-import com.senla.project.socialnetwork.entity.User;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
+import com.senla.project.socialnetwork.exeptions.TryingModifyNotYourDataException;
+import com.senla.project.socialnetwork.model.filter.MessageFilterRequest;
+import com.senla.project.socialnetwork.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @Sql(scripts = "classpath:data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = "classpath:clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 class MessageServiceTest {
 
-    private final UserService userService;
-
     private final MessageService messageService;
+
+    private final JwtTokenProvider jwtTokenProvider;
+
+    @BeforeEach
+    public void init() {
+        getAuthentication("zagadka111", "f345t54tg433r");
+    }
+
+    private void getAuthentication(String login, String password) {
+        String token = jwtTokenProvider.createToken(login, password);
+        Authentication authentication = jwtTokenProvider.getAuthentication(token);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
 
     @Test
     @DisplayName("Successful add private message")
     void successAdd() {
-        Message message = new Message();
-        message.setSender(userService.findById(2L));
-        message.setReceiver(userService.findById(3L));
-        message.setDateCreated(LocalDateTime.of(2021, 6, 28, 8, 17, 32));
-        message.setMessageTxt("Test message");
-
-        final Message messageN3 = messageService.add(message);
-        Assertions.assertEquals(messageService.findById(6L), messageN3);
+        getAuthentication("$a$ha", "sava997");
+        final Message message = messageService.add(5L, "hi");
+        assertEquals(messageService.findById(10L), message);
     }
 
     @Test
-    @DisplayName("Exception when we trying to add private message with not existing sender")
-    void addTryingToUseNotExistingSender() {
-        Message messageSender = messageService.findById(4L);
-        User user = userService.findById(1L);
-        user.setId(6L);
-        messageSender.setSender(user);
-        assertThatThrownBy(() -> messageService.add(messageSender))
-                .isInstanceOf(NoSuchElementException.class);
-    }
-
-    @Test
-    @DisplayName("Exception when we trying to add private message with not existing receiver")
-    void addTryingToUseNotExistingReceiver() {
-        Message messageReceiver = messageService.findById(5L);
-        User user = userService.findById(3L);
-        user.setId(8L);
-        messageReceiver.setReceiver(user);
-        assertThatThrownBy(() -> messageService.add(messageReceiver))
-                .isInstanceOf(NoSuchElementException.class);
-    }
-
-    @Test
-    @DisplayName("Successful showing all private messages")
+    @DisplayName("Successful showing all private messages with filter")
     void findAll() {
-        final List<Message> messages = messageService.findAll();
-        Assertions.assertEquals(5, messages.size());
+        MessageFilterRequest request = new MessageFilterRequest();
+        request.setMateId(6L);
+        final List<Message> messages = messageService.findAll(request);
+        assertAll(() -> assertEquals(5L, messages.get(0).getId()),
+                () -> assertEquals(8L, messages.get(1).getId()),
+                () -> assertEquals(6L, messages.get(2).getId()),
+                () -> assertEquals(9L, messages.get(3).getId()),
+                () -> assertEquals(7L, messages.get(4).getId()),
+                () -> assertEquals(5, messages.size()));
     }
 
     @Test
     @DisplayName("Successful finding private message by id")
     void findByIdSuccess() {
-        final List<Message> messages = messageService.findAll();
-        Assertions.assertEquals(messages.get(3), messageService.findById(4L));
+        getAuthentication("rogE", "55555");
+        assertEquals("shaking like hell on interview...", messageService.findById(4L).getMessageTxt());
     }
 
     @Test
     @DisplayName("Exception when we trying to find not existing private message by id")
-    void findByIdException() {
-        assertThatThrownBy(() -> messageService.findById(6L))
+    void findByIdNoElementException() {
+        assertThatThrownBy(() -> messageService.findById(23L))
                 .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("Exception when we trying to find private message from not your dialog by id")
+    void findByIdNotYourDialogException() {
+        assertThatThrownBy(() -> messageService.findById(2L))
+                .isInstanceOf(TryingModifyNotYourDataException.class);
     }
 
     @Test
     @DisplayName("Successful updating private message by id")
     void updateSuccess() {
-        Message message = messageService.findById(2L);
-        message.setSender(userService.findById(3L));
-        message.setReceiver(userService.findById(2L));
-        messageService.update(2L, message);
-        Assertions.assertEquals(message, messageService.findById(2L));
+        final Message message = messageService.update(6L, "TEST");
+        assertEquals(messageService.findById(6L), message);
 
     }
 
     @Test
-    @DisplayName("Exception when we trying to update not existing private message")
-    void updateNoSuchElement() {
-        Message message = messageService.findById(2L);
-        message.setReceiver(userService.findById(3L));
-        message.setSender(userService.findById(2L));
-        assertThatThrownBy(() -> messageService.update(6L, message))
-                .isInstanceOf(NoSuchElementException.class);
-    }
-
-    @Test
-    @DisplayName("Exception when we trying to update sender of private message to a not existing")
-    void updateTryingToUseNotExistingSender() {
-        Message messageSender = messageService.findById(4L);
-        User user = userService.findById(1L);
-        user.setId(6L);
-        messageSender.setSender(user);
-        assertThatThrownBy(() -> messageService.update(4L, messageSender))
-                .isInstanceOf(NoSuchElementException.class);
-    }
-
-    @Test
-    @DisplayName("Exception when we trying to update receiver of private message to a not existing")
-    void updateTryingToUseNotExistingReceiver() {
-        Message messageReceiver = messageService.findById(5L);
-        User user = userService.findById(3L);
-        user.setId(8L);
-        messageReceiver.setReceiver(user);
-        assertThatThrownBy(() -> messageService.update(5L, messageReceiver))
-                .isInstanceOf(NoSuchElementException.class);
+    @DisplayName("Exception when we trying to update not your private message")
+    void updateNoYourMessageException() {
+        getAuthentication("runsha", "64654564rererer");
+        assertThatThrownBy(() -> messageService.update(6L, "TEST"))
+                .isInstanceOf(TryingModifyNotYourDataException.class);
     }
 
     @Test
     @DisplayName("Successful deleting private message")
     void deleteSuccess() {
-        messageService.delete(5L);
-        assertThatThrownBy(() -> messageService.findById(5L))
+        messageService.delete(7L);
+        assertThatThrownBy(() -> messageService.findById(7L))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
-    @DisplayName("Exception when we trying to delete not existing private message")
+    @DisplayName("Exception when we trying to delete not your private message")
     void deleteNoSuchId() {
-        assertThatThrownBy(() -> messageService.delete(11L))
-                .isInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(() -> messageService.delete(1L))
+                .isInstanceOf(TryingModifyNotYourDataException.class);
     }
 }

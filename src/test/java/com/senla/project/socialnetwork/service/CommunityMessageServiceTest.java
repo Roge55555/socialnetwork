@@ -1,25 +1,33 @@
 package com.senla.project.socialnetwork.service;
 
-import com.senla.project.socialnetwork.entity.Community;
+import com.senla.project.socialnetwork.Utils;
 import com.senla.project.socialnetwork.entity.CommunityMessage;
-import com.senla.project.socialnetwork.entity.User;
+import com.senla.project.socialnetwork.exeptions.NoAccessForBlockedUserException;
 import com.senla.project.socialnetwork.exeptions.NoSuchElementException;
+import com.senla.project.socialnetwork.exeptions.TryingModifyNotYourDataException;
+import com.senla.project.socialnetwork.model.filter.CommunityMessageFilterRequest;
+import com.senla.project.socialnetwork.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @Sql(scripts = "classpath:data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = "classpath:clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 class CommunityMessageServiceTest {
 
     private final UserService userService;
@@ -28,119 +36,144 @@ class CommunityMessageServiceTest {
 
     private final CommunityMessageService communityMessageService;
 
+    private final JwtTokenProvider jwtTokenProvider;
+
+    @BeforeEach
+    public void init() {
+        getAuthentication("Stego", "333kazanov11");
+    }
+
+    private void getAuthentication(String login, String password) {
+        String token = jwtTokenProvider.createToken(login, password);
+        Authentication authentication = jwtTokenProvider.getAuthentication(token);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    private CommunityMessage getCommunityMessage(Long communityId) {
+        CommunityMessage communityMessage = new CommunityMessage();
+        communityMessage.setCommunity(communityService.findById(communityId));
+        communityMessage.setCreator(userService.findByLogin(Utils.getLogin()));
+        communityMessage.setDate(LocalDateTime.of(2021, 8, 14, 18, 36, 58));
+        communityMessage.setTxt("Text in community for testing");
+        return communityMessage;
+    }
 
     @Test
     @DisplayName("Successful add community message")
     void successAdd() {
-        CommunityMessage communityMessage = new CommunityMessage();
-        communityMessage.setCommunity(communityService.findById(2L));
-        communityMessage.setCreator(userService.findById(3L));
-        communityMessage.setDate(LocalDateTime.of(2021, 7, 14, 18, 36, 58));
-        communityMessage.setTxt("Text in community for testing");
-
-
-        final CommunityMessage message = communityMessageService.add(communityMessage);
-        Assertions.assertEquals(communityMessageService.findById(4L), message);
+        getAuthentication("CtrogE", "131313");
+        final CommunityMessage message = communityMessageService.add(getCommunityMessage(2L));
+        assertEquals(communityMessageService.findById(13L), message);
     }
 
     @Test
-    @DisplayName("Exception when we trying to add community message with not existing sender")
+    @DisplayName("Exception when not community member trying to write message")
     void addTryingToUseNotExistingUser() {
-        CommunityMessage messageUser = communityMessageService.findById(2L);
-        User user = userService.findById(3L);
-        user.setId(5L);
-        messageUser.setCreator(user);
-        assertThatThrownBy(() -> communityMessageService.add(messageUser))
-                .isInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(() -> communityMessageService.add(getCommunityMessage(1L)))
+                .isInstanceOf(TryingModifyNotYourDataException.class);
     }
 
     @Test
-    @DisplayName("Exception when we trying to add community message to not existing community")
-    void addTryingToUseNotExistingCommunity() {
-        CommunityMessage messageCommunity = communityMessageService.findById(2L);
-        Community community = communityService.findById(1L);
-        community.setId(4L);
-        messageCommunity.setCommunity(community);
-        assertThatThrownBy(() -> communityMessageService.add(messageCommunity))
-                .isInstanceOf(NoSuchElementException.class);
+    @DisplayName("Exception when blocked member trying to write message")
+    void addByBlockedUser() {
+        getAuthentication("rogE", "55555");
+        assertThatThrownBy(() -> communityMessageService.add(getCommunityMessage(3L)))
+                .isInstanceOf(NoAccessForBlockedUserException.class);
     }
 
     @Test
-    @DisplayName("Successful showing all community messages")
+    @DisplayName("Successful showing all community messages with selected filter")
     void findAll() {
-        final List<CommunityMessage> communityMessages = communityMessageService.findAll();
-        Assertions.assertEquals(3, communityMessages.size());
+        CommunityMessageFilterRequest request = new CommunityMessageFilterRequest();
+        request.setCommunityId(3L);
+        final List<CommunityMessage> communityMessages = communityMessageService.findAll(request);
+        assertAll(() -> assertEquals(8L, communityMessages.get(0).getId()),
+                () -> assertEquals(9L, communityMessages.get(1).getId()),
+                () -> assertEquals(10L, communityMessages.get(2).getId()),
+                () -> assertEquals(11L, communityMessages.get(3).getId()),
+                () -> assertEquals(12L, communityMessages.get(4).getId()),
+                () -> assertEquals(5, communityMessages.size()));
+    }
+
+    @Test
+    @DisplayName("Exception when blocked member trying to see community messages")
+    void findAllByBlockedUserException() {
+        getAuthentication("Roma666", "54862");
+        CommunityMessageFilterRequest request = new CommunityMessageFilterRequest();
+        request.setCommunityId(3L);
+        assertThatThrownBy(() -> communityMessageService.findAll(request)).isInstanceOf(NoAccessForBlockedUserException.class);
+    }
+
+    @Test
+    @DisplayName("Exception when not member of community trying to see community messages")
+    void findAllByNotMemberException() {
+        CommunityMessageFilterRequest request = new CommunityMessageFilterRequest();
+        request.setCommunityId(1L);
+        assertThatThrownBy(() -> communityMessageService.findAll(request)).isInstanceOf(TryingModifyNotYourDataException.class);
     }
 
     @Test
     @DisplayName("Successful finding community message by id")
     void findByIdSuccess() {
-        final List<CommunityMessage> communityMessages = communityMessageService.findAll();
-        Assertions.assertEquals(communityMessages.get(2), communityMessageService.findById(3L));
+        CommunityMessageFilterRequest request = new CommunityMessageFilterRequest();
+        request.setCommunityId(4L);
+        final List<CommunityMessage> communityMessages = communityMessageService.findAll(request);
+        assertAll(() -> assertEquals(communityMessages.get(0), communityMessageService.findById(4L)),
+                () -> assertEquals(communityMessages.get(1), communityMessageService.findById(5L)),
+                () -> assertEquals(communityMessages.get(2), communityMessageService.findById(6L)),
+                () -> assertEquals(communityMessages.get(3), communityMessageService.findById(7L)),
+                () -> assertEquals(4, communityMessages.size()));
+    }
+
+    @Test
+    @DisplayName("Exception when blocked member trying to find community message by id")
+    void findByIdByBlockedUserException() {
+        getAuthentication("Roma666", "54862");
+        assertThatThrownBy(() -> communityMessageService.findById(8L)).isInstanceOf(NoAccessForBlockedUserException.class);
+    }
+
+    @Test
+    @DisplayName("Exception when not member of community trying to find community message by id")
+    void findByIdByNotMemberException() {
+        getAuthentication("CtrogE", "131313");
+        assertThatThrownBy(() -> communityMessageService.findById(8L)).isInstanceOf(TryingModifyNotYourDataException.class);
     }
 
     @Test
     @DisplayName("Exception when we trying to find not existing community message by id")
     void findByIdException() {
-        assertThatThrownBy(() -> communityMessageService.findById(13L))
+        assertThatThrownBy(() -> communityMessageService.findById(26L))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
     @DisplayName("Successful updating community message by his id")
     void updateSuccess() {
-        CommunityMessage communityMessage = communityMessageService.findById(2L);
-        communityMessage.setCreator(userService.findById(3L));
-        communityMessage.setCommunity(communityService.findById(2L));
-        communityMessageService.update(2L, communityMessage);
-        Assertions.assertEquals(communityMessage, communityMessageService.findById(2L));
+        final CommunityMessage communityMessage = communityMessageService.update(10L, "TESTTESTTEST");
+        assertEquals(communityMessage, communityMessageService.findById(10L));
 
     }
 
     @Test
-    @DisplayName("Exception when we trying to update not existing community message")
-    void updateNoSuchElement() {
-        CommunityMessage communityMessage = communityMessageService.findById(2L);
-        communityMessage.setCreator(userService.findById(3L));
-        communityMessage.setCommunity(communityService.findById(2L));
-        assertThatThrownBy(() -> communityMessageService.update(18L, communityMessage))
-                .isInstanceOf(NoSuchElementException.class);
-    }
-
-    @Test
-    @DisplayName("Exception when we trying to update sender of community message to a not existing")
-    void updateTryingToUseNotExistingUser() {
-        CommunityMessage messageUser = communityMessageService.findById(3L);
-        User user = userService.findById(3L);
-        user.setId(5L);
-        messageUser.setCreator(user);
-        assertThatThrownBy(() -> communityMessageService.update(3L, messageUser))
-                .isInstanceOf(NoSuchElementException.class);
-    }
-
-    @Test
-    @DisplayName("Exception when we trying to update community in which wrote community message to a not existing")
-    void updateTryingToUseNotExistingCommunity() {
-        CommunityMessage messageCommunity = communityMessageService.findById(3L);
-        Community community = communityService.findById(1L);
-        community.setId(4L);
-        messageCommunity.setCommunity(community);
-        assertThatThrownBy(() -> communityMessageService.update(3L, messageCommunity))
-                .isInstanceOf(NoSuchElementException.class);
+    @DisplayName("Exception when not message creator trying to update community message")
+    void updateByNotMessageCreator() {
+        getAuthentication("runsha", "64654564rererer");
+        assertThatThrownBy(() -> communityMessageService.update(10L, "TESTTESTTEST"))
+                .isInstanceOf(TryingModifyNotYourDataException.class);
     }
 
     @Test
     @DisplayName("Successful deleting community message")
     void deleteSuccess() {
-        communityMessageService.delete(3L);
-        assertThatThrownBy(() -> communityMessageService.findById(3L))
-                .isInstanceOf(NoSuchElementException.class);
+        communityMessageService.delete(10L);
+        assertThatThrownBy(() -> communityMessageService.findById(10L)).isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
-    @DisplayName("Exception when we trying to delete not existing community message")
-    void deleteNoSuchId() {
-        assertThatThrownBy(() -> communityMessageService.delete(11L))
-                .isInstanceOf(NoSuchElementException.class);
+    @DisplayName("Exception when not creator of community/creator of message trying to delete community message")
+    void deleteNotMemberException() {
+        getAuthentication("$a$ha", "sava997");
+        assertThatThrownBy(() -> communityMessageService.delete(10L)).isInstanceOf(TryingModifyNotYourDataException.class);
     }
+
 }

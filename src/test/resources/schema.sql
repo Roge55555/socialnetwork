@@ -15,8 +15,6 @@ CREATE TABLE IF NOT EXISTS `user`
     email             VARCHAR(255) NOT NULL UNIQUE,
     phone             VARCHAR(20)  NOT NULL UNIQUE,
     `role`            bigint       NOT NULL,
-    is_active         BOOL DEFAULT false,
-    is_blocked        BOOL DEFAULT false,
     registration_date date         NOT NULL,
     website           VARCHAR(255) NULL,
     about_yourself    VARCHAR(255) NULL,
@@ -59,10 +57,12 @@ CREATE TABLE IF NOT EXISTS contact
     mate_id        bigint,
     date_connected date NOT NULL,
     contact_level  boolean,
-    contact_role   bigint,
+    creator_role   bigint,
+    mate_role      bigint,
     foreign key (creator_id) references `user` (id),
     foreign key (mate_id) references `user` (id),
-    foreign key (contact_role) references role_list (id),
+    foreign key (creator_role) references role_list (id),
+    foreign key (mate_role) references role_list (id),
     UNIQUE (creator_id, mate_id)
 );
 

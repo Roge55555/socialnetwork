@@ -124,7 +124,7 @@
             <column name="mate_id" valueNumeric="1"/>
             <column name="date_connected" valueDate="2021-07-17"/>
             <column name="contact_level" valueBoolean="true"/>
-            <column name="creator_role" valueNumeric="3"/>
+            <column name="creator_role" valueNumeric="null"/>
             <column name="mate_role" valueNumeric="null"/>
         </insert>
 

@@ -16,8 +16,6 @@ public class AuthenticationRestController {
 
     private final AuthenticationRestService authenticationRestService;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationRestController.class);
-
     @PostMapping("/login")
     public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequestDTO requestDTO) {
         return authenticationRestService.login(requestDTO);

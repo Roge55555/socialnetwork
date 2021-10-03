@@ -34,7 +34,7 @@ public class ProfileCommentController {
     @PreAuthorize("hasAuthority('standard:permission')")
     public ProfileComment addProfileComment(@RequestBody ProfileCommentDTO profileCommentDTO) {
         ProfileComment profileComment = ProfileComment.builder()
-                .user(User.builder().id(profileCommentDTO.getUserId()).build())
+                .profileOwner(User.builder().id(profileCommentDTO.getUserId()).build())
                 .date(LocalDateTime.now().plusSeconds(1).truncatedTo(ChronoUnit.SECONDS))
                 .commentTxt(profileCommentDTO.getTxt())
                 .build();

@@ -217,8 +217,8 @@
         <insert tableName="blocklist">
             <column name="id" valueNumeric="1"/>
             <column name="community_id" valueNumeric="1"/>
-            <column name="who_baned" valueNumeric="3"/>
-            <column name="whom_baned" valueNumeric="1"/>
+            <column name="who_baned" valueNumeric="1"/>
+            <column name="whom_baned" valueNumeric="3"/>
             <column name="block_date" valueDate="2021-07-01"/>
             <column name="block_cause" value="text Y.A.N.G.I!!!!!"/>
         </insert>

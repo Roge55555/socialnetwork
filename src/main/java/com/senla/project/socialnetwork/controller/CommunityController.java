@@ -52,7 +52,7 @@ public class CommunityController {
         return communityService.findById(id);
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/search/{name}")
     @ResponseStatus(HttpStatus.FOUND)
     @PreAuthorize("hasAuthority('standard:permission')")
     public List<Community> getByName(@PathVariable("name") String name) {

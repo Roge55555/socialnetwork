@@ -30,7 +30,7 @@ public class RoleListController {
         return roleListService.add(roleListName);
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/search/{name}")
     @PreAuthorize("hasAuthority('standard:permission')")
     public List<RoleList> getAllRoleListsWithName(@PathVariable("name") String name) {
         return roleListService.findAllWith(name);

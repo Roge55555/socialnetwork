@@ -1,4 +1,4 @@
-package com.senla.project.socialnetwork;
+package com.myproject.socialnetwork;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

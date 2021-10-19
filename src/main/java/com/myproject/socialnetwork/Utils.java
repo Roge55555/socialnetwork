@@ -9,8 +9,4 @@ public class Utils {
         return ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
     }
 
-//    public static String getId(SecurityContext context) {
-//        return ((UserDetails) context.getAuthentication().getPrincipal()).getUsername();
-//    }
-
 }

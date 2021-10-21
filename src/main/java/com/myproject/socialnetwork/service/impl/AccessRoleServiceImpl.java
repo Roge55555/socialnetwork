@@ -6,6 +6,7 @@ import com.myproject.socialnetwork.model.Role;
 import com.myproject.socialnetwork.repository.AccessRoleRepository;
 import com.myproject.socialnetwork.service.AccessRoleService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,11 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class AccessRoleServiceImpl implements AccessRoleService {
 
     private final AccessRoleRepository accessRoleRepository;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AccessRoleServiceImpl.class);
 
     @Transactional(isolation = Isolation.REPEATABLE_READ,
             propagation = Propagation.REQUIRES_NEW,
@@ -27,7 +27,7 @@ public class AccessRoleServiceImpl implements AccessRoleService {
     @Override
     public AccessRole findById(Long id) {
         return accessRoleRepository.findById(id).orElseThrow(() -> {
-            LOGGER.error("No element with such id - {}.", id);
+            log.error("No element with such id - {}.", id);
             throw new NoSuchElementException(id);
         });
     }
@@ -38,7 +38,7 @@ public class AccessRoleServiceImpl implements AccessRoleService {
     @Override
     public AccessRole findByName(Role name) {
         return accessRoleRepository.findByName(name).orElseThrow(() -> {
-            LOGGER.error("No element with such login - {}.", name);
+            log.error("No element with such login - {}.", name);
             throw new NoSuchElementException(name.name());
         });
     }

@@ -6,6 +6,7 @@ import com.myproject.socialnetwork.security.JwtTokenProvider;
 import com.myproject.socialnetwork.service.UserService;
 import com.myproject.socialnetwork.service.AuthenticationRestService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class AuthenticationRestServiceImpl implements AuthenticationRestService {
 
     private final AuthenticationManager authenticationManager;
@@ -30,8 +32,6 @@ public class AuthenticationRestServiceImpl implements AuthenticationRestService 
     private final UserService userService;
 
     private final JwtTokenProvider tokenProvider;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationRestServiceImpl.class);
 
     @Transactional(isolation = Isolation.REPEATABLE_READ,
             propagation = Propagation.REQUIRES_NEW,
@@ -45,10 +45,10 @@ public class AuthenticationRestServiceImpl implements AuthenticationRestService 
             Map<Object, Object> response = new HashMap<>();
             response.put("login", requestDTO.getLogin());
             response.put("token", token);
-            LOGGER.info("Logged in success - {} .", requestDTO.getLogin());
+            log.info("Logged in success - {} .", requestDTO.getLogin());
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
-            LOGGER.error("Invalid login/password!");
+            log.error("Invalid login/password!");
             return new ResponseEntity<>("Invalid login/password!", HttpStatus.FORBIDDEN);
         }
     }

@@ -9,6 +9,7 @@ import com.myproject.socialnetwork.repository.CommunityRepository;
 import com.myproject.socialnetwork.service.CommunityService;
 import com.myproject.socialnetwork.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,13 +23,12 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class CommunityServiceImpl implements CommunityService {
 
     private final CommunityRepository communityRepository;
 
     private final UserService userService;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(CommunityServiceImpl.class);
 
     @Transactional(isolation = Isolation.REPEATABLE_READ,
             propagation = Propagation.REQUIRES_NEW,
@@ -57,7 +57,7 @@ public class CommunityServiceImpl implements CommunityService {
     public Community findById(Long communityId) {
         //TODO method for "if" conditions
         return communityRepository.findById(communityId).orElseThrow(() -> {
-            LOGGER.error("No element with such id - {}.", communityId);
+            log.error("No element with such id - {}.", communityId);
             throw new NoSuchElementException(communityId);
         });
     }
@@ -69,7 +69,7 @@ public class CommunityServiceImpl implements CommunityService {
     public Community findByName(String name) {
         //TODO method for search by name especially for creator
         return communityRepository.findByNameAndCreatorLogin(name, Utils.getLogin()).orElseThrow(() -> {
-            LOGGER.error("No element with such name - {} or you not creator of that community.", name);
+            log.error("No element with such name - {} or you not creator of that community.", name);
             throw new NoSuchElementException(name);
         });
     }
@@ -92,7 +92,7 @@ public class CommunityServiceImpl implements CommunityService {
         findByName(findById(id).getName());
 
         if (userService.findById(community.getCreator().getId()).getRole().getName().equals(Role.USER)) {
-            LOGGER.error("User don`t have enough permissions to be creator.");
+            log.error("User don`t have enough permissions to be creator.");
             throw new TryingModifyNotYourDataException("User don`t have enough permissions to be creator.");
         }
 

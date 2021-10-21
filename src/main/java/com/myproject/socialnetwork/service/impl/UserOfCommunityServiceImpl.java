@@ -9,6 +9,7 @@ import com.myproject.socialnetwork.repository.UserOfCommunityRepository;
 import com.myproject.socialnetwork.service.UserOfCommunityService;
 import com.myproject.socialnetwork.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class UserOfCommunityServiceImpl implements UserOfCommunityService {
 
     private final UserOfCommunityRepository userOfCommunityRepository;
@@ -30,8 +32,6 @@ public class UserOfCommunityServiceImpl implements UserOfCommunityService {
 
     private final CommunityService communityService;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserOfCommunityServiceImpl.class);
-
     @Transactional(isolation = Isolation.REPEATABLE_READ,
             propagation = Propagation.REQUIRES_NEW,
             rollbackFor = Exception.class,
@@ -39,7 +39,7 @@ public class UserOfCommunityServiceImpl implements UserOfCommunityService {
     @Override
     public UserOfCommunity add(UserOfCommunity userOfCommunity) {
         if (!Utils.getLogin().equals(communityService.findById(userOfCommunity.getCommunity().getId()).getCreator().getLogin())) {
-            LOGGER.error("Only creator can add users.");
+            log.error("Only creator can add users.");
             throw new TryingModifyNotYourDataException("Only creator can add users.");
         }
         return userOfCommunityRepository.save(
@@ -63,7 +63,7 @@ public class UserOfCommunityServiceImpl implements UserOfCommunityService {
     @Override
     public List<UserOfCommunity> findAllUsersOfCommunity(Long communityId) {
         if (findByCommunityNameAndUserLogin(communityService.findById(communityId).getName(), Utils.getLogin()).isEmpty()) {
-            LOGGER.error("Trying to check subscribers of community - {}, by not member.", communityId);
+            log.error("Trying to check subscribers of community - {}, by not member.", communityId);
             throw new TryingModifyNotYourDataException("You can`t see subscribers of community of which you are not a member.");
         }
         return userOfCommunityRepository.findByCommunityIdOrderByUser(communityId);
@@ -87,12 +87,12 @@ public class UserOfCommunityServiceImpl implements UserOfCommunityService {
     public UserOfCommunity findByCommunityIdAndUserId(Long communityId, Long userId) {
         //TODO endpoint for creator of community
         if (!Utils.getLogin().equals(communityService.findById(communityId).getCreator().getLogin())) {
-            LOGGER.error("Trying to check subscription of other community - {}", Utils.getLogin());
+            log.error("Trying to check subscription of other community - {}", Utils.getLogin());
             throw new TryingModifyNotYourDataException("You can check only yourself subscription.");
         }
 
         return userOfCommunityRepository.findByCommunityIdAndUserId(communityId, userId).orElseThrow(() -> {
-            LOGGER.error("No subscription: userId - {} to communityId - {}.", userId, communityId);
+            log.error("No subscription: userId - {} to communityId - {}.", userId, communityId);
             throw new NoSuchElementException(userId + " / " + communityId);
         });
     }
@@ -109,7 +109,7 @@ public class UserOfCommunityServiceImpl implements UserOfCommunityService {
                 Utils.getLogin().equals(userService.findById(userId).getLogin())) {  //TODO yourself?
             userOfCommunityRepository.deleteByCommunityIdAndUserId(communityId, userId);
         } else {
-            LOGGER.error("Only creator/subscribers can delete user/yourself from community {}.", Utils.getLogin());
+            log.error("Only creator/subscribers can delete user/yourself from community {}.", Utils.getLogin());
             throw new TryingModifyNotYourDataException("Only creator/subscribers can delete user/yourself from community.");
         }
     }

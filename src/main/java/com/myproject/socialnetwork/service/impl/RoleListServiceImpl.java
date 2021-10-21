@@ -6,6 +6,7 @@ import com.myproject.socialnetwork.exeptions.TryingModifyNotYourDataException;
 import com.myproject.socialnetwork.repository.RoleListRepository;
 import com.myproject.socialnetwork.service.RoleListService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -17,11 +18,10 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class RoleListServiceImpl implements RoleListService {
 
     private final RoleListRepository roleListRepository;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(RoleListServiceImpl.class);
 
     @Transactional(isolation = Isolation.REPEATABLE_READ,
             propagation = Propagation.REQUIRES_NEW,
@@ -49,7 +49,7 @@ public class RoleListServiceImpl implements RoleListService {
     @Override
     public RoleList findById(Long id) {
         return roleListRepository.findById(id).orElseThrow(() -> {
-            LOGGER.error("No element with such id - {}.", id);
+            log.error("No element with such id - {}.", id);
             throw new NoSuchElementException(id);
         });
     }

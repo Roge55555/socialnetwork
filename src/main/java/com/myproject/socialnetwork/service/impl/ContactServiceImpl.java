@@ -12,6 +12,7 @@ import com.myproject.socialnetwork.service.UserService;
 import com.myproject.socialnetwork.service.ContactService;
 import com.myproject.socialnetwork.service.RoleListService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class ContactServiceImpl implements ContactService {
 
     private final ContactRepository contactRepository;
@@ -32,8 +34,6 @@ public class ContactServiceImpl implements ContactService {
 
     private final UserService userService;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ContactServiceImpl.class);
-
     @Transactional(isolation = Isolation.REPEATABLE_READ,
             propagation = Propagation.REQUIRES_NEW,
             rollbackFor = Exception.class,
@@ -41,7 +41,7 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public Contact add(Long mateId) {
         if (Utils.getLogin().equals(userService.findById(mateId).getLogin())) {
-            LOGGER.error("Trying contact to yourself!");
+            log.error("Trying contact to yourself!");
             throw new TryingRequestToYourselfException();
         }
 
@@ -69,13 +69,13 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public Contact findById(Long id) {
         final Contact contact = contactRepository.findById(id).orElseThrow(() -> {
-            LOGGER.error("No element with such id - {}.", id);
+            log.error("No element with such id - {}.", id);
             throw new NoSuchElementException(id);
         });
 
         if (!Utils.getLogin().equals(contact.getCreator().getLogin()) &&
                 !Utils.getLogin().equals(contact.getMate().getLogin())) {
-            LOGGER.error("You can see only your contacts.");
+            log.error("You can see only your contacts.");
             throw new TryingModifyNotYourDataException("Not your contact.");
         }
         return contact;
@@ -88,7 +88,7 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public void acceptRequest(Long id) {
         if (!findById(id).getMate().getLogin().equals(Utils.getLogin())) {
-            LOGGER.error("Trying accept not his request with id - {}.", id);
+            log.error("Trying accept not his request with id - {}.", id);
             throw new TryingModifyNotYourDataException("Only mate can accept request!");
         }
 

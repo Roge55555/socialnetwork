@@ -15,6 +15,7 @@ import com.myproject.socialnetwork.service.CommunityMessageService;
 import com.myproject.socialnetwork.service.UserOfCommunityService;
 import com.myproject.socialnetwork.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
@@ -30,6 +31,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class CommunityMessageServiceImpl implements CommunityMessageService {
 
     private final CommunityMessageRepository communityMessageRepository;
@@ -42,8 +44,6 @@ public class CommunityMessageServiceImpl implements CommunityMessageService {
 
     private final BlocklistService blocklistService;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CommunityMessageServiceImpl.class);
-
     @Transactional(isolation = Isolation.REPEATABLE_READ,
             propagation = Propagation.REQUIRES_NEW,
             rollbackFor = Exception.class,
@@ -52,13 +52,13 @@ public class CommunityMessageServiceImpl implements CommunityMessageService {
     public CommunityMessage add(CommunityMessage communityMessage) {
 
         if (Objects.nonNull(blocklistService.findByCommunityIdAndWhomBanedId(communityMessage.getCommunity().getId(), userService.findByLogin(Utils.getLogin()).getId()))) {
-            LOGGER.error("User - {} is blocked in community - {}", Utils.getLogin(), communityMessage.getCommunity().getId());
+            log.error("User - {} is blocked in community - {}", Utils.getLogin(), communityMessage.getCommunity().getId());
             throw new NoAccessForBlockedUserException("You are blocked in this community!");
         }
 
         if (userOfCommunityService.findByCommunityNameAndUserLogin(communityService.findById(communityMessage.getCommunity().getId()).getName(), Utils.getLogin()).isEmpty() && //TODO you are in community
                 !userService.findByLogin(Utils.getLogin()).equals(communityService.findById(communityMessage.getCommunity().getId()).getCreator())) { //TODO you are creator of community
-            LOGGER.error("Not member of community can not add messages.");
+            log.error("Not member of community can not add messages.");
             throw new TryingModifyNotYourDataException("Not member of community can not add messages!");
         }
 
@@ -78,13 +78,13 @@ public class CommunityMessageServiceImpl implements CommunityMessageService {
     public List<CommunityMessage> findAll(CommunityMessageFilterRequest request) {
 
         if (Objects.nonNull(blocklistService.findByCommunityIdAndWhomBanedId(request.getCommunityId(), userService.findByLogin(Utils.getLogin()).getId()))) {
-            LOGGER.error("User - {} is blocked in community - {}", Utils.getLogin(), request.getCommunityId());
+            log.error("User - {} is blocked in community - {}", Utils.getLogin(), request.getCommunityId());
             throw new NoAccessForBlockedUserException("You are blocked in this community!");
         }
 
         if (userOfCommunityService.findByCommunityNameAndUserLogin(communityService.findById(request.getCommunityId()).getName(), Utils.getLogin()).isEmpty() && //TODO you are in community
                 !Utils.getLogin().equals(communityService.findById(request.getCommunityId()).getCreator().getLogin())) { //TODO you are creator of community
-            LOGGER.error("Not member of community can`t see their messages.");
+            log.error("Not member of community can`t see their messages.");
             throw new TryingModifyNotYourDataException("Not member of community can`t see their messages!");
         }
 
@@ -98,18 +98,18 @@ public class CommunityMessageServiceImpl implements CommunityMessageService {
     public CommunityMessage findById(Long id) {
 
         final CommunityMessage communityMessage = communityMessageRepository.findById(id).orElseThrow(() -> {
-            LOGGER.error("No element with such id - {}.", id);
+            log.error("No element with such id - {}.", id);
             throw new NoSuchElementException(id);
         });
 
         if (Objects.nonNull(blocklistService.findByCommunityIdAndWhomBanedId(communityMessage.getCommunity().getId(), userService.findByLogin(Utils.getLogin()).getId()))) {
-            LOGGER.error("User - {} is blocked in community - {}", Utils.getLogin(), communityMessage.getCommunity().getId());
+            log.error("User - {} is blocked in community - {}", Utils.getLogin(), communityMessage.getCommunity().getId());
             throw new NoAccessForBlockedUserException("You are blocked in this community!");
         }
 
         if (userOfCommunityService.findByCommunityNameAndUserLogin(communityMessage.getCommunity().getName(), Utils.getLogin()).isEmpty() && //TODO you are in community
                 !Utils.getLogin().equals(communityMessage.getCommunity().getCreator().getLogin())) { //TODO you are creator of community
-            LOGGER.error("Not member of community can`t see their messages.");
+            log.error("Not member of community can`t see their messages.");
             throw new TryingModifyNotYourDataException("Not member of community can`t see their messages!");
         }
 
@@ -126,7 +126,7 @@ public class CommunityMessageServiceImpl implements CommunityMessageService {
         CommunityMessage savedCommunityMessage = findById(id);
 
         if (!userService.findByLogin(Utils.getLogin()).equals(savedCommunityMessage.getCreator())) {
-            LOGGER.error("Trying update not his message");
+            log.error("Trying update not his message");
             throw new TryingModifyNotYourDataException("You can update only yourself messages!");
         }
 
@@ -147,7 +147,7 @@ public class CommunityMessageServiceImpl implements CommunityMessageService {
         if (!(userService.findByLogin(Utils.getLogin()).equals(findById(id).getCreator()) && //TODO you creator of message +
                 Objects.nonNull(userOfCommunityService.findByCommunityNameAndUserLogin(findById(id).getCommunity().getName(), Utils.getLogin()))) && //TODO + you not deleted from community
                 !userService.findByLogin(Utils.getLogin()).equals(communityService.findById(findById(id).getCommunity().getId()).getCreator())) { //TODO you creator of community
-            LOGGER.error("Only admin and creator can delete message in community.");
+            log.error("Only admin and creator can delete message in community.");
             throw new TryingModifyNotYourDataException("Only admin and creator can delete message in community!");
         }
 

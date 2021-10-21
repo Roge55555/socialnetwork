@@ -9,6 +9,7 @@ import com.myproject.socialnetwork.repository.UserRepository;
 import com.myproject.socialnetwork.service.UserService;
 import com.myproject.socialnetwork.service.AccessRoleService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -31,8 +33,6 @@ public class UserServiceImpl implements UserService {
     private final AccessRoleService accessRoleService;
 
     private final PasswordEncoder passwordEncoder;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Transactional(isolation = Isolation.REPEATABLE_READ,
             propagation = Propagation.REQUIRES_NEW,
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(Long id) {
         return userRepository.findById(id).orElseThrow(() -> {
-            LOGGER.error("No element with such id - {}.", id);
+            log.error("No element with such id - {}.", id);
             throw new NoSuchElementException(id);
         });
     }
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByLogin(String login) {
         return userRepository.findByLogin(login).orElseThrow(() -> {
-            LOGGER.error("No element with such login - {}.", login);
+            log.error("No element with such login - {}.", login);
             throw new NoSuchElementException("login - " + login + ".");
         });
     }
@@ -136,7 +136,7 @@ public class UserServiceImpl implements UserService {
             user.setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(user);
         } else {
-            LOGGER.error("Not right old user password");
+            log.error("Not right old user password");
             throw new NotOldPasswordException();
         }
     }

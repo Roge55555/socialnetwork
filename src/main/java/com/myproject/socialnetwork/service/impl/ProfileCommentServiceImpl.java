@@ -11,6 +11,7 @@ import com.myproject.socialnetwork.model.filter.ProfileCommentFilterRequest;
 import com.myproject.socialnetwork.repository.specification.ProfileCommentSpecification;
 import com.myproject.socialnetwork.service.ProfileCommentService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
@@ -25,13 +26,12 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class ProfileCommentServiceImpl implements ProfileCommentService {
 
     private final ProfileCommentRepository profileCommentRepository;
 
     private final UserService userService;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileCommentServiceImpl.class);
 
     @Transactional(isolation = Isolation.REPEATABLE_READ,
             propagation = Propagation.REQUIRES_NEW,
@@ -62,7 +62,7 @@ public class ProfileCommentServiceImpl implements ProfileCommentService {
     @Override
     public ProfileComment findById(Long id) {
         return profileCommentRepository.findById(id).orElseThrow(() -> {
-            LOGGER.error("No element with such id - {}.", id);
+            log.error("No element with such id - {}.", id);
             throw new NoSuchElementException(id);
         });
     }
@@ -74,7 +74,7 @@ public class ProfileCommentServiceImpl implements ProfileCommentService {
     @Override
     public ProfileComment update(Long id, String txt) {
         if (!Utils.getLogin().equals(findById(id).getUser().getLogin())) {
-            LOGGER.error("Trying update not your message");
+            log.error("Trying update not your message");
             throw new TryingModifyNotYourDataException("You can update only yourself messages!");
         }
 
@@ -91,7 +91,7 @@ public class ProfileCommentServiceImpl implements ProfileCommentService {
     public void delete(Long id) {
         if (!Utils.getLogin().equals(findById(id).getProfileOwner().getLogin()) &&
                 !Utils.getLogin().equals(findById(id).getUser().getLogin())) {
-            LOGGER.error("Trying delete not your message or message in not your profile.");
+            log.error("Trying delete not your message or message in not your profile.");
             throw new TryingModifyNotYourDataException("You can delete only yourself messages or your profile messages!");
         }
 

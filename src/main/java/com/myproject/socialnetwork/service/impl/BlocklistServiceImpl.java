@@ -11,6 +11,7 @@ import com.myproject.socialnetwork.service.CommunityService;
 import com.myproject.socialnetwork.service.UserOfCommunityService;
 import com.myproject.socialnetwork.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class BlocklistServiceImpl implements BlocklistService {
 
     private final BlocklistRepository blocklistRepository;
@@ -33,8 +35,6 @@ public class BlocklistServiceImpl implements BlocklistService {
 
     private final UserOfCommunityService userOfCommunityService;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BlocklistServiceImpl.class);
-
     @Transactional(isolation = Isolation.REPEATABLE_READ,
             propagation = Propagation.REQUIRES_NEW,
             rollbackFor = Exception.class,
@@ -42,12 +42,12 @@ public class BlocklistServiceImpl implements BlocklistService {
     @Override
     public Blocklist add(Blocklist blocklist) {
         if (!userService.findByLogin(Utils.getLogin()).equals(communityService.findById(blocklist.getCommunity().getId()).getCreator())) {
-            LOGGER.error("Trying give ban in not his community - {}." + Utils.getLogin());
+            log.error("Trying give ban in not his community - {}." + Utils.getLogin());
             throw new TryingModifyNotYourDataException("Only creator of community can give ban!");
         }
 
         if (userService.findByLogin(Utils.getLogin()).getId().equals(blocklist.getWhomBaned().getId())) {
-            LOGGER.error("User {} trying ban himself", blocklist.getWhoBaned());
+            log.error("User {} trying ban himself", blocklist.getWhoBaned());
             throw new TryingRequestToYourselfException();
         }
 
@@ -101,7 +101,7 @@ public class BlocklistServiceImpl implements BlocklistService {
     @Override
     public Blocklist findById(Long id) {
         return blocklistRepository.findById(id).orElseThrow(() -> {
-            LOGGER.error("No element with such id - {}.", id);
+            log.error("No element with such id - {}.", id);
             throw new NoSuchElementException(id);
         });
     }
@@ -123,7 +123,7 @@ public class BlocklistServiceImpl implements BlocklistService {
     @Override
     public void delete(Long id) {
         if (!userService.findByLogin(Utils.getLogin()).equals(findById(id).getCommunity().getCreator())) {
-            LOGGER.error("Trying remove ban in not his community - {}.", Utils.getLogin());
+            log.error("Trying remove ban in not his community - {}.", Utils.getLogin());
             throw new TryingModifyNotYourDataException("Only admin of community can remove ban!");
         }
 

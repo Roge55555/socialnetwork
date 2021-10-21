@@ -7,6 +7,7 @@ import com.myproject.socialnetwork.repository.UserEventRepository;
 import com.myproject.socialnetwork.service.UserService;
 import com.myproject.socialnetwork.service.UserEventService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -19,13 +20,12 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class UserEventServiceImpl implements UserEventService {
 
     private final UserEventRepository userEventRepository;
 
     private final UserService userService;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserEventServiceImpl.class);
 
     @Transactional(isolation = Isolation.REPEATABLE_READ,
             propagation = Propagation.REQUIRES_NEW,
@@ -52,7 +52,7 @@ public class UserEventServiceImpl implements UserEventService {
     @Override
     public UserEvent findById(Long id) {
         return userEventRepository.findByIdAndUserId(id, userService.findByLogin(Utils.getLogin()).getId()).orElseThrow(() -> {
-            LOGGER.error("No your elements with such id - {}.", id);
+            log.error("No your elements with such id - {}.", id);
             throw new NoSuchElementException(id);
         });
     }

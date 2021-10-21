@@ -11,6 +11,7 @@ import com.myproject.socialnetwork.repository.specification.MessageSpecification
 import com.myproject.socialnetwork.service.MessageService;
 import com.myproject.socialnetwork.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
@@ -25,13 +26,12 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class MessageServiceImpl implements MessageService {
 
     private final MessageRepository messageRepository;
 
     private final UserService userService;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(MessageServiceImpl.class);
 
     @Transactional(isolation = Isolation.REPEATABLE_READ,
             propagation = Propagation.REQUIRES_NEW,
@@ -63,13 +63,13 @@ public class MessageServiceImpl implements MessageService {
     public Message findById(Long id) {
 
         final Message message = messageRepository.findById(id).orElseThrow(() -> {
-            LOGGER.error("No element with such id - {}.", id);
+            log.error("No element with such id - {}.", id);
             throw new NoSuchElementException(id);
         });
 
         if (!Utils.getLogin().equals(message.getSender().getLogin()) &&
                 !Utils.getLogin().equals(message.getReceiver().getLogin())) {
-            LOGGER.error("Trying to find message in not your dialog.");
+            log.error("Trying to find message in not your dialog.");
             throw new TryingModifyNotYourDataException("This is not your dialog!");
         }
 
@@ -83,7 +83,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public Message update(Long id, String txt) {
         if (!Utils.getLogin().equals(findById(id).getSender().getLogin())) {
-            LOGGER.error("Trying to update not your message.");
+            log.error("Trying to update not your message.");
             throw new TryingModifyNotYourDataException("This is not your message!");
         }
 
@@ -99,7 +99,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void delete(Long id) {
         if (!Utils.getLogin().equals(findById(id).getSender().getLogin())) {
-            LOGGER.error("Trying to delete not your message.");
+            log.error("Trying to delete not your message.");
             throw new TryingModifyNotYourDataException("This is not your message!");
         }
 

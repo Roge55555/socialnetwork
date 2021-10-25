@@ -12,8 +12,6 @@ import com.myproject.socialnetwork.repository.specification.ProfileCommentSpecif
 import com.myproject.socialnetwork.service.ProfileCommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;

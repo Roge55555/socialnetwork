@@ -7,8 +7,6 @@ import com.myproject.socialnetwork.service.UserService;
 import com.myproject.socialnetwork.service.AuthenticationRestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

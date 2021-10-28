@@ -1,6 +1,6 @@
 # Socialnetwork
 
-### Senla Test Project
+[![Coverage Status](https://coveralls.io/repos/github/Roge55555/socialnetwork/badge.svg?branch=main)](https://coveralls.io/github/Roge55555/socialnetwork?branch=upgrade)
 
 ## QUICK START
 

@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                git 'https://github.com/Roge55555/socialnetwork/tree/travis/coverals'
+                git 'https://github.com/Roge55555/socialnetwork.git'
                 bat 'mvn clean compile'
             }
         }

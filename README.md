@@ -1,5 +1,6 @@
 # Socialnetwork
 
+[![Build Status](http://localhost:8888/buildStatus/icon?job=sn_docker)](http://localhost:8888/job/sn_docker/)
 [![Coverage Status](https://coveralls.io/repos/github/Roge55555/socialnetwork/badge.svg?branch=main)](https://coveralls.io/github/Roge55555/socialnetwork?branch=upgrade)
 
 ## QUICK START

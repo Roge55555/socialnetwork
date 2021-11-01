@@ -8,7 +8,7 @@
 		<version>2.5.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.senla.project</groupId>
+	<groupId>com.myproject</groupId>
 	<artifactId>socialnetwork</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
@@ -159,98 +159,98 @@
                 <version>3.9.1</version>
             </plugin>
 
-            <!--			<plugin>-->
-            <!--				<groupId>org.projectlombok</groupId>-->
-            <!--				<artifactId>lombok-maven-plugin</artifactId>-->
-            <!--				<version>1.18.20.0</version>-->
-            <!--				<executions>-->
-            <!--					<execution>-->
-            <!--						<phase>generate-sources</phase>-->
-            <!--						<goals>-->
-            <!--							<goal>delombok</goal>-->
-            <!--						</goals>-->
-            <!--					</execution>-->
-            <!--				</executions>-->
-            <!--				<configuration>-->
-            <!--					<addOutputDirectory>false</addOutputDirectory>-->
-            <!--					<sourceDirectory>src/main/java</sourceDirectory>-->
-            <!--				</configuration>-->
-            <!--			</plugin>-->
+<!--            			<plugin>-->
+<!--            				<groupId>org.projectlombok</groupId>-->
+<!--            				<artifactId>lombok-maven-plugin</artifactId>-->
+<!--            				<version>1.18.20.0</version>-->
+<!--            				<executions>-->
+<!--            					<execution>-->
+<!--            						<phase>generate-sources</phase>-->
+<!--            						<goals>-->
+<!--            							<goal>delombok</goal>-->
+<!--            						</goals>-->
+<!--            					</execution>-->
+<!--            				</executions>-->
+<!--            				<configuration>-->
+<!--            					<addOutputDirectory>false</addOutputDirectory>-->
+<!--            					<sourceDirectory>src/main/java</sourceDirectory>-->
+<!--            				</configuration>-->
+<!--            			</plugin>-->
 
-            <!--			<plugin>-->
-            <!--				<groupId>org.apache.maven.plugins</groupId>-->
-            <!--				<artifactId>maven-checkstyle-plugin</artifactId>-->
-            <!--				<version>${maven-checkstyle-plugin.version}</version>-->
-            <!--				<configuration>-->
-            <!--&lt;!&ndash;					<configLocation>checkstyle.xml</configLocation>&ndash;&gt;-->
-            <!--					<encoding>UTF-8</encoding>-->
-            <!--					<consoleOutput>true</consoleOutput>-->
-            <!--					<failsOnError>true</failsOnError>-->
-            <!--					<linkXRef>false</linkXRef>-->
-            <!--				</configuration>-->
-            <!--				<executions>-->
-            <!--					<execution>-->
-            <!--						<id>validate</id>-->
-            <!--						<phase>validate</phase>-->
-            <!--						<goals>-->
-            <!--							<goal>check</goal>-->
-            <!--						</goals>-->
-            <!--					</execution>-->
-            <!--				</executions>-->
-            <!--			</plugin>-->
+<!--            			<plugin>-->
+<!--            				<groupId>org.apache.maven.plugins</groupId>-->
+<!--            				<artifactId>maven-checkstyle-plugin</artifactId>-->
+<!--            				<version>3.1.2</version>-->
+<!--            				<configuration>-->
+<!--            &lt;!&ndash;					<configLocation>checkstyle.xml</configLocation>&ndash;&gt;-->
+<!--            					<encoding>UTF-8</encoding>-->
+<!--            					<consoleOutput>true</consoleOutput>-->
+<!--            					<failsOnError>true</failsOnError>-->
+<!--            					<linkXRef>false</linkXRef>-->
+<!--            				</configuration>-->
+<!--            				<executions>-->
+<!--            					<execution>-->
+<!--            						<id>validate</id>-->
+<!--            						<phase>validate</phase>-->
+<!--            						<goals>-->
+<!--            							<goal>check</goal>-->
+<!--            						</goals>-->
+<!--            					</execution>-->
+<!--            				</executions>-->
+<!--            			</plugin>-->
 
-            <!--			<plugin>-->
-            <!--				<groupId>org.codehaus.mojo</groupId>-->
-            <!--				<artifactId>findbugs-maven-plugin</artifactId>-->
-            <!--				<version>${findbugs-maven-plugin.version}</version>-->
-            <!--			</plugin>-->
+<!--            			<plugin>-->
+<!--            				<groupId>org.codehaus.mojo</groupId>-->
+<!--            				<artifactId>findbugs-maven-plugin</artifactId>-->
+<!--            				<version>3.0.5</version>-->
+<!--            			</plugin>-->
 
         </plugins>
     </build>
 
-    <!--	<reporting>-->
-    <!--		<plugins>-->
-    <!--			<plugin>-->
-    <!--				<groupId>org.apache.maven.plugins</groupId>-->
-    <!--				<artifactId>maven-javadoc-plugin</artifactId>-->
-    <!--				<version>3.3.0</version>-->
-    <!--				<configuration>-->
-    <!--					<defaultVersion>${project.version}</defaultVersion>-->
-    <!--					<sourcepath>target/generated-sources/delombok</sourcepath>-->
-    <!--				</configuration>-->
-    <!--			</plugin>-->
+    	<reporting>
+    		<plugins>
+<!--    			<plugin>-->
+<!--    				<groupId>org.apache.maven.plugins</groupId>-->
+<!--    				<artifactId>maven-javadoc-plugin</artifactId>-->
+<!--    				<version>3.3.0</version>-->
+<!--    				<configuration>-->
+<!--    					<defaultVersion>${project.version}</defaultVersion>-->
+<!--    					<sourcepath>target/generated-sources/delombok</sourcepath>-->
+<!--    				</configuration>-->
+<!--    			</plugin>-->
 
-    <!--			<plugin>-->
-    <!--				<groupId>org.apache.maven.plugins</groupId>-->
-    <!--				<artifactId>maven-checkstyle-plugin</artifactId>-->
-    <!--				<version>${maven-checkstyle-plugin.version}</version>-->
-    <!--				<reportSets>-->
-    <!--					<reportSet>-->
-    <!--						<reports>-->
-    <!--							<report>checkstyle</report>-->
-    <!--						</reports>-->
-    <!--					</reportSet>-->
-    <!--				</reportSets>-->
-    <!--			</plugin>-->
+<!--    			<plugin>-->
+<!--    				<groupId>org.apache.maven.plugins</groupId>-->
+<!--    				<artifactId>maven-checkstyle-plugin</artifactId>-->
+<!--    				<version>3.1.2</version>-->
+<!--    				<reportSets>-->
+<!--    					<reportSet>-->
+<!--    						<reports>-->
+<!--    							<report>checkstyle</report>-->
+<!--    						</reports>-->
+<!--    					</reportSet>-->
+<!--    				</reportSets>-->
+<!--    			</plugin>-->
 
-    <!--			<plugin>-->
-    <!--				<groupId>org.codehaus.mojo</groupId>-->
-    <!--				<artifactId>findbugs-maven-plugin</artifactId>-->
-    <!--				<version>${findbugs-maven-plugin.version}</version>-->
-    <!--				<configuration>-->
-    <!--					<excludeFilterFile>${project.basedir}/exclude-findbugs.xml</excludeFilterFile>-->
-    <!--					<skip>true</skip>-->
-    <!--				</configuration>-->
-    <!--				<reportSets>-->
-    <!--					<reportSet>-->
-    <!--						<reports>-->
-    <!--							<report>findbugs</report>-->
-    <!--						</reports>-->
-    <!--					</reportSet>-->
-    <!--				</reportSets>-->
-    <!--			</plugin>-->
+<!--    			<plugin>-->
+<!--    				<groupId>org.codehaus.mojo</groupId>-->
+<!--    				<artifactId>findbugs-maven-plugin</artifactId>-->
+<!--    				<version>3.0.5</version>-->
+<!--    				<configuration>-->
+<!--    					<excludeFilterFile>${project.basedir}/exclude-findbugs.xml</excludeFilterFile>-->
+<!--    					<skip>true</skip>-->
+<!--    				</configuration>-->
+<!--    				<reportSets>-->
+<!--    					<reportSet>-->
+<!--    						<reports>-->
+<!--    							<report>findbugs</report>-->
+<!--    						</reports>-->
+<!--    					</reportSet>-->
+<!--    				</reportSets>-->
+<!--    			</plugin>-->
 
-    <!--		</plugins>-->
-    <!--	</reporting>-->
+    		</plugins>
+    	</reporting>
 
 </project>

@@ -2,6 +2,8 @@
 
 [![Build Status](https://172.26.80.1:8888/buildStatus/icon?job=sn_docker)](https://172.26.80.1:8888/buildStatus/icon?job=sn_docker)
 
+[![Build Status](https://172.26.80.1:8888/job/sn_docker/badge/icon)](https://172.26.80.1:8888/job/sn_docker/)
+
 [![Coverage Status](https://coveralls.io/repos/github/Roge55555/socialnetwork/badge.svg?branch=main)](https://coveralls.io/github/Roge55555/socialnetwork?branch=upgrade)
 
 ## QUICK START
